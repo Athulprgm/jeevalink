@@ -46,7 +46,23 @@ export const useAppStore = create((set, get) => ({
 
   createRequest: async (requestData) => {
     try {
-      const res = await api.post('/requests', requestData);
+      // Backend expects snake_case field names
+      const payload = {
+        patient_name: requestData.patientName,
+        blood_group: requestData.bloodGroup,
+        units_required: requestData.unitsRequired,
+        hospital_name: requestData.hospitalName,
+        hospital_address: requestData.hospitalAddress,
+        location: requestData.location,
+        city: requestData.city,
+        district: requestData.district,
+        contact_number: requestData.contactNumber,
+        contact_person_name: requestData.contactPersonName,
+        required_by_date: requestData.requiredByDate,
+        urgency_level: requestData.urgencyLevel,
+        additional_notes: requestData.additionalNotes,
+      };
+      const res = await api.post('/requests', payload);
       if (res.data.success) {
         const newReq = res.data.data.request;
         set((state) => ({ requests: [newReq, ...state.requests] }));
@@ -111,10 +127,17 @@ export const useAppStore = create((set, get) => ({
 
   triggerSOS: async (sosData) => {
     try {
+      // Backend expects snake_case field names
       const payload = {
-        ...sosData,
-        urgencyLevel: 'Emergency SOS',
-        requiredByDate: new Date(Date.now() + 2 * 3600000).toISOString().slice(0, 19).replace('T', ' ') // required within 2 hours
+        patient_name: sosData.patientName,
+        blood_group: sosData.bloodGroup,
+        units_required: sosData.unitsRequired,
+        hospital_name: sosData.hospitalName,
+        city: sosData.city,
+        district: sosData.district,
+        contact_number: sosData.contactNumber,
+        urgency_level: 'Emergency SOS',
+        required_by_date: new Date(Date.now() + 2 * 3600000).toISOString().slice(0, 10),
       };
       const res = await api.post('/requests', payload);
       if (res.data.success) {
@@ -148,8 +171,8 @@ export const useAppStore = create((set, get) => ({
         get().triggerSOS({
           patientName: user ? `Emergency: ${user.fullName}` : 'Emergency Case',
           hospitalName: 'General Hospital',
-          city: user ? user.city || 'Bengaluru' : 'Bengaluru',
-          district: user ? user.district || 'Bengaluru Urban' : 'Bengaluru Urban',
+          city: user ? (user.city || 'Bengaluru') : 'Bengaluru',
+          district: user ? (user.district || 'Bengaluru Urban') : 'Bengaluru Urban',
           unitsRequired: 2,
           bloodGroup,
           contactNumber,
