@@ -1,0 +1,381 @@
+import { create } from 'zustand';
+import api from './api.js';
+
+export const useAppStore = create((set, get) => ({
+  requests: [],
+  donors: [],
+  notifications: [],
+  allUsers: [],
+  complaints: [],
+  activeView: 'Splash',
+  searchRadius: 15,
+  selectedBloodGroup: 'B+',
+  toast: { show: false, message: '', type: 'success' },
+
+  // Global SOS properties
+  sosCountdownActive: false,
+  sosCountdown: 3,
+  sirenPlaying: false,
+  sosTimer: null,
+
+  setActiveView: (view) => set({ activeView: view }),
+
+  triggerToast: (message, type = 'success') => {
+    set({ toast: { show: true, message, type } });
+    setTimeout(() => get().clearToast(), 4000);
+  },
+  clearToast: () => set({ toast: { show: false, message: '', type: 'success' } }),
+
+  setSearchRadius: (radius) => set({ searchRadius: radius }),
+  setSelectedBloodGroup: (bg) => set({ selectedBloodGroup: bg }),
+
+  fetchRequests: async (bloodGroup = '', urgencyLevel = '') => {
+    try {
+      const params = {};
+      if (bloodGroup) params.bloodGroup = bloodGroup;
+      if (urgencyLevel) params.urgencyLevel = urgencyLevel;
+      
+      const res = await api.get('/requests', { params });
+      if (res.data.success) {
+        set({ requests: res.data.data.requests || [] });
+      }
+    } catch (err) {
+      console.error('Failed to fetch requests', err);
+    }
+  },
+
+  createRequest: async (requestData) => {
+    try {
+      const res = await api.post('/requests', requestData);
+      if (res.data.success) {
+        const newReq = res.data.data.request;
+        set((state) => ({ requests: [newReq, ...state.requests] }));
+        get().triggerToast('Blood request posted successfully!', 'success');
+        return { success: true, request: newReq };
+      }
+      return { success: false };
+    } catch (err) {
+      const errMsg = err.response?.data?.message || 'Failed to create blood request.';
+      get().triggerToast(errMsg, 'error');
+      return { success: false, error: errMsg };
+    }
+  },
+
+  fulfillRequest: async (requestId) => {
+    try {
+      const res = await api.patch(`/requests/${requestId}/fulfill`);
+      if (res.data.success) {
+        const updatedReq = res.data.data.request;
+        set((state) => ({
+          requests: state.requests.map((r) => String(r._id) === String(requestId) ? updatedReq : r)
+        }));
+        get().triggerToast('Request marked as fulfilled. Lives saved!', 'success');
+        return { success: true };
+      }
+      return { success: false };
+    } catch (err) {
+      const errMsg = err.response?.data?.message || 'Failed to fulfill request.';
+      get().triggerToast(errMsg, 'error');
+      return { success: false, error: errMsg };
+    }
+  },
+
+  verifyRequest: async (requestId) => {
+    try {
+      const res = await api.patch(`/requests/${requestId}/verify`);
+      if (res.data.success) {
+        const updatedReq = res.data.data.request;
+        set((state) => ({
+          requests: state.requests.map((r) => String(r._id) === String(requestId) ? updatedReq : r)
+        }));
+        get().triggerToast('Request verified successfully.', 'success');
+      }
+    } catch (err) {
+      get().triggerToast('Failed to verify request.', 'error');
+    }
+  },
+
+  rejectRequest: async (requestId) => {
+    try {
+      const res = await api.delete(`/requests/${requestId}`);
+      if (res.data.success) {
+        set((state) => ({
+          requests: state.requests.filter((r) => String(r._id) !== String(requestId))
+        }));
+        get().triggerToast('Request rejected and removed.', 'warning');
+      }
+    } catch (err) {
+      get().triggerToast('Failed to delete request.', 'error');
+    }
+  },
+
+  triggerSOS: async (sosData) => {
+    try {
+      const payload = {
+        ...sosData,
+        urgencyLevel: 'Emergency SOS',
+        requiredByDate: new Date(Date.now() + 2 * 3600000).toISOString().slice(0, 19).replace('T', ' ') // required within 2 hours
+      };
+      const res = await api.post('/requests', payload);
+      if (res.data.success) {
+        const newReq = res.data.data.request;
+        set((state) => ({ requests: [newReq, ...state.requests] }));
+        get().triggerToast('🚨 SOS Emergency Broadcast Active!', 'error');
+        return { success: true, request: newReq };
+      }
+      return { success: false };
+    } catch (err) {
+      console.error('Failed to trigger SOS', err);
+      return { success: false };
+    }
+  },
+
+  startSOSCountdown: (user) => {
+    if (get().sosCountdownActive) return;
+    if (get().sosTimer) clearInterval(get().sosTimer);
+
+    set({ sosCountdownActive: true, sosCountdown: 3 });
+
+    const timer = setInterval(() => {
+      const currentVal = get().sosCountdown;
+      if (currentVal <= 1) {
+        clearInterval(timer);
+        set({ sosCountdownActive: false, sosCountdown: 0, sosTimer: null, sirenPlaying: true });
+
+        const bloodGroup = user ? user.bloodGroup : 'O-';
+        const contactNumber = user ? user.mobile || '9999911111' : '9999911111';
+
+        get().triggerSOS({
+          patientName: user ? `Emergency: ${user.fullName}` : 'Emergency Case',
+          hospitalName: 'General Hospital',
+          city: user ? user.city || 'Bengaluru' : 'Bengaluru',
+          district: user ? user.district || 'Bengaluru Urban' : 'Bengaluru Urban',
+          unitsRequired: 2,
+          bloodGroup,
+          contactNumber,
+        });
+
+        // Trigger refetch notifications to pick up the active alert
+        setTimeout(() => get().fetchNotifications(), 1000);
+      } else {
+        set({ sosCountdown: currentVal - 1 });
+      }
+    }, 1000);
+
+    set({ sosTimer: timer });
+  },
+
+  cancelSOS: () => {
+    if (get().sosTimer) {
+      clearInterval(get().sosTimer);
+    }
+    set({ sosCountdownActive: false, sosCountdown: 3, sosTimer: null });
+  },
+
+  stopSiren: () => set({ sirenPlaying: false }),
+  setSirenPlaying: (playing) => set({ sirenPlaying: playing }),
+
+  searchDonors: async (bloodGroup, radius, excludeId) => {
+    try {
+      const params = {};
+      if (bloodGroup) params.bloodGroup = bloodGroup;
+      
+      const res = await api.get('/donors/search', { params });
+      if (res.data.success) {
+        let donorsList = res.data.data.donors || [];
+        // Apply client-side radius filter on simulated/returned distance
+        donorsList = donorsList.filter((d) => !radius || d.distance <= radius);
+        set({ donors: donorsList });
+      }
+    } catch (err) {
+      console.error('Failed to search donors', err);
+    }
+  },
+
+  fetchNotifications: async () => {
+    try {
+      const res = await api.get('/notifications');
+      if (res.data.success) {
+        set({ notifications: res.data.data.notifications || [] });
+      }
+    } catch (err) {
+      console.error('Failed to fetch notifications', err);
+    }
+  },
+
+  markNotificationRead: async (id) => {
+    try {
+      const res = await api.patch(`/notifications/${id}/read`);
+      if (res.data.success) {
+        set((state) => ({
+          notifications: state.notifications.map((n) => String(n._id) === String(id) ? { ...n, read: true } : n)
+        }));
+      }
+    } catch (err) {
+      console.error('Failed to mark notification read', err);
+    }
+  },
+
+  markAllNotificationsRead: async () => {
+    try {
+      const res = await api.patch('/notifications/read-all');
+      if (res.data.success) {
+        set((state) => ({
+          notifications: state.notifications.map((n) => ({ ...n, read: true }))
+        }));
+        get().triggerToast('All notifications marked as read.', 'success');
+      }
+    } catch (err) {
+      console.error('Failed to mark all notifications read', err);
+    }
+  },
+
+  // Admin Dashboard Actions
+  fetchUsers: async () => {
+    try {
+      const res = await api.get('/admin/users');
+      if (res.data.success) {
+        set({ allUsers: res.data.data.users || [] });
+      }
+    } catch (err) {
+      console.error('Failed to fetch users', err);
+    }
+  },
+
+  fetchComplaints: async () => {
+    try {
+      const res = await api.get('/admin/complaints');
+      if (res.data.success) {
+        set({ complaints: res.data.data.complaints || [] });
+      }
+    } catch (err) {
+      console.error('Failed to fetch complaints', err);
+    }
+  },
+
+  updateUserStatus: async (userId, status) => {
+    try {
+      const res = await api.patch(`/admin/users/${userId}/status`, { status });
+      if (res.data.success) {
+        set((state) => ({
+          allUsers: state.allUsers.map((u) => String(u._id) === String(userId) ? { ...u, status } : u)
+        }));
+        
+        // Sync with authStore if current user was updated
+        try {
+          const { useAuthStore } = await import('./authStore.js');
+          useAuthStore.getState().updateMockUserStatus(userId, status);
+        } catch (err) {
+          console.error(err);
+        }
+
+        get().triggerToast(`User status updated to ${status}.`, 'success');
+      }
+    } catch (err) {
+      get().triggerToast('Failed to update user status.', 'error');
+    }
+  },
+
+  fileComplaint: async (complaintData) => {
+    try {
+      const res = await api.post('/admin/complaints', {
+        targetId: complaintData.targetId,
+        reason: complaintData.reason
+      });
+      if (res.data.success) {
+        const newComplaint = res.data.data.complaint;
+        set((state) => ({ complaints: [newComplaint, ...state.complaints] }));
+        get().triggerToast('Report filed successfully. Admin will review.', 'success');
+        return { success: true };
+      }
+      return { success: false };
+    } catch (err) {
+      const errMsg = err.response?.data?.message || 'Failed to file complaint.';
+      get().triggerToast(errMsg, 'error');
+      return { success: false, error: errMsg };
+    }
+  },
+
+  resolveComplaint: async (complaintId) => {
+    try {
+      const res = await api.patch(`/admin/complaints/${complaintId}/resolve`);
+      if (res.data.success) {
+        set((state) => ({
+          complaints: state.complaints.map((c) => String(c._id) === String(complaintId) ? { ...c, status: 'Resolved' } : c)
+        }));
+        get().triggerToast('Report marked as resolved.', 'success');
+      }
+    } catch (err) {
+      get().triggerToast('Failed to resolve complaint.', 'error');
+    }
+  },
+
+  suspendUser: async (userId) => {
+    await get().updateUserStatus(userId, 'Suspended');
+  },
+
+  warnUser: async (userId, message) => {
+    try {
+      const res = await api.post(`/admin/users/${userId}/warn`, { message });
+      if (res.data.success) {
+        const user = get().allUsers.find((u) => String(u._id) === String(userId));
+        const email = user ? user.email : 'user@example.com';
+        get().triggerToast(`Warning message dispatched to ${email}.`, 'warning');
+      }
+    } catch (err) {
+      get().triggerToast('Failed to dispatch warning to user.', 'error');
+    }
+  },
+
+  addUser: (user) => {
+    set((state) => {
+      // Avoid duplication in allUsers
+      if (state.allUsers.some((u) => String(u._id) === String(user._id))) {
+        return {};
+      }
+      const newUser = {
+        _id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        role: user.role || 'donor',
+        bloodGroup: user.bloodGroup || 'N/A',
+        district: user.district || 'Bengaluru Urban',
+        status: user.status || 'Active',
+        joinedAt: user.joinedAt || new Date().toISOString().split('T')[0]
+      };
+      
+      const updatedUsers = [...state.allUsers, newUser];
+      let updatedDonors = state.donors;
+      
+      if (newUser.role === 'donor') {
+        const newDonor = {
+          _id: user._id,
+          fullName: user.fullName,
+          bloodGroup: user.bloodGroup,
+          city: user.city || 'Bengaluru',
+          district: user.district || 'Bengaluru Urban',
+          distance: Math.round((Math.random() * 5 + 0.5) * 10) / 10,
+          availableForDonation: user.availableForDonation !== undefined ? user.availableForDonation : true,
+          totalDonations: user.totalDonations || 0,
+          compatibilityScore: 100,
+          matchScore: 100,
+          mobile: user.mobile,
+          lastDonated: user.lastDonated || null
+        };
+        updatedDonors = [newDonor, ...state.donors];
+      }
+      
+      return {
+        allUsers: updatedUsers,
+        donors: updatedDonors
+      };
+    });
+  },
+
+  updateUserInLists: (userId, updates) => {
+    set((state) => ({
+      allUsers: state.allUsers.map((u) => String(u._id) === String(userId) ? { ...u, ...updates } : u),
+      donors: state.donors.map((d) => String(d._id) === String(userId) ? { ...d, ...updates } : d),
+    }));
+  },
+}));
