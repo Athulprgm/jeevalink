@@ -151,6 +151,8 @@ export default function DonorEligibility() {
       failedQuestions
     });
 
+    setIsAssessing(false);
+
     if (isEligible) {
       confetti({
         particleCount: 120,
@@ -168,6 +170,7 @@ export default function DonorEligibility() {
     setSaving(false);
     if (res.success) {
       setIsAssessing(false);
+      setAssessmentResult(null);
     }
   };
 
