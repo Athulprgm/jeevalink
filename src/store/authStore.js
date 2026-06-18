@@ -72,19 +72,18 @@ export const useAuthStore = create((set, get) => ({
       const email = userData.email || (mobile ? `${mobile}@jeevalink.org` : '');
 
       const formData = new FormData();
-      formData.append('fullName', userData.fullName || '');
+      formData.append('full_name', userData.fullName || '');
       formData.append('mobile', mobile);
       formData.append('email', email);
       formData.append('password', userData.password || '');
       formData.append('role', isHospital ? 'hospital' : 'donor');
       formData.append('district', userData.district || '');
       formData.append('city', userData.city || '');
-      formData.append('bloodGroup', userData.bloodGroup || 'N/A');
+      formData.append('blood_group', userData.bloodGroup || 'N/A');
       
       if (userData.address) formData.append('address', userData.address);
       if (userData.pincode) formData.append('pincode', userData.pincode);
       if (userData.fullAddress) formData.append('full_address', userData.fullAddress);
-      if (userData.dateOfBirth) formData.append('date_of_birth', userData.dateOfBirth);
       if (userData.dateOfBirth) formData.append('dob', userData.dateOfBirth);
       if (userData.weight) formData.append('weight', userData.weight);
       if (userData.lastDonated || userData.lastDonatedDate) {
