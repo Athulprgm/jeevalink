@@ -39,6 +39,7 @@ const step1HospitalSchema = z.object({
 const step2DonorSchema = z.object({
   bloodGroup: z.enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]),
   dateOfBirth: z.string().min(1, "Date of birth required"),
+  sex: z.enum(["male", "female", "transgender"], { message: "Sex is required" }),
   pincode: z.string().length(6, "Must be 6 digits"),
   fullAddress: z.string().min(5, "Minimum 5 characters for full address"),
   district: z.string().min(2, "Minimum 2 characters"),
@@ -372,6 +373,20 @@ export default function Register() {
                       />
                       {e2.dateOfBirth && (
                         <span className={errCls}>{e2.dateOfBirth.message}</span>
+                      )}
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5">
+                        Sex / Gender
+                      </label>
+                      <select {...reg2("sex")} className={inputCls}>
+                        <option value="">Select Sex</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="transgender">Transgender</option>
+                      </select>
+                      {e2.sex && (
+                        <span className={errCls}>{e2.sex.message}</span>
                       )}
                     </div>
                   </>

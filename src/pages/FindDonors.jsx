@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppStore } from '../store/appStore.js';
 import { useAuthStore } from '../store/authStore.js';
-import { Map, List, Search, Award, HelpCircle, Phone, MessageSquare, Compass, Eye, ShieldCheck } from 'lucide-react';
+import { Map, List, Search, Award, MessageSquare, Compass, Eye, ShieldCheck } from 'lucide-react';
 import MapContainer from '../components/MapContainer.jsx';
 
 export default function FindDonors() {
@@ -133,9 +133,6 @@ export default function FindDonors() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
               {donors.map((donor) => {
-                const recentDonation = donor.lastDonationDate && 
-                  (new Date() - new Date(donor.lastDonationDate)) < (3600000 * 24 * 90);
-                
                 return (
                   <div
                     key={donor._id}
@@ -155,6 +152,17 @@ export default function FindDonors() {
                         <span>📍 {donor.city || 'Indiranagar'}</span>
                         <span>🛣️ {donor.distance} km away</span>
                       </p>
+                      <div className="mt-2.5">
+                        <span className={`inline-block text-[9px] font-black px-2 py-0.5 rounded-lg border ${
+                          donor.eligibilityStatus === 'Eligible'
+                            ? 'text-emerald-700 bg-emerald-50 border-emerald-100/80 dark:text-emerald-400 dark:bg-emerald-950/30 dark:border-emerald-900/50'
+                            : donor.eligibilityStatus === 'Ineligible'
+                            ? 'text-red-700 bg-red-50 border-red-100/80 dark:text-red-450 dark:bg-red-950/30 dark:border-red-900/50'
+                            : 'text-gray-655 bg-slate-50 border-slate-200 dark:text-zinc-400 dark:bg-zinc-800 dark:border-zinc-700'
+                        }`}>
+                          {donor.eligibilityStatus || 'Pending Check'}
+                        </span>
+                      </div>
                     </div>
 
                     <div className="flex items-center justify-between pt-2.5 border-t border-slate-100 dark:border-zinc-800/80">
@@ -226,9 +234,6 @@ export default function FindDonors() {
             ) : (
               <div className="space-y-3">
                 {donors.map((donor) => {
-                  const recentDonation = donor.lastDonationDate && 
-                    (new Date() - new Date(donor.lastDonationDate)) < (3600000 * 24 * 90);
-                  
                   return (
                     <div
                       key={donor._id}
@@ -249,6 +254,17 @@ export default function FindDonors() {
                           <span>•</span>
                           <span>🛣️ {donor.distance} km</span>
                         </p>
+                        <div className="mt-2">
+                          <span className={`inline-block text-[9px] font-black px-2 py-0.5 rounded-lg border ${
+                            donor.eligibilityStatus === 'Eligible'
+                              ? 'text-emerald-700 bg-emerald-50 border-emerald-100/80 dark:text-emerald-400 dark:bg-emerald-950/30 dark:border-emerald-900/50'
+                              : donor.eligibilityStatus === 'Ineligible'
+                              ? 'text-red-700 bg-red-50 border-red-100/80 dark:text-red-450 dark:bg-red-950/30 dark:border-red-900/50'
+                              : 'text-gray-655 bg-slate-50 border-slate-200 dark:text-zinc-400 dark:bg-zinc-800 dark:border-zinc-700'
+                          }`}>
+                            {donor.eligibilityStatus || 'Pending Check'}
+                          </span>
+                        </div>
                       </div>
 
                       <div className="flex flex-col items-end shrink-0 gap-3">
@@ -293,6 +309,18 @@ export default function FindDonors() {
                 <span className="text-slate-400 font-bold">Donation Status:</span>
                 <span className={`font-bold ${selectedDonor.availableForDonation ? 'text-emerald-600' : 'text-amber-500'}`}>
                   {selectedDonor.availableForDonation ? 'Available Now' : 'Not Available'}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-400 font-bold">Eligibility:</span>
+                <span className={`font-bold ${
+                  selectedDonor.eligibilityStatus === 'Eligible'
+                    ? 'text-emerald-600 dark:text-emerald-400'
+                    : selectedDonor.eligibilityStatus === 'Ineligible'
+                    ? 'text-red-600 dark:text-red-400'
+                    : 'text-gray-500 dark:text-zinc-400'
+                }`}>
+                  {selectedDonor.eligibilityStatus || 'Pending Check'}
                 </span>
               </div>
               <div className="flex justify-between">

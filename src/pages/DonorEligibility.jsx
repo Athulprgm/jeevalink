@@ -107,6 +107,9 @@ export default function DonorEligibility() {
       const weight = Number(user.weight);
       initialAnswers.weight = (weight >= 50) ? 'yes' : 'no';
     }
+    if (user?.sex && user.sex !== 'female') {
+      initialAnswers.pregnancy = 'na';
+    }
 
     setAnswers(initialAnswers);
     setCurrentStep(0);
@@ -346,6 +349,16 @@ export default function DonorEligibility() {
                   <Info className="w-4 h-4 text-blue-500 shrink-0" />
                   <span>
                     Auto-detected from profile: <strong>{user.weight} kg</strong>.
+                  </span>
+                </div>
+              )}
+
+              {/* Pregnancy auto-set message */}
+              {currentQuestion.id === 'pregnancy' && user?.sex && user.sex !== 'female' && (
+                <div className="mt-4 ml-0 sm:ml-18 p-3.5 bg-slate-50 border border-slate-200/60 rounded-xl text-xs text-gray-600 flex items-center gap-2">
+                  <Info className="w-4 h-4 text-pink-500 shrink-0" />
+                  <span>
+                    Auto-set: <strong>Not Applicable</strong> (Detected sex: {user.sex}).
                   </span>
                 </div>
               )}

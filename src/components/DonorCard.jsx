@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Phone, MapPin, Droplet, Award, Flag, AlertTriangle } from 'lucide-react';
+import { useState } from 'react';
+import { Phone, MapPin, Flag, AlertTriangle } from 'lucide-react';
 import { useAppStore } from '../store/appStore.js';
 import { useAuthStore } from '../store/authStore.js';
 import Modal from './Modal.jsx';
@@ -55,10 +55,21 @@ export default function DonorCard({ donor }) {
             <h4 className="text-sm font-bold text-gray-900 truncate">{donor.fullName}</h4>
             <div className="flex items-center gap-1.5 mt-0.5">
               <MapPin className="w-3 h-3 text-gray-400" />
-              <span className="text-xs text-gray-505">{donor.city}</span>
+              <span className="text-xs text-gray-550">{donor.city}</span>
               {donor.distance && (
                 <span className="text-xs text-gray-400">• {donor.distance} km</span>
               )}
+            </div>
+            <div className="mt-1.5">
+              <span className={`inline-block text-[9px] font-black px-2 py-0.5 rounded-lg border ${
+                donor.eligibilityStatus === 'Eligible'
+                  ? 'text-emerald-700 bg-emerald-50 border-emerald-100'
+                  : donor.eligibilityStatus === 'Ineligible'
+                  ? 'text-red-700 bg-red-50 border-red-100'
+                  : 'text-gray-650 bg-slate-50 border-slate-200'
+              }`}>
+                {donor.eligibilityStatus || 'Pending Check'}
+              </span>
             </div>
           </div>
         </div>

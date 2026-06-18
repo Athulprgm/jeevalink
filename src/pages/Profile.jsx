@@ -246,6 +246,15 @@ export default function Profile() {
                 <span className="text-xs font-black text-primary bg-red-50 px-2.5 py-1 rounded-xl border border-red-100">{user?.bloodGroup}</span>
                 <span className="text-xs text-gray-550 font-semibold">{user?.totalDonations} donations</span>
                 <span className="text-xs text-amber-600 font-semibold flex items-center gap-1"><Award className="w-3 h-3" />{user?.rewardPoints} pts</span>
+                <span className={`text-xs font-black px-2.5 py-1 rounded-xl border ${
+                  user?.eligibilityStatus === 'Eligible'
+                    ? 'text-emerald-700 bg-emerald-50 border-emerald-100'
+                    : user?.eligibilityStatus === 'Ineligible'
+                    ? 'text-red-700 bg-red-50 border-red-100'
+                    : 'text-gray-650 bg-slate-50 border-slate-200'
+                }`}>
+                  {user?.eligibilityStatus || 'Pending Check'}
+                </span>
               </>
             ) : (
               <span className={`text-xs font-bold px-2.5 py-1 rounded-xl border uppercase ${
