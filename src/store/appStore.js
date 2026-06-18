@@ -12,6 +12,12 @@ export const useAppStore = create((set, get) => ({
   selectedBloodGroup: 'B+',
   toast: { show: false, message: '', type: 'success' },
 
+  // Firebase Emergency Alert System state
+  emergencyRequests: [],
+  nearbyDonors: [],
+  liveDonorCount: 0,
+  emergencyDetails: null,
+
   // Global SOS properties
   sosCountdownActive: false,
   sosCountdown: 3,
@@ -400,5 +406,123 @@ export const useAppStore = create((set, get) => ({
       allUsers: state.allUsers.map((u) => String(u._id) === String(userId) ? { ...u, ...updates } : u),
       donors: state.donors.map((d) => String(d._id) === String(userId) ? { ...d, ...updates } : d),
     }));
+  },
+
+  fetchEmergencyRequests: async (filters = {}) => {
+    try {
+      const res = await api.get('/emergency/history', { params: filters });
+      if (res.data.success) {
+        set({ emergencyRequests: res.data.data.requests || [] });
+      }
+    } catch (err) {
+      console.error('Failed to fetch emergency requests', err);
+    }
+  },
+
+  createEmergencyRequest: async (data) => {
+    try {
+      const res = await api.post('/emergency/request', data);
+      if (res.data.success) {
+        const newReq = res.data.data.request;
+        set((state) => ({ 
+          emergencyRequests: [newReq, ...state.emergencyRequests] 
+        }));
+        get().triggerToast('Emergency alert broadcasted successfully!', 'success');
+        return { success: true, request: newReq };
+      }
+      return { success: false };
+    } catch (err) {
+      const errMsg = err.response?.data?.message || 'Failed to trigger emergency request.';
+      get().triggerToast(errMsg, 'error');
+      return { success: false, error: errMsg };
+    }
+  },
+
+  fetchEmergencyDetails: async (id) => {
+    try {
+      const res = await api.get(`/emergency/details/${id}`);
+      if (res.data.success) {
+        set({ emergencyDetails: res.data.data || null });
+        return { success: true, data: res.data.data };
+      }
+      return { success: false };
+    } catch (err) {
+      console.error('Failed to fetch emergency details', err);
+      return { success: false };
+    }
+  },
+
+  acceptEmergencyRequest: async (requestId) => {
+    try {
+      const res = await api.post('/emergency/accept', { request_id: requestId });
+      if (res.data.success) {
+        get().triggerToast(res.data.message || 'Alert accepted successfully!', 'success');
+        // Refresh details if open
+        const currentDetails = get().emergencyDetails;
+        if (currentDetails && String(currentDetails.request.id) === String(requestId)) {
+          get().fetchEmergencyDetails(requestId);
+        }
+        return { success: true };
+      }
+      return { success: false };
+    } catch (err) {
+      const errMsg = err.response?.data?.message || 'Failed to accept request.';
+      get().triggerToast(errMsg, 'error');
+      return { success: false, error: errMsg };
+    }
+  },
+
+  rejectEmergencyRequest: async (requestId) => {
+    try {
+      const res = await api.post('/emergency/reject', { request_id: requestId });
+      if (res.data.success) {
+        get().triggerToast('Alert rejected.', 'warning');
+        const currentDetails = get().emergencyDetails;
+        if (currentDetails && String(currentDetails.request.id) === String(requestId)) {
+          get().fetchEmergencyDetails(requestId);
+        }
+        return { success: true };
+      }
+      return { success: false };
+    } catch (err) {
+      return { success: false };
+    }
+  },
+
+  fetchNearbyDonors: async (params) => {
+    try {
+      const res = await api.get('/emergency/nearby-donors', { params });
+      if (res.data.success) {
+        set({ nearbyDonors: res.data.data.donors || [] });
+      }
+    } catch (err) {
+      console.error('Failed to fetch nearby donors', err);
+    }
+  },
+
+  fetchLiveDonorCount: async (params = {}) => {
+    try {
+      const res = await api.get('/emergency/live-donor-count', { params });
+      if (res.data.success) {
+        set({ liveDonorCount: res.data.data.count || 0 });
+      }
+    } catch (err) {
+      console.error('Failed to fetch live donor count', err);
+    }
+  },
+
+  saveFcmToken: async (fcmToken, latitude = null, longitude = null, notificationEnabled = true) => {
+    try {
+      const res = await api.post('/save-fcm-token', {
+        fcm_token: fcmToken,
+        latitude,
+        longitude,
+        notification_enabled: notificationEnabled
+      });
+      return { success: true, data: res.data.data };
+    } catch (err) {
+      console.error('Failed to save FCM token', err);
+      return { success: false };
+    }
   },
 }));

@@ -4,7 +4,7 @@ import { useAuthStore } from '../store/authStore.js';
 import { useAppStore } from '../store/appStore.js';
 import {
   LayoutDashboard, Users, Droplets, Bell, User,
-  Settings, ClipboardList, ShieldCheck, Activity, LogOut, ChevronRight, ShieldAlert
+  Settings, ClipboardList, ShieldCheck, Activity, LogOut, ChevronRight, ShieldAlert, Siren
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -27,6 +27,7 @@ const adminLinks = [
   { to: '/admin/dashboard?tab=users', label: 'Users', icon: Users },
   { to: '/admin/dashboard?tab=hospitals', label: 'Verify Hospitals', icon: ShieldCheck, badgeCountKey: 'hospitals' },
   { to: '/requests', label: 'Requests', icon: ClipboardList },
+  { to: '/admin/emergency', label: 'Emergency Alerts', icon: Siren },
   { to: '/admin/dashboard?tab=analytics', label: 'Analytics', icon: Activity },
   { to: '/admin/dashboard?tab=complaints', label: 'Complaints', icon: ShieldAlert, badgeCountKey: 'complaints' },
   { to: '/profile', label: 'Profile', icon: User },

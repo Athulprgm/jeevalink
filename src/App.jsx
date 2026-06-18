@@ -25,6 +25,7 @@ import About from './pages/About.jsx';
 import Contact from './pages/Contact.jsx';
 import Notifications from './pages/Notifications.jsx';
 import Settings from './pages/Settings.jsx';
+import EmergencyDashboard from './pages/EmergencyDashboard.jsx';
 
 // Protected route — redirects to login if not authenticated
 function ProtectedRoute({ children, roles }) {
@@ -111,6 +112,11 @@ export default function App() {
               <Route path="/admin/dashboard" element={
                 <ProtectedRoute roles={['admin']}>
                   <AdminDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/emergency" element={
+                <ProtectedRoute roles={['admin']}>
+                  <EmergencyDashboard />
                 </ProtectedRoute>
               } />
               <Route path="/hospital/dashboard" element={
