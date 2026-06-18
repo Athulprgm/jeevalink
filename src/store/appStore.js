@@ -305,6 +305,61 @@ export const useAppStore = create((set, get) => ({
     }
   },
 
+  saveEligibility: async (eligibilityStatus) => {
+    try {
+      const res = await api.post('/donors/eligibility', { eligibilityStatus });
+      if (res.data.success) {
+        const updatedUser = res.data.data.user;
+        // Sync with authStore
+        try {
+          const { useAuthStore } = await import('./authStore.js');
+          useAuthStore.setState({ user: updatedUser });
+          localStorage.setItem('jeevalink_user', JSON.stringify(updatedUser));
+        } catch (err) {
+          console.error(err);
+        }
+        get().triggerToast('Donation eligibility questionnaire saved successfully!', 'success');
+        return { success: true, user: updatedUser };
+      }
+      return { success: false };
+    } catch (err) {
+      const errMsg = err.response?.data?.message || 'Failed to save eligibility status.';
+      get().triggerToast(errMsg, 'error');
+      return { success: false, error: errMsg };
+    }
+  },
+
+  updateUserEligibility: async (userId, eligibilityStatus) => {
+    try {
+      const res = await api.patch(`/admin/users/${userId}/eligibility`, { eligibilityStatus });
+      if (res.data.success) {
+        set((state) => ({
+          allUsers: state.allUsers.map((u) => String(u._id) === String(userId) ? { ...u, eligibilityStatus } : u)
+        }));
+
+        // If current user is the one updated, sync with authStore too
+        try {
+          const { useAuthStore } = await import('./authStore.js');
+          const currentUser = useAuthStore.getState().user;
+          if (currentUser && String(currentUser._id) === String(userId)) {
+            const updatedUser = { ...currentUser, eligibilityStatus };
+            useAuthStore.setState({ user: updatedUser });
+            localStorage.setItem('jeevalink_user', JSON.stringify(updatedUser));
+          }
+        } catch (err) {
+          console.error(err);
+        }
+
+        get().triggerToast('User eligibility updated successfully.', 'success');
+        return { success: true };
+      }
+      return { success: false };
+    } catch (err) {
+      get().triggerToast('Failed to update user eligibility status.', 'error');
+      return { success: false };
+    }
+  },
+
   fileComplaint: async (complaintData) => {
     try {
       const res = await api.post('/admin/complaints', {

@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore.js';
 import { useAppStore } from '../store/appStore.js';
 import {
   Heart, Droplet, MapPin, Siren, Bell, Award, ArrowRight,
-  TrendingUp, Activity, CheckCircle2, Clock
+  Activity, CheckCircle2
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import RequestCard from '../components/RequestCard.jsx';
@@ -12,7 +12,6 @@ import RequestCard from '../components/RequestCard.jsx';
 export default function DonorDashboard() {
   const { user, setAvailability } = useAuthStore();
   const { requests, notifications, fetchRequests, fetchNotifications, triggerToast } = useAppStore();
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetchRequests();
@@ -30,14 +29,26 @@ export default function DonorDashboard() {
   };
 
   const getEligibility = () => {
-    if (!user?.lastDonated) return { eligible: true, text: 'Eligible to Donate', daysLeft: 0 };
-    const last = new Date(user.lastDonated);
-    const diffTime = Math.abs(new Date() - last);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    if (diffDays >= 90) {
+    if (user?.eligibilityStatus === 'Ineligible') {
+      return { eligible: false, text: 'Ineligible (Health Deferral)', daysLeft: 0, fromDb: true };
+    }
+    
+    // Check cooldown if lastDonated is present
+    if (user?.lastDonated) {
+      const last = new Date(user.lastDonated);
+      const diffTime = Math.abs(new Date() - last);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      if (diffDays < 90) {
+        return { eligible: false, text: `${90 - diffDays} Days left`, daysLeft: 90 - diffDays };
+      }
+    }
+
+    if (user?.eligibilityStatus === 'Eligible') {
       return { eligible: true, text: 'Eligible to Donate', daysLeft: 0 };
     }
-    return { eligible: false, text: `${90 - diffDays} Days left`, daysLeft: 90 - diffDays };
+
+    // Default to pending check
+    return { eligible: null, text: 'Pending Health Check', daysLeft: 0 };
   };
 
   const eligibility = getEligibility();
@@ -184,57 +195,94 @@ export default function DonorDashboard() {
           </div>
 
           {/* Donation Eligibility Card */}
-          <div className="card p-5 bg-gradient-to-br from-white to-slate-50 border border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-5">
-            <div className="flex items-center gap-4 text-left">
+          <div className={`card p-5 bg-gradient-to-br border flex flex-col sm:flex-row items-center justify-between gap-5 ${
+            eligibility.eligible === true
+              ? 'from-white to-emerald-50/10 border-emerald-100/50'
+              : eligibility.eligible === false
+              ? 'from-white to-red-50/10 border-red-100/50'
+              : 'from-white to-slate-50 border-slate-150'
+          }`}>
+            <div className="flex items-center gap-4 text-left w-full sm:w-auto">
               <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 shadow-sm ${
-                eligibility.eligible
+                eligibility.eligible === true
                   ? 'bg-emerald-50 text-emerald-600 border border-emerald-100'
-                  : 'bg-amber-50 text-amber-600 border border-amber-100'
+                  : eligibility.eligible === false
+                  ? 'bg-red-50 text-primary border border-red-100'
+                  : 'bg-slate-50 text-slate-400 border border-slate-200'
               }`}>
-                <Heart className={`w-7 h-7 ${eligibility.eligible ? 'animate-heartbeat fill-emerald-500/10' : ''}`} />
+                <Heart className={`w-7 h-7 ${eligibility.eligible === true ? 'animate-heartbeat fill-emerald-500/10' : ''}`} />
               </div>
-              <div>
-                <h4 className="text-sm font-black text-gray-900">Donation Eligibility</h4>
-                <p className="text-xs text-gray-500 mt-0.5">
-                  {eligibility.eligible
-                    ? 'You are eligible to donate blood today! Thank you for being ready.'
-                    : `Next eligibility in ${eligibility.daysLeft} days. Cooldown of 90 days required.`}
+              <div className="flex-1">
+                <h4 className="text-sm font-black text-gray-900 flex items-center gap-1.5">
+                  Donation Eligibility
+                </h4>
+                <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">
+                  {eligibility.eligible === true ? (
+                    'You are eligible to donate blood today! Thank you for being ready.'
+                  ) : eligibility.eligible === false ? (
+                    user?.eligibilityStatus === 'Ineligible' 
+                      ? 'Ineligible due to health deferral status.'
+                      : `Next eligibility in ${eligibility.daysLeft} days. Cooldown of 90 days required.`
+                  ) : (
+                    'Donation eligibility check is pending. Complete your health questionnaire.'
+                  )}
                 </p>
                 {user?.lastDonated && (
                   <p className="text-[10px] text-gray-400 mt-1 font-semibold">
-                    Last Donation Date: {new Date(user.lastDonated).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    Last Donation: {new Date(user.lastDonated).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </p>
                 )}
               </div>
             </div>
 
-            {/* Visual Indicator */}
-            <div className="shrink-0 flex items-center justify-center relative w-16 h-16">
-              {eligibility.eligible ? (
-                <div className="flex flex-col items-center justify-center text-center">
+            {/* Visual Indicator or CTA */}
+            <div className="shrink-0 flex items-center justify-center">
+              {eligibility.eligible === true ? (
+                <div className="flex flex-col items-center justify-center text-center gap-2">
                   <span className="text-[9px] uppercase tracking-wider font-black text-emerald-600 bg-emerald-100/50 px-2.5 py-1 rounded-xl">
                     Ready
                   </span>
+                  <Link to="/donor/eligibility" className="text-[10px] text-gray-450 hover:text-primary font-bold underline">
+                    Update Health Info
+                  </Link>
+                </div>
+              ) : eligibility.eligible === false ? (
+                <div className="flex flex-col items-center justify-center text-center gap-2">
+                  {eligibility.daysLeft > 0 ? (
+                    <div className="relative flex items-center justify-center w-16 h-16">
+                      <svg className="w-16 h-16 transform -rotate-90">
+                        <circle cx="32" cy="32" r="26" stroke="#f1f5f9" strokeWidth="4.5" fill="transparent" />
+                        <circle
+                          cx="32"
+                          cy="32"
+                          r="26"
+                          stroke="#d97706"
+                          strokeWidth="4.5"
+                          fill="transparent"
+                          strokeDasharray={2 * Math.PI * 26}
+                          strokeDashoffset={2 * Math.PI * 26 * (1 - (90 - eligibility.daysLeft) / 90)}
+                        />
+                      </svg>
+                      <span className="absolute text-[11px] font-black text-amber-700">
+                        {eligibility.daysLeft}d
+                      </span>
+                    </div>
+                  ) : (
+                    <span className="text-[9px] uppercase tracking-wider font-black text-primary bg-red-100/50 px-2.5 py-1 rounded-xl">
+                      Deferred
+                    </span>
+                  )}
+                  <Link to="/donor/eligibility" className="text-[10px] text-gray-450 hover:text-primary font-bold underline">
+                    Update Assessment
+                  </Link>
                 </div>
               ) : (
-                <div className="relative flex items-center justify-center">
-                  <svg className="w-16 h-16 transform -rotate-90">
-                    <circle cx="32" cy="32" r="26" stroke="#f1f5f9" strokeWidth="4.5" fill="transparent" />
-                    <circle
-                      cx="32"
-                      cy="32"
-                      r="26"
-                      stroke="#d97706"
-                      strokeWidth="4.5"
-                      fill="transparent"
-                      strokeDasharray={2 * Math.PI * 26}
-                      strokeDashoffset={2 * Math.PI * 26 * (1 - (90 - eligibility.daysLeft) / 90)}
-                    />
-                  </svg>
-                  <span className="absolute text-[11px] font-black text-amber-700">
-                    {eligibility.daysLeft}d
-                  </span>
-                </div>
+                <Link
+                  to="/donor/eligibility"
+                  className="px-4 py-2 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl text-xs transition-colors shadow-md shadow-red-200 cursor-pointer"
+                >
+                  Verify Health
+                </Link>
               )}
             </div>
           </div>

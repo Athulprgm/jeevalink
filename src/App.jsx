@@ -15,6 +15,7 @@ import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import ResetPassword from './pages/ResetPassword.jsx';
 import DonorDashboard from './pages/DonorDashboard.jsx';
+import DonorEligibility from './pages/DonorEligibility.jsx';
 import VolunteerDashboard from './pages/VolunteerDashboard.jsx';
 import AdminDashboard from './pages/AdminDashboard.jsx';
 import HospitalDashboard from './pages/HospitalDashboard.jsx';
@@ -102,6 +103,11 @@ export default function App() {
               <Route path="/donor/dashboard" element={
                 <ProtectedRoute roles={['donor']}>
                   <DonorDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/donor/eligibility" element={
+                <ProtectedRoute roles={['donor']}>
+                  <DonorEligibility />
                 </ProtectedRoute>
               } />
               <Route path="/volunteer/dashboard" element={

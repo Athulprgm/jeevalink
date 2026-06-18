@@ -27,7 +27,7 @@ const bloodGroupData = [
 ];
 
 export default function AdminDashboard() {
-  const { requests, allUsers, complaints, fetchRequests, fetchUsers, fetchComplaints, updateUserStatus, resolveComplaint, suspendUser, warnUser, triggerToast } = useAppStore();
+  const { requests, allUsers, complaints, fetchRequests, fetchUsers, fetchComplaints, updateUserStatus, resolveComplaint, suspendUser, warnUser, triggerToast, updateUserEligibility } = useAppStore();
   const { addVolunteer } = useAuthStore();
   
   const [searchParams, setSearchParams] = useSearchParams();
@@ -331,7 +331,7 @@ export default function AdminDashboard() {
             <table className="w-full text-sm">
               <thead className="bg-slate-50">
                 <tr>
-                  {['Name', 'Email', 'Role', 'Blood', 'District', 'Status', 'Actions'].map((h) => (
+                  {['Name', 'Email', 'Role', 'Blood', 'District', 'Eligibility', 'Status', 'Actions'].map((h) => (
                     <th key={h} className="text-left px-4 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap">{h}</th>
                   ))}
                 </tr>
@@ -349,6 +349,27 @@ export default function AdminDashboard() {
                     <td className="px-4 py-3 font-black text-primary text-sm">{u.bloodGroup}</td>
                     <td className="px-4 py-3 text-gray-500 text-xs whitespace-nowrap">{u.district}</td>
                     <td className="px-4 py-3">
+                      {u.role === 'donor' ? (
+                        <select
+                          value={u.eligibilityStatus || 'Pending Check'}
+                          onChange={(e) => updateUserEligibility(u._id, e.target.value)}
+                          className={`text-[10px] font-black px-2 py-1 rounded-lg border cursor-pointer outline-none transition-colors ${
+                            u.eligibilityStatus === 'Eligible'
+                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                              : u.eligibilityStatus === 'Ineligible'
+                              ? 'bg-red-50 text-primary border-red-200'
+                              : 'bg-slate-50 text-gray-500 border-slate-200'
+                          }`}
+                        >
+                          <option value="Eligible">Eligible</option>
+                          <option value="Ineligible">Ineligible</option>
+                          <option value="Pending Check">Pending Check</option>
+                        </select>
+                      ) : (
+                        <span className="text-[10px] text-gray-400 font-bold">N/A</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
                       <span className={`text-[10px] font-bold px-2 py-1 rounded-full ${u.status === 'Active' ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
                         {u.status}
                       </span>
@@ -357,7 +378,7 @@ export default function AdminDashboard() {
                       <div className="flex gap-1">
                         <button
                           onClick={() => updateUserStatus(u._id, u.status === 'Active' ? 'Inactive' : 'Active')}
-                          className={`text-[10px] font-bold px-2 py-1 rounded-lg transition-colors ${u.status === 'Active' ? 'text-red-600 hover:bg-red-50' : 'text-green-600 hover:bg-green-50'}`}
+                          className={`text-[10px] font-bold px-2 py-1 rounded-lg transition-colors ${u.status === 'Active' ? 'text-red-655 hover:bg-red-50' : 'text-green-600 hover:bg-green-50'}`}
                         >
                           {u.status === 'Active' ? <XCircle className="w-3.5 h-3.5" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
                         </button>

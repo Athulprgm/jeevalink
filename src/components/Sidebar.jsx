@@ -10,6 +10,7 @@ import { motion } from 'framer-motion';
 
 const donorLinks = [
   { to: '/donor/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/donor/eligibility', label: 'Eligibility Check', icon: ShieldCheck },
   { to: '/donor/search', label: 'Find Donors', icon: Users },
   { to: '/requests', label: 'Blood Requests', icon: Droplets },
   { to: '/profile', label: 'Profile', icon: User },
