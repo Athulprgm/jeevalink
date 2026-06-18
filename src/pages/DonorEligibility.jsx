@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import {
   Heart, ShieldCheck, ShieldAlert, Calendar,
-  ChevronLeft, RefreshCw, CheckCircle2,
+  ChevronLeft, ChevronRight, RefreshCw, CheckCircle2,
   AlertCircle, Info, Scale, Clock, Sparkles
 } from 'lucide-react';
 
@@ -82,8 +82,33 @@ export default function DonorEligibility() {
   const [assessmentResult, setAssessmentResult] = useState(null);
   const [saving, setSaving] = useState(false);
 
+  const calculateAge = (dobString) => {
+    if (!dobString) return null;
+    const birthDate = new Date(dobString);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
   const startAssessment = () => {
-    setAnswers({});
+    const initialAnswers = {};
+    const dobValue = user?.dob || user?.dateOfBirth;
+    if (dobValue) {
+      const age = calculateAge(dobValue);
+      if (age !== null) {
+        initialAnswers.age = (age >= 18 && age <= 65) ? 'yes' : 'no';
+      }
+    }
+    if (user?.weight) {
+      const weight = Number(user.weight);
+      initialAnswers.weight = (weight >= 50) ? 'yes' : 'no';
+    }
+
+    setAnswers(initialAnswers);
     setCurrentStep(0);
     setAssessmentResult(null);
     setIsAssessing(true);
@@ -301,15 +326,35 @@ export default function DonorEligibility() {
               <p className="text-sm text-gray-500 leading-relaxed pl-18">
                 {currentQuestion.description}
               </p>
+
+              {/* Age auto-detected message */}
+              {currentQuestion.id === 'age' && (user?.dob || user?.dateOfBirth) && (
+                <div className="mt-4 ml-0 sm:ml-18 p-3.5 bg-slate-50 border border-slate-200/60 rounded-xl text-xs text-gray-600 flex items-center gap-2">
+                  <Info className="w-4 h-4 text-indigo-500 shrink-0" />
+                  <span>
+                    Auto-detected from profile: <strong>{calculateAge(user.dob || user.dateOfBirth)} years old</strong> (Born {new Date(user.dob || user.dateOfBirth).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}).
+                  </span>
+                </div>
+              )}
+
+              {/* Weight auto-detected message */}
+              {currentQuestion.id === 'weight' && user?.weight && (
+                <div className="mt-4 ml-0 sm:ml-18 p-3.5 bg-slate-50 border border-slate-200/60 rounded-xl text-xs text-gray-600 flex items-center gap-2">
+                  <Info className="w-4 h-4 text-blue-500 shrink-0" />
+                  <span>
+                    Auto-detected from profile: <strong>{user.weight} kg</strong>.
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Answers layout */}
-            <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-slate-100">
+            <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-slate-100 items-stretch">
               {currentStep > 0 && (
                 <button
                   type="button"
                   onClick={handleBack}
-                  className="btn-secondary py-3 px-5 border border-slate-200"
+                  className="btn-secondary py-3 px-5 border border-slate-200 shrink-0"
                 >
                   <ChevronLeft className="w-4 h-4" /> Back
                 </button>
@@ -320,19 +365,31 @@ export default function DonorEligibility() {
                 <>
                   <button
                     onClick={() => handleAnswer('yes')}
-                    className="flex-1 py-3 bg-red-50 border border-red-200 hover:bg-red-100 text-primary font-bold rounded-xl text-sm transition-colors text-center cursor-pointer"
+                    className={`flex-1 py-3 font-bold rounded-xl text-sm transition-all text-center cursor-pointer ${
+                      answers.pregnancy === 'yes'
+                        ? 'bg-red-150 border-2 border-primary text-primary shadow-sm'
+                        : 'bg-red-50/50 border border-red-200 hover:bg-red-100 text-primary'
+                    }`}
                   >
                     Yes
                   </button>
                   <button
                     onClick={() => handleAnswer('no')}
-                    className="flex-1 py-3 bg-emerald-50 border border-emerald-250 hover:bg-emerald-100 text-emerald-700 font-bold rounded-xl text-sm transition-colors text-center cursor-pointer"
+                    className={`flex-1 py-3 font-bold rounded-xl text-sm transition-all text-center cursor-pointer ${
+                      answers.pregnancy === 'no'
+                        ? 'bg-emerald-100 border-2 border-emerald-500 text-emerald-700 shadow-sm'
+                        : 'bg-emerald-50/50 border border-emerald-250 hover:bg-emerald-100 text-emerald-700'
+                    }`}
                   >
                     No
                   </button>
                   <button
                     onClick={() => handleAnswer('na')}
-                    className="flex-1 py-3 bg-slate-50 border border-slate-200 hover:bg-slate-100 text-gray-600 font-bold rounded-xl text-sm transition-colors text-center cursor-pointer"
+                    className={`flex-1 py-3 font-bold rounded-xl text-sm transition-all text-center cursor-pointer ${
+                      answers.pregnancy === 'na'
+                        ? 'bg-slate-200 border-2 border-slate-400 text-gray-800 shadow-sm'
+                        : 'bg-slate-50 border border-slate-200 hover:bg-slate-100 text-gray-600'
+                    }`}
                   >
                     Not Applicable / Male
                   </button>
@@ -341,17 +398,41 @@ export default function DonorEligibility() {
                 <>
                   <button
                     onClick={() => handleAnswer('yes')}
-                    className="flex-1 py-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-gray-900 font-bold rounded-xl text-sm transition-colors text-center cursor-pointer"
+                    className={`flex-1 py-3 font-bold rounded-xl text-sm transition-all text-center cursor-pointer ${
+                      answers[currentQuestion.id] === 'yes'
+                        ? 'bg-red-100 border-2 border-primary text-primary shadow-sm'
+                        : 'bg-slate-50 border border-slate-200 hover:bg-slate-100 text-gray-900'
+                    }`}
                   >
                     Yes
                   </button>
                   <button
                     onClick={() => handleAnswer('no')}
-                    className="flex-1 py-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-gray-900 font-bold rounded-xl text-sm transition-colors text-center cursor-pointer"
+                    className={`flex-1 py-3 font-bold rounded-xl text-sm transition-all text-center cursor-pointer ${
+                      answers[currentQuestion.id] === 'no'
+                        ? 'bg-emerald-100 border-2 border-emerald-500 text-emerald-700 shadow-sm'
+                        : 'bg-slate-50 border border-slate-200 hover:bg-slate-100 text-gray-900'
+                    }`}
                   >
                     No
                   </button>
                 </>
+              )}
+
+              {/* Next button to confirm prefilled answer */}
+              {answers[currentQuestion.id] && (
+                <button
+                  onClick={() => {
+                    if (currentStep < QUESTIONS.length - 1) {
+                      setCurrentStep(currentStep + 1);
+                    } else {
+                      evaluateEligibility(answers);
+                    }
+                  }}
+                  className="py-3 px-6 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl text-sm transition-all flex items-center justify-center gap-1 cursor-pointer shrink-0"
+                >
+                  Next <ChevronRight className="w-4 h-4" />
+                </button>
               )}
             </div>
           </motion.div>

@@ -12,12 +12,16 @@ import {
 import { motion } from 'framer-motion';
 
 export default function DashboardLayout() {
-  const { user, logout } = useAuthStore();
+  const { user, logout, loadProfile } = useAuthStore();
   const { notifications, startSOSCountdown } = useAppStore();
   const navigate = useNavigate();
   const location = useLocation();
 
   const unread = notifications.filter((n) => !n.read).length;
+
+  React.useEffect(() => {
+    loadProfile();
+  }, []);
 
   const handleLogout = () => {
     logout();
