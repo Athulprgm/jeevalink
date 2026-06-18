@@ -73,7 +73,7 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'https://mindful-exploration-production-8f55.up.railway.app/api/v1',
   timeout: 30000,
   headers: {
-    'Content-Type': 'application/json',
+    'Accept': 'application/json',
   },
 });
 
