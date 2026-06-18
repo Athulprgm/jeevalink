@@ -105,6 +105,7 @@ export const useAuthStore = create((set, get) => ({
       useAppStore.getState().addUser(user);
       return { success: true };
     } catch (err) {
+      console.error("Registration validation errors:", err.response?.data);
       const errMsg = err.response?.data?.message || 'Registration failed.';
       set({ loading: false, error: errMsg });
       return { success: false, error: errMsg };
