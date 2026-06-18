@@ -93,9 +93,7 @@ export const useAuthStore = create((set, get) => ({
       if (userData.idProofFront) formData.append('id_proof_front', userData.idProofFront);
       if (userData.idProofBack) formData.append('id_proof_back', userData.idProofBack);
 
-      const res = await api.post('/auth/register', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      const res = await api.post('/auth/register', formData);
       const { token, user } = res.data.data;
       localStorage.setItem('jeevalink_token', token);
       localStorage.setItem('jeevalink_user', JSON.stringify(user));
