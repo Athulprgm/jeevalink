@@ -70,22 +70,33 @@ export const useAuthStore = create((set, get) => ({
       const isHospital = userData.role === 'hospital';
       const mobile = userData.mobileNumber || userData.mobile || '';
       const email = userData.email || (mobile ? `${mobile}@jeevalink.org` : '');
-      const payload = {
-        fullName: userData.fullName,
-        mobile,
-        email,
-        password: userData.password,
-        role: isHospital ? 'hospital' : 'donor',
-        district: userData.district,
-        city: userData.city,
-        bloodGroup: userData.bloodGroup || 'N/A',
-        address: userData.address || '',
-        dateOfBirth: userData.dateOfBirth || null,
-        weight: userData.weight || null,
-        lastDonatedDate: userData.lastDonated || userData.lastDonatedDate || null,
-      };
+
+      const formData = new FormData();
+      formData.append('fullName', userData.fullName || '');
+      formData.append('mobile', mobile);
+      formData.append('email', email);
+      formData.append('password', userData.password || '');
+      formData.append('role', isHospital ? 'hospital' : 'donor');
+      formData.append('district', userData.district || '');
+      formData.append('city', userData.city || '');
+      formData.append('bloodGroup', userData.bloodGroup || 'N/A');
       
-      const res = await api.post('/auth/register', payload);
+      if (userData.address) formData.append('address', userData.address);
+      if (userData.pincode) formData.append('pincode', userData.pincode);
+      if (userData.fullAddress) formData.append('full_address', userData.fullAddress);
+      if (userData.dateOfBirth) formData.append('date_of_birth', userData.dateOfBirth);
+      if (userData.dateOfBirth) formData.append('dob', userData.dateOfBirth);
+      if (userData.weight) formData.append('weight', userData.weight);
+      if (userData.lastDonated || userData.lastDonatedDate) {
+        formData.append('last_donated_date', userData.lastDonated || userData.lastDonatedDate);
+      }
+      
+      if (userData.idProofFront) formData.append('id_proof_front', userData.idProofFront);
+      if (userData.idProofBack) formData.append('id_proof_back', userData.idProofBack);
+
+      const res = await api.post('/auth/register', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
       const { token, user } = res.data.data;
       localStorage.setItem('jeevalink_token', token);
       localStorage.setItem('jeevalink_user', JSON.stringify(user));
@@ -124,6 +135,32 @@ export const useAuthStore = create((set, get) => ({
     } catch (err) {
       const errMsg = err.response?.data?.message || 'Failed to add volunteer.';
       set({ loading: false });
+      return { success: false, error: errMsg };
+    }
+  },
+
+  forgotPassword: async (email) => {
+    set({ loading: true });
+    try {
+      const res = await api.post('/auth/forgot-password', { email });
+      set({ loading: false });
+      return { success: true, message: res.data.message };
+    } catch (err) {
+      const errMsg = err.response?.data?.message || 'Failed to send reset link.';
+      set({ loading: false, error: errMsg });
+      return { success: false, error: errMsg };
+    }
+  },
+
+  resetPassword: async (token, email, password) => {
+    set({ loading: true });
+    try {
+      const res = await api.post('/auth/reset-password', { token, email, password });
+      set({ loading: false });
+      return { success: true, message: res.data.message };
+    } catch (err) {
+      const errMsg = err.response?.data?.message || 'Failed to reset password.';
+      set({ loading: false, error: errMsg });
       return { success: false, error: errMsg };
     }
   },

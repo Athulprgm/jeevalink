@@ -13,6 +13,7 @@ import Splash from './pages/Splash.jsx';
 import Landing from './pages/Landing.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
+import ResetPassword from './pages/ResetPassword.jsx';
 import DonorDashboard from './pages/DonorDashboard.jsx';
 import VolunteerDashboard from './pages/VolunteerDashboard.jsx';
 import AdminDashboard from './pages/AdminDashboard.jsx';
@@ -89,6 +90,7 @@ export default function App() {
             {/* Auth pages — no Navbar/Footer */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
 
             {/* Dashboard layout — Sidebar + top bar */}
             <Route element={

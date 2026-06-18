@@ -183,21 +183,32 @@ export default function Login() {
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-6">
           <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl">
             <h3 className="text-lg font-bold text-gray-900 mb-2">Reset Password</h3>
-            <p className="text-xs text-gray-500 mb-4">Enter your mobile or email and we'll send you an OTP.</p>
+            <p className="text-xs text-gray-500 mb-4">Enter your registered email and we'll send you a password reset link.</p>
             <input
-              type="text"
+              type="email"
               value={forgotInput}
               onChange={(e) => setForgotInput(e.target.value)}
-              placeholder="Mobile or email"
+              placeholder="Email Address"
               className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm mb-4 text-gray-900"
             />
             <div className="flex gap-2">
               <button onClick={() => setForgotOpen(false)} className="flex-1 py-2.5 bg-slate-100 text-gray-700 font-semibold rounded-xl text-xs">Cancel</button>
               <button
-                onClick={() => { triggerToast(`OTP sent to ${forgotInput}`, 'success'); setForgotOpen(false); setForgotInput(''); }}
-                className="flex-1 py-2.5 bg-primary text-white font-semibold rounded-xl text-xs"
+                onClick={async () => { 
+                  if (!forgotInput) return triggerToast('Enter your email.', 'warning');
+                  const res = await useAuthStore.getState().forgotPassword(forgotInput);
+                  if (res.success) {
+                    triggerToast('Password reset link sent to your email.', 'success');
+                    setForgotOpen(false);
+                    setForgotInput('');
+                  } else {
+                    triggerToast(res.error, 'error');
+                  }
+                }}
+                disabled={loading}
+                className="flex-1 py-2.5 bg-primary text-white font-semibold rounded-xl text-xs disabled:opacity-60"
               >
-                Send OTP
+                {loading ? 'Sending...' : 'Send Link'}
               </button>
             </div>
           </motion.div>
