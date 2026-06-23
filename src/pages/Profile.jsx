@@ -31,6 +31,9 @@ export default function Profile() {
       weight: user?.weight || 70,
       lastDonated: user?.lastDonated || '',
       address: user?.address || '',
+      sex: user?.sex || '',
+      dateOfBirth: user?.dateOfBirth || '',
+      pincode: user?.pincode || '',
     }
   });
 
@@ -356,6 +359,19 @@ export default function Profile() {
                 </div>
               )}
 
+              {user?.role === 'donor' && (
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5">Sex / Gender</label>
+                  <select {...register('sex')}
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-gray-900">
+                    <option value="">Select Sex</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="transgender">Transgender</option>
+                  </select>
+                </div>
+              )}
+
               {user?.role === 'hospital' && (
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5">Street Address</label>
@@ -374,9 +390,21 @@ export default function Profile() {
                 <input type="text" {...register('district')}
                   className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-gray-900" />
               </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5">Pincode</label>
+                <input type="text" {...register('pincode')}
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-gray-900" />
+              </div>
 
               {user?.role === 'donor' && (
                 <>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5 flex items-center gap-1">
+                      <Calendar className="w-3 h-3" /> Date of Birth
+                    </label>
+                    <input type="date" {...register('dateOfBirth')}
+                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-gray-900" />
+                  </div>
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5 flex items-center gap-1">
                       <Scale className="w-3 h-3" /> Weight (kg)

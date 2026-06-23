@@ -12,8 +12,8 @@ const platformLinks = [
 const companyLinks = [
   { to: '/about', label: 'About Us' },
   { to: '/contact', label: 'Contact Us' },
-  { to: '/', label: 'Privacy Policy' },
-  { to: '/', label: 'Terms of Service' },
+  { to: '/privacy', label: 'Privacy Policy' },
+  { to: '/terms', label: 'Terms of Service' },
 ];
 
 export default function Footer() {

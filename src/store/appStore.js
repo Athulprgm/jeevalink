@@ -52,6 +52,14 @@ export const useAppStore = create((set, get) => ({
 
   createRequest: async (requestData) => {
     try {
+      let mappedUrgency = 'Normal';
+      const inputUrgency = (requestData.urgencyLevel || '').toLowerCase();
+      if (inputUrgency.includes('immediate') || inputUrgency.includes('sos')) {
+        mappedUrgency = 'Emergency SOS';
+      } else if (inputUrgency.includes('critical')) {
+        mappedUrgency = 'Urgent';
+      }
+
       // Backend expects snake_case field names
       const payload = {
         patient_name: requestData.patientName,
@@ -60,12 +68,12 @@ export const useAppStore = create((set, get) => ({
         hospital_name: requestData.hospitalName,
         hospital_address: requestData.hospitalAddress,
         location: requestData.location,
-        city: requestData.city,
-        district: requestData.district,
+        city: requestData.city || 'Bengaluru',
+        district: requestData.district || 'Bengaluru Urban',
         contact_number: requestData.contactNumber,
         contact_person_name: requestData.contactPersonName,
-        required_by_date: requestData.requiredByDate,
-        urgency_level: requestData.urgencyLevel,
+        required_by_date: requestData.requiredByDate || new Date().toISOString().split('T')[0],
+        urgency_level: mappedUrgency,
         additional_notes: requestData.additionalNotes,
       };
       const res = await api.post('/requests', payload);

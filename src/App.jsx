@@ -14,6 +14,7 @@ import Landing from './pages/Landing.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import ResetPassword from './pages/ResetPassword.jsx';
+import CompleteProfile from './pages/CompleteProfile.jsx';
 import DonorDashboard from './pages/DonorDashboard.jsx';
 import DonorEligibility from './pages/DonorEligibility.jsx';
 import VolunteerDashboard from './pages/VolunteerDashboard.jsx';
@@ -24,6 +25,8 @@ import BloodRequests from './pages/BloodRequests.jsx';
 import Profile from './pages/Profile.jsx';
 import About from './pages/About.jsx';
 import Contact from './pages/Contact.jsx';
+import Privacy from './pages/Privacy.jsx';
+import Terms from './pages/Terms.jsx';
 import Notifications from './pages/Notifications.jsx';
 import Settings from './pages/Settings.jsx';
 import EmergencyDashboard from './pages/EmergencyDashboard.jsx';
@@ -53,6 +56,18 @@ function ProtectedRoute({ children, roles }) {
       triggerToast('Your account is deactivated or suspended.', 'error');
     }, 0);
     return <Navigate to="/login" replace />;
+  }
+
+  // Check for profile completion
+  const isVolunteer = user.role === 'volunteer';
+  const isHospitalOrAdmin = ['hospital', 'admin'].includes(user.role);
+  const basicComplete = !!(user.city && user.district);
+  const isComplete = isVolunteer || isHospitalOrAdmin 
+    ? basicComplete 
+    : basicComplete && !!user.bloodGroup && user.bloodGroup !== 'N/A';
+
+  if (!isComplete && window.location.pathname !== '/complete-profile') {
+    return <Navigate to="/complete-profile" replace />;
   }
 
   if (roles && user && !roles.includes(user.role)) {
@@ -87,12 +102,15 @@ export default function App() {
               <Route path="/" element={<Landing />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/terms" element={<Terms />} />
             </Route>
 
             {/* Auth pages — no Navbar/Footer */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/complete-profile" element={<CompleteProfile />} />
 
             {/* Dashboard layout — Sidebar + top bar */}
             <Route element={
