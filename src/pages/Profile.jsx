@@ -54,7 +54,7 @@ export default function Profile() {
     const reader = new FileReader();
     reader.onload = async () => {
       const base64Data = reader.result;
-      const res = await updateProfile({ photo: base64Data });
+      const res = await updateProfile({ profilePicture: base64Data });
       if (res.success) {
         triggerToast('Profile photo updated successfully!', 'success');
       } else {
@@ -222,8 +222,8 @@ export default function Profile() {
       {/* Profile overview card */}
       <div className="card p-5 flex items-center gap-4">
         <div className="relative group w-16 h-16 rounded-2xl overflow-hidden shrink-0 shadow-lg shadow-red-200 border border-slate-100 bg-slate-50 flex items-center justify-center">
-          {user?.photo ? (
-            <img src={user.photo} alt="Avatar" className="w-full h-full object-cover" />
+          {user?.profilePicture ? (
+            <img src={user.profilePicture} alt="Avatar" className="w-full h-full object-cover" />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-primary to-red-700 flex items-center justify-center text-white font-black text-2xl">
               {user?.fullName?.[0]}
@@ -298,8 +298,8 @@ export default function Profile() {
             {/* Explicit Photo Upload Option in Edit Profile */}
             <div className="flex flex-col sm:flex-row items-center gap-4 p-4 bg-slate-50 border border-slate-200/50 rounded-2xl mb-4">
               <div className="relative group w-16 h-16 rounded-2xl overflow-hidden shadow-md border border-white shrink-0 flex items-center justify-center bg-slate-200">
-                {user?.photo ? (
-                  <img src={user.photo} alt="Avatar" className="w-full h-full object-cover" />
+                {user?.profilePicture ? (
+                  <img src={user.profilePicture} alt="Avatar" className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-primary to-red-750 flex items-center justify-center text-white font-black text-2xl">
                     {user?.fullName?.[0]}

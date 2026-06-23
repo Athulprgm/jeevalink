@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './store/authStore.js';
 import { useAppStore } from './store/appStore.js';
@@ -84,6 +84,13 @@ function ProtectedRoute({ children, roles }) {
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
+  const { token, loadProfile } = useAuthStore();
+
+  useEffect(() => {
+    if (token) {
+      loadProfile();
+    }
+  }, [token, loadProfile]);
 
   return (
     <BrowserRouter>
