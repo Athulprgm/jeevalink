@@ -1,77 +1,47 @@
-import React, { useEffect, useState, useRef } from "react";
-import { motion } from "framer-motion";
-import { useAuthStore } from "../store/authStore.js";
-import { useNavigate } from "react-router-dom";
-import loadingVideo from "../assets/InShot_20260608_170726564.mp4";
+import React, { useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
+import { useAuthStore } from '../store/authStore.js';
+import { useNavigate } from 'react-router-dom';
+import logoImg from '../assets/logo.png';
 
 export default function Splash({ onComplete }) {
   const { token } = useAuthStore();
-  const [ready, setReady] = useState(false);
-  const videoRef = useRef(null);
   const timerRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Safety fallback: if video event doesn't fire, transition anyway
-    const fallback = setTimeout(() => {
-      setReady(true);
-    }, 1500);
+    timerRef.current = setTimeout(() => {
+      if (onComplete) {
+        onComplete();
+      } else {
+        navigate(token ? '/donor/dashboard' : '/');
+      }
+    }, 3200);
 
-    // If video is already cached and ready
-    if (videoRef.current && videoRef.current.readyState >= 3) {
-      setReady(true);
-    }
-
-    return () => {
-      clearTimeout(fallback);
-      clearTimeout(timerRef.current);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (ready) {
-      timerRef.current = setTimeout(() => {
-        if (onComplete) {
-          onComplete();
-        } else {
-          navigate(token ? "/donor/dashboard" : "/");
-        }
-      }, 3200);
-    }
-    return () => {
-      clearTimeout(timerRef.current);
-    };
-  }, [ready, navigate, token, onComplete]);
-
-  const handleVideoLoad = () => {
-    setReady(true);
-    if (videoRef.current) {
-      videoRef.current.play().catch((err) => {
-        console.warn("Video play was prevented:", err);
-      });
-    }
-  };
+    return () => clearTimeout(timerRef.current);
+  }, [navigate, token, onComplete]);
 
   return (
-    <div className="fixed inset-0 bg-white flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-white flex flex-col items-center justify-center z-50">
+      <div className="absolute inset-0 bg-gradient-to-br from-red-50/50 via-white to-rose-50/50 pointer-events-none" />
+      
       <motion.div
-        initial={{ opacity: 0, scale: 0.9, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-        className="relative z-10 w-[320px] mix-blend-multiply flex items-center justify-center"
+        className="relative z-10 flex flex-col items-center justify-center text-center"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
       >
-        <video
-          ref={videoRef}
-          src={loadingVideo}
-          autoPlay
-          loop={false}
-          muted
-          playsInline
-          preload="auto"
-          onLoadedData={handleVideoLoad}
-          onCanPlay={handleVideoLoad}
-          className="w-full h-auto object-contain block mix-blend-multiply"
-        />
+        <motion.div
+          animate={{ y: [0, -10, 0] }}
+          transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
+          className="w-64 h-auto mix-blend-multiply drop-shadow-2xl"
+        >
+          <img 
+            src={logoImg} 
+            alt="JeevaLink Logo" 
+            className="w-full h-full object-contain"
+          />
+        </motion.div>
       </motion.div>
     </div>
   );
