@@ -45,6 +45,7 @@ export default function DonorSearch() {
   const paginated = sorted.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
   useEffect(() => { 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPage(1); 
   }, [bloodGroup, district, availOnly, searchQuery, maxDistance, sortBy]);
 

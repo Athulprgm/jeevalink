@@ -114,7 +114,9 @@ export default function Register() {
           setV2("district", res.data.district, { shouldValidate: true });
           setV2("city", res.data.district, { shouldValidate: true });
         }
-      } catch (err) {}
+      } catch (err) {
+        console.warn('Failed to fetch pincode details:', err);
+      }
     }
   };
 

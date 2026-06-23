@@ -51,7 +51,7 @@ export function toSnake(obj) {
   if (obj !== null && typeof obj === 'object') {
     const result = {};
     for (const key of Object.keys(obj)) {
-      let snakeKey = key;
+      let snakeKey;
       // Handle custom specific manual mappings
       if (key === 'lastDonated' || key === 'lastDonatedDate' || key === 'lastDonationDate') {
         snakeKey = 'last_donated_date';
