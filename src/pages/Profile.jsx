@@ -32,7 +32,7 @@ export default function Profile() {
       lastDonated: user?.lastDonated || '',
       address: user?.address || '',
       sex: user?.sex || '',
-      dateOfBirth: user?.dateOfBirth || '',
+      dob: user?.dob || '',
       pincode: user?.pincode || '',
     }
   });
@@ -402,7 +402,7 @@ export default function Profile() {
                     <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5 flex items-center gap-1">
                       <Calendar className="w-3 h-3" /> Date of Birth
                     </label>
-                    <input type="date" {...register('dateOfBirth')}
+                    <input type="date" {...register('dob')}
                       className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-gray-900" />
                   </div>
                   <div>

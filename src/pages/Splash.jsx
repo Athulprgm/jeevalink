@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { motion } from 'framer-motion';
-import { useAuthStore } from '../store/authStore.js';
-import { useNavigate } from 'react-router-dom';
-import loadingVideo from '../assets/InShot_20260608_170726564.mp4';
+import React, { useEffect, useState, useRef } from "react";
+import { motion } from "framer-motion";
+import { useAuthStore } from "../store/authStore.js";
+import { useNavigate } from "react-router-dom";
+import loadingVideo from "../assets/InShot_20260608_170726564.mp4";
 
 export default function Splash({ onComplete }) {
   const { token } = useAuthStore();
@@ -34,7 +34,7 @@ export default function Splash({ onComplete }) {
         if (onComplete) {
           onComplete();
         } else {
-          navigate(token ? '/donor/dashboard' : '/');
+          navigate(token ? "/donor/dashboard" : "/");
         }
       }, 3200);
     }
@@ -53,13 +53,12 @@ export default function Splash({ onComplete }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-white flex items-center justify-center">
-      <div className="absolute inset-0 bg-gradient-to-br from-red-50 via-white to-rose-50 pointer-events-none" />
+    <div className="fixed inset-0 bg-white flex items-center justify-center z-50">
       <motion.div
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-        className="relative z-10 w-[280px] rounded-[32px] overflow-hidden shadow-2xl shadow-red-200/60 border border-red-100/60 bg-white"
+        className="relative z-10 w-[320px] mix-blend-multiply flex items-center justify-center"
       >
         <video
           ref={videoRef}
@@ -71,7 +70,7 @@ export default function Splash({ onComplete }) {
           preload="auto"
           onLoadedData={handleVideoLoad}
           onCanPlay={handleVideoLoad}
-          className="w-full h-full object-cover block"
+          className="w-full h-auto object-contain block mix-blend-multiply"
         />
       </motion.div>
     </div>
