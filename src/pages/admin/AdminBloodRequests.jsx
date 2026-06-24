@@ -17,7 +17,7 @@ const StatusBadge = ({ status }) => {
     Completed: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
     Rejected:  'bg-red-500/10 text-red-400 border-red-500/20',
   };
-  return <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${map[status] || 'bg-slate-500/10 text-slate-400 border-slate-500/20'}`}>{status}</span>;
+  return <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${map[status] || 'bg-slate-100 text-slate-500 border-slate-500/20'}`}>{status}</span>;
 };
 
 const UrgencyBadge = ({ level }) => {
@@ -27,7 +27,7 @@ const UrgencyBadge = ({ level }) => {
     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border flex items-center gap-1 w-fit ${
       isEmergency ? 'bg-red-500/10 text-red-400 border-red-500/20' :
       isUrgent ? 'bg-orange-500/10 text-orange-400 border-orange-500/20' :
-      'bg-slate-500/10 text-slate-400 border-slate-500/20'
+      'bg-slate-100 text-slate-500 border-slate-500/20'
     }`}>
       {isEmergency && <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" />}
       {level || 'Normal'}
@@ -77,7 +77,7 @@ export default function AdminBloodRequests() {
           <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse shrink-0" />
         )}
         <div>
-          <p className="text-slate-200 text-xs font-semibold">{val}</p>
+          <p className="text-slate-900 text-xs font-semibold">{val}</p>
           <p className="text-slate-600 text-[10px]">ID: {row._id}</p>
         </div>
       </div>
@@ -86,11 +86,11 @@ export default function AdminBloodRequests() {
       <span className="text-red-400 font-black text-sm">{val}</span>
     )},
     { key: 'unitsRequired', label: 'Units', render: (val) => (
-      <span className="text-slate-300 font-bold text-xs">{val} units</span>
+      <span className="text-slate-900 font-bold text-xs">{val} units</span>
     )},
     { key: 'hospitalName', label: 'Hospital', sortable: true, render: (val, row) => (
       <div>
-        <p className="text-slate-300 text-xs font-semibold truncate max-w-[140px]">{val}</p>
+        <p className="text-slate-900 text-xs font-semibold truncate max-w-[140px]">{val}</p>
         <p className="text-slate-600 text-[10px]">{row.district}</p>
       </div>
     )},
@@ -110,7 +110,7 @@ export default function AdminBloodRequests() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-white text-xl font-black">Blood Request Management</h1>
+          <h1 className="text-slate-900 text-xl font-black">Blood Request Management</h1>
           <p className="text-slate-500 text-xs mt-0.5">{requests.length} total requests · {pending} pending</p>
         </div>
         <div className="flex items-center gap-2">
@@ -130,7 +130,7 @@ export default function AdminBloodRequests() {
           { label: 'Completed', value: completed, icon: CheckCircle2, color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
           { label: 'Emergency', value: emergency, icon: AlertTriangle, color: 'text-red-400 bg-red-500/10 border-red-500/20', pulse: true },
         ].map(({ label, value, icon: Icon, color, pulse }) => (
-          <div key={label} className={`bg-[#141929] border rounded-2xl p-4 flex items-center gap-3 ${color.split(' ').find(c => c.startsWith('border'))}`}>
+          <div key={label} className={`bg-white border rounded-2xl p-4 flex items-center gap-3 ${color.split(' ').find(c => c.startsWith('border'))}`}>
             <div className={`w-9 h-9 rounded-xl border flex items-center justify-center ${color}`}>
               <Icon className={`w-4.5 h-4.5 ${color.split(' ')[0]}`} style={{width:'18px',height:'18px'}} />
             </div>
@@ -143,7 +143,7 @@ export default function AdminBloodRequests() {
       </div>
 
       {/* Table Card */}
-      <div className="bg-[#141929] border border-white/[0.06] rounded-2xl overflow-hidden">
+      <div className="bg-white border border-slate-100 rounded-2xl overflow-hidden">
         <FilterBar
           search={search} onSearch={setSearch}
           searchPlaceholder="Search by patient, hospital, blood group..."
@@ -204,10 +204,10 @@ export default function AdminBloodRequests() {
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50" onClick={() => setViewReq(null)} />
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md mx-4">
-              <div className="bg-[#141929] border border-white/10 rounded-2xl p-6 shadow-2xl">
+              <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-md">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-white font-black">Request Details</h3>
-                  <button onClick={() => setViewReq(null)} className="w-7 h-7 flex items-center justify-center rounded-lg text-slate-500 hover:text-white hover:bg-white/5 cursor-pointer"><X className="w-4 h-4" /></button>
+                  <button onClick={() => setViewReq(null)} className="w-7 h-7 flex items-center justify-center rounded-lg text-slate-500 hover:text-white hover:bg-slate-50 cursor-pointer"><X className="w-4 h-4" /></button>
                 </div>
                 <div className="flex items-center gap-3 mb-5 p-3 bg-red-500/5 border border-red-500/10 rounded-xl">
                   <div className="w-12 h-12 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center">
@@ -230,9 +230,9 @@ export default function AdminBloodRequests() {
                     { label: 'Contact', val: viewReq.contactNumber || '—' },
                     { label: 'Verified', val: viewReq.verified ? '✓ Verified' : '⏳ Pending Verification' },
                   ].map(({ label, val }) => (
-                    <div key={label} className="flex items-center justify-between py-2 border-b border-white/[0.04]">
+                    <div key={label} className="flex items-center justify-between py-2 border-b border-slate-100">
                       <span className="text-slate-500 text-xs">{label}</span>
-                      <span className="text-slate-300 text-xs font-semibold">{val}</span>
+                      <span className="text-slate-900 text-xs font-semibold">{val}</span>
                     </div>
                   ))}
                 </div>
@@ -250,7 +250,7 @@ export default function AdminBloodRequests() {
                     </>
                   )}
                   {viewReq.status !== 'Pending' && (
-                    <button onClick={() => setViewReq(null)} className="flex-1 py-2.5 bg-white/5 border border-white/10 text-slate-300 text-xs font-bold rounded-xl cursor-pointer">Close</button>
+                    <button onClick={() => setViewReq(null)} className="flex-1 py-2.5 bg-slate-50 border border-slate-100 text-slate-900 text-xs font-bold rounded-xl cursor-pointer">Close</button>
                   )}
                 </div>
               </div>

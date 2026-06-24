@@ -35,7 +35,7 @@ export default function AdminStatCard({
       initial={{ opacity: 0, y: 20, scale: 0.97 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.4, delay, ease: 'easeOut' }}
-      className={`relative bg-[#141929] border ${a.border} rounded-2xl p-4 overflow-hidden hover:shadow-xl ${a.glow} transition-all duration-300 group`}
+      className={`relative bg-white border border-slate-100 rounded-2xl p-4 overflow-hidden hover:shadow-md shadow-sm transition-all duration-300 group`}
     >
       {/* Background glow */}
       <div className={`absolute top-0 right-0 w-24 h-24 ${a.bg} rounded-full blur-2xl -translate-y-8 translate-x-8 group-hover:scale-150 transition-transform duration-500`} />
@@ -56,9 +56,9 @@ export default function AdminStatCard({
           </div>
           {trend !== null && (
             <div className={`flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold ${
-              trend > 0 ? 'bg-emerald-500/10 text-emerald-400' :
-              trend < 0 ? 'bg-red-500/10 text-red-400' :
-              'bg-slate-500/10 text-slate-400'
+              trend > 0 ? 'bg-emerald-50 text-emerald-600' :
+              trend < 0 ? 'bg-red-50 text-red-600' :
+              'bg-slate-50 text-slate-600'
             }`}>
               {trend > 0 ? <TrendingUp className="w-2.5 h-2.5" /> :
                trend < 0 ? <TrendingDown className="w-2.5 h-2.5" /> :
@@ -73,13 +73,13 @@ export default function AdminStatCard({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: delay + 0.2 }}
-          className="text-2xl font-black text-white tracking-tight"
+          className="text-2xl font-black text-slate-900 tracking-tight"
         >
           {value ?? '—'}
         </motion.p>
 
         {/* Label */}
-        <p className="text-slate-400 text-xs font-semibold mt-0.5">{label}</p>
+        <p className="text-slate-500 text-xs font-semibold mt-0.5">{label}</p>
 
         {/* Sub */}
         {sub && (

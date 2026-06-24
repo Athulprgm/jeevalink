@@ -61,16 +61,16 @@ export default function AdminLayout() {
     .find(item => isActive(item.to))?.label || 'Admin Panel';
 
   const SidebarContent = ({ isCollapsed }) => (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-white">
       {/* Logo */}
-      <div className={`flex items-center gap-3 px-4 py-5 border-b border-white/10 ${isCollapsed ? 'justify-center px-2' : ''}`}>
-        <div className="w-9 h-9 bg-gradient-to-br from-red-500 to-red-700 rounded-xl flex items-center justify-center shadow-lg shadow-red-500/30 shrink-0">
+      <div className={`flex items-center gap-3 px-4 py-5 border-b border-slate-100 ${isCollapsed ? 'justify-center px-2' : ''}`}>
+        <div className="w-9 h-9 bg-red-600 rounded-xl flex items-center justify-center shadow-sm shrink-0">
           <Shield className="w-5 h-5 text-white" />
         </div>
         {!isCollapsed && (
           <div>
-            <p className="text-white font-black text-sm leading-tight">JeevaLink</p>
-            <p className="text-red-400 text-[10px] font-bold uppercase tracking-widest">Admin Panel</p>
+            <p className="text-slate-900 font-black text-sm leading-tight">JeevaLink</p>
+            <p className="text-red-600 text-[10px] font-bold uppercase tracking-widest">Admin Panel</p>
           </div>
         )}
       </div>
@@ -80,7 +80,7 @@ export default function AdminLayout() {
         {NAV_ITEMS.map((group) => (
           <div key={group.group} className={`mb-2 ${isCollapsed ? 'px-1' : 'px-3'}`}>
             {!isCollapsed && (
-              <p className="text-slate-500 text-[9px] font-bold uppercase tracking-widest px-3 mb-1.5">{group.group}</p>
+              <p className="text-slate-400 text-[9px] font-bold uppercase tracking-widest px-3 mb-1.5">{group.group}</p>
             )}
             {group.items.map((item) => {
               const Icon = item.icon;
@@ -94,17 +94,17 @@ export default function AdminLayout() {
                   title={isCollapsed ? item.label : undefined}
                   className={`flex items-center gap-3 px-3 py-2.5 rounded-xl mb-0.5 transition-all duration-200 relative group ${
                     active
-                      ? 'bg-gradient-to-r from-red-500/20 to-red-600/10 text-red-400 border border-red-500/20'
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
+                      ? 'bg-red-50 text-red-600 border border-red-100'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                   } ${isCollapsed ? 'justify-center px-2.5' : ''}`}
                 >
                   {active && (
                     <motion.span
                       layoutId="admin-sidebar-active"
-                      className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-red-500 rounded-r-full"
+                      className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-red-600 rounded-r-full"
                     />
                   )}
-                  <Icon className={`w-4.5 h-4.5 shrink-0 ${active ? 'text-red-400' : ''}`} style={{width:'18px',height:'18px'}} />
+                  <Icon className={`w-4.5 h-4.5 shrink-0 ${active ? 'text-red-600' : ''}`} style={{width:'18px',height:'18px'}} />
                   {!isCollapsed && (
                     <span className={`text-xs font-semibold flex-1 truncate ${active ? 'font-bold' : ''}`}>{item.label}</span>
                   )}
@@ -114,31 +114,31 @@ export default function AdminLayout() {
                     </span>
                   )}
                   {isCollapsed && badgeCount > 0 && (
-                    <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full ring-1 ring-slate-900" />
+                    <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full ring-1 ring-white" />
                   )}
                 </Link>
               );
             })}
-            {!isCollapsed && <div className="h-px bg-white/5 mx-3 mt-2 mb-1" />}
+            {!isCollapsed && <div className="h-px bg-slate-100 mx-3 mt-2 mb-1" />}
           </div>
         ))}
       </nav>
 
       {/* User section */}
-      <div className={`border-t border-white/10 p-3 ${isCollapsed ? 'flex justify-center' : ''}`}>
+      <div className={`border-t border-slate-100 p-3 ${isCollapsed ? 'flex justify-center' : ''}`}>
         {!isCollapsed ? (
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center text-white font-black text-xs shrink-0">
+            <div className="w-8 h-8 rounded-xl bg-red-600 flex items-center justify-center text-white font-black text-xs shrink-0">
               {user?.fullName?.[0] || 'A'}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-white text-xs font-bold truncate">{user?.fullName || 'Administrator'}</p>
+              <p className="text-slate-900 text-xs font-bold truncate">{user?.fullName || 'Administrator'}</p>
               <p className="text-slate-500 text-[10px] truncate">System Admin</p>
             </div>
             <button
               onClick={handleLogout}
               title="Logout"
-              className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
+              className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
             >
               <LogOut className="w-3.5 h-3.5" />
             </button>
@@ -147,7 +147,7 @@ export default function AdminLayout() {
           <button
             onClick={handleLogout}
             title="Logout"
-            className="w-9 h-9 rounded-xl flex items-center justify-center text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
           >
             <LogOut className="w-4 h-4" />
           </button>
@@ -157,18 +157,18 @@ export default function AdminLayout() {
   );
 
   return (
-    <div className="flex min-h-screen bg-[#0B0F1A]">
+    <div className="flex min-h-screen bg-slate-50">
       {/* Desktop Sidebar */}
       <motion.aside
         animate={{ width: collapsed ? 64 : 240 }}
         transition={{ duration: 0.25, ease: 'easeInOut' }}
-        className="hidden lg:flex flex-col h-screen sticky top-0 bg-[#0F1629] border-r border-white/[0.06] overflow-hidden shrink-0 z-40"
+        className="hidden lg:flex flex-col h-screen sticky top-0 bg-white border-r border-slate-200 overflow-hidden shrink-0 z-40 shadow-sm"
       >
         <SidebarContent isCollapsed={collapsed} />
         {/* Collapse toggle */}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="absolute bottom-20 -right-3 w-6 h-6 bg-[#1a2035] border border-white/10 rounded-full flex items-center justify-center text-slate-400 hover:text-white transition-colors cursor-pointer shadow-lg"
+          className="absolute bottom-20 -right-3 w-6 h-6 bg-white border border-slate-200 rounded-full flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors cursor-pointer shadow-sm"
         >
           {collapsed ? <ChevronRight className="w-3 h-3" /> : <ChevronLeft className="w-3 h-3" />}
         </button>
@@ -190,7 +190,7 @@ export default function AdminLayout() {
               animate={{ x: 0 }}
               exit={{ x: -280 }}
               transition={{ duration: 0.25, ease: 'easeOut' }}
-              className="lg:hidden fixed top-0 left-0 bottom-0 w-64 bg-[#0F1629] border-r border-white/[0.06] z-50 flex flex-col"
+              className="lg:hidden fixed top-0 left-0 bottom-0 w-64 bg-white border-r border-slate-200 z-50 flex flex-col"
             >
               <SidebarContent isCollapsed={false} />
             </motion.aside>
@@ -201,43 +201,43 @@ export default function AdminLayout() {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 min-h-screen">
         {/* Top Bar */}
-        <header className="sticky top-0 z-30 h-14 bg-[#0B0F1A]/95 backdrop-blur-xl border-b border-white/[0.06] flex items-center justify-between px-4 lg:px-6">
+        <header className="sticky top-0 z-30 h-14 bg-white/90 backdrop-blur-xl border-b border-slate-200 flex items-center justify-between px-4 lg:px-6 shadow-sm">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setMobileOpen(true)}
-              className="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
+              className="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer"
             >
               <Menu className="w-5 h-5" />
             </button>
             <div className="flex items-center gap-2">
-              <span className="text-slate-600 text-xs hidden sm:block">Admin</span>
-              <ChevronRight className="w-3 h-3 text-slate-600 hidden sm:block" />
-              <span className="text-slate-200 text-sm font-semibold">{currentPageLabel}</span>
+              <span className="text-slate-500 text-xs hidden sm:block">Admin</span>
+              <ChevronRight className="w-3 h-3 text-slate-400 hidden sm:block" />
+              <span className="text-slate-900 text-sm font-semibold">{currentPageLabel}</span>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
             {/* Alert badge */}
             {pendingRequests > 0 && (
-              <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-red-500/10 border border-red-500/20 rounded-lg">
-                <AlertTriangle className="w-3 h-3 text-red-400" />
-                <span className="text-red-400 text-[10px] font-bold">{pendingRequests} pending</span>
+              <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-red-50 border border-red-100 rounded-lg">
+                <AlertTriangle className="w-3 h-3 text-red-600" />
+                <span className="text-red-600 text-[10px] font-bold">{pendingRequests} pending</span>
               </div>
             )}
 
             {/* Notification Bell */}
             <Link
               to="/notifications"
-              className="relative w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-200 hover:bg-white/5 transition-colors"
+              className="relative w-8 h-8 flex items-center justify-center rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
             >
               <Bell className="w-4 h-4" />
               {unreadNotif > 0 && (
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-[#0B0F1A] animate-pulse" />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white animate-pulse" />
               )}
             </Link>
 
             {/* Admin Avatar */}
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center text-white font-black text-xs shadow-lg shadow-red-500/20">
+            <div className="w-8 h-8 rounded-lg bg-red-600 flex items-center justify-center text-white font-black text-xs shadow-sm">
               {user?.fullName?.[0] || 'A'}
             </div>
           </div>

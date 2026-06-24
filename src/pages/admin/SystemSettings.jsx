@@ -9,12 +9,12 @@ import {
 } from 'lucide-react';
 
 const Section = ({ title, icon: Icon, children }) => (
-  <div className="bg-[#141929] border border-white/[0.06] rounded-2xl overflow-hidden">
-    <div className="flex items-center gap-3 px-5 py-4 border-b border-white/[0.06]">
+  <div className="bg-white border border-slate-100 rounded-2xl overflow-hidden">
+    <div className="flex items-center gap-3 px-5 py-4 border-b border-slate-100">
       <div className="w-8 h-8 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center justify-center">
         <Icon className="w-4 h-4 text-red-400" />
       </div>
-      <h3 className="text-white font-bold text-sm">{title}</h3>
+      <h3 className="text-slate-900 font-bold text-sm">{title}</h3>
     </div>
     <div className="p-5">{children}</div>
   </div>
@@ -33,11 +33,11 @@ const InputField = ({ label, type = 'text', value, onChange, placeholder, readOn
           onChange={onChange}
           placeholder={placeholder}
           readOnly={readOnly}
-          className={`w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-slate-200 text-xs placeholder:text-slate-600 focus:outline-none focus:border-red-500/50 transition-colors ${readOnly ? 'opacity-60 cursor-not-allowed' : ''} ${isPassword ? 'pr-10' : ''}`}
+          className={`w-full px-3 py-2.5 bg-slate-50 border border-slate-100 rounded-xl text-slate-900 text-xs placeholder:text-slate-600 focus:outline-none focus:border-red-500/50 transition-colors ${readOnly ? 'opacity-60 cursor-not-allowed' : ''} ${isPassword ? 'pr-10' : ''}`}
         />
         {isPassword && (
           <button type="button" onClick={() => setShow(s => !s)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors cursor-pointer">
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-900 transition-colors cursor-pointer">
             {show ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
           </button>
         )}
@@ -47,9 +47,9 @@ const InputField = ({ label, type = 'text', value, onChange, placeholder, readOn
 };
 
 const Toggle = ({ label, sub, checked, onChange }) => (
-  <div className="flex items-center justify-between py-2.5 border-b border-white/[0.04] last:border-0">
+  <div className="flex items-center justify-between py-2.5 border-b border-slate-100 last:border-0">
     <div>
-      <p className="text-slate-300 text-xs font-semibold">{label}</p>
+      <p className="text-slate-900 text-xs font-semibold">{label}</p>
       {sub && <p className="text-slate-600 text-[10px]">{sub}</p>}
     </div>
     <button
@@ -86,7 +86,7 @@ export default function SystemSettings() {
     <button
       onClick={() => save(section)}
       disabled={saving}
-      className="flex items-center gap-1.5 px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-xs font-bold rounded-xl transition-colors cursor-pointer disabled:opacity-50 mt-4 shadow-lg shadow-red-500/20"
+      className="flex items-center gap-1.5 px-4 py-2 bg-red-500 hover:bg-red-600 text-slate-900 text-xs font-bold rounded-xl transition-colors cursor-pointer disabled:opacity-50 mt-4 shadow-lg shadow-red-500/20"
     >
       {savedSection === section ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Save className="w-3.5 h-3.5" />}
       {savedSection === section ? 'Saved!' : saving ? 'Saving...' : 'Save Changes'}
@@ -97,7 +97,7 @@ export default function SystemSettings() {
     <div className="space-y-4 max-w-3xl">
       {/* Header */}
       <div>
-        <h1 className="text-white text-xl font-black">System Settings</h1>
+        <h1 className="text-slate-900 text-xl font-black">System Settings</h1>
         <p className="text-slate-500 text-xs mt-0.5">Configure admin credentials, contact info, and platform preferences</p>
       </div>
 
@@ -170,7 +170,7 @@ export default function SystemSettings() {
 
       {/* Backup Management */}
       <Section title="Backup Management" icon={Database}>
-        <p className="text-slate-400 text-xs mb-4">Download system data exports for backup and archival purposes.</p>
+        <p className="text-slate-500 text-xs mb-4">Download system data exports for backup and archival purposes.</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {[
             { label: 'Export All Users', sub: 'CSV · ~50KB', icon: User },
@@ -180,12 +180,12 @@ export default function SystemSettings() {
           ].map(({ label, sub, icon: Icon }) => (
             <button key={label}
               onClick={() => triggerToast(`${label} downloaded!`, 'success')}
-              className="flex items-center gap-3 p-3 bg-white/5 border border-white/[0.08] rounded-xl hover:bg-white/8 hover:border-white/15 transition-colors cursor-pointer text-left group">
-              <div className="w-9 h-9 bg-slate-500/10 border border-slate-500/20 rounded-xl flex items-center justify-center group-hover:bg-red-500/10 group-hover:border-red-500/20 transition-colors">
+              className="flex items-center gap-3 p-3 bg-slate-50 border border-white/[0.08] rounded-xl hover:bg-white/8 hover:border-white/15 transition-colors cursor-pointer text-left group">
+              <div className="w-9 h-9 bg-slate-100 border border-slate-500/20 rounded-xl flex items-center justify-center group-hover:bg-red-500/10 group-hover:border-red-500/20 transition-colors">
                 <Icon className="w-4 h-4 text-slate-500 group-hover:text-red-400 transition-colors" />
               </div>
               <div>
-                <p className="text-slate-300 text-xs font-semibold">{label}</p>
+                <p className="text-slate-900 text-xs font-semibold">{label}</p>
                 <p className="text-slate-600 text-[10px]">{sub}</p>
               </div>
               <Download className="w-3.5 h-3.5 text-slate-600 ml-auto group-hover:text-red-400 transition-colors" />
@@ -195,7 +195,7 @@ export default function SystemSettings() {
       </Section>
 
       {/* Danger Zone */}
-      <div className="bg-[#141929] border border-red-500/20 rounded-2xl overflow-hidden">
+      <div className="bg-white border border-red-500/20 rounded-2xl overflow-hidden">
         <div className="flex items-center gap-3 px-5 py-4 border-b border-red-500/10">
           <div className="w-8 h-8 bg-red-500/10 border border-red-500/30 rounded-xl flex items-center justify-center">
             <AlertTriangle className="w-4 h-4 text-red-400" />

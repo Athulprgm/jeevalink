@@ -18,8 +18,8 @@ const StatusBadge = ({ status }) => {
   const map = {
     Active:        'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
     active:        'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-    Inactive:      'bg-slate-500/10 text-slate-400 border-slate-500/20',
-    inactive:      'bg-slate-500/10 text-slate-400 border-slate-500/20',
+    Inactive:      'bg-slate-100 text-slate-500 border-slate-500/20',
+    inactive:      'bg-slate-100 text-slate-500 border-slate-500/20',
     Suspended:     'bg-red-500/10 text-red-400 border-red-500/20',
     blocked:       'bg-red-500/10 text-red-400 border-red-500/20',
     Blocked:       'bg-red-500/10 text-red-400 border-red-500/20',
@@ -28,7 +28,7 @@ const StatusBadge = ({ status }) => {
     'Pending Approval': 'bg-amber-500/10 text-amber-400 border-amber-500/20',
   };
   return (
-    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${map[status] || 'bg-slate-500/10 text-slate-400 border-slate-500/20'}`}>
+    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${map[status] || 'bg-slate-100 text-slate-500 border-slate-500/20'}`}>
       {status}
     </span>
   );
@@ -97,16 +97,16 @@ export default function VolunteerManagement() {
   const columns = [
     { key: 'fullName', label: 'Name', sortable: true, render: (val, row) => (
       <div>
-        <p className="text-slate-200 text-xs font-semibold">{val}</p>
+        <p className="text-slate-900 text-xs font-semibold">{val}</p>
         <p className="text-slate-600 text-[10px]">{row.email}</p>
       </div>
     )},
-    { key: 'mobile', label: 'Phone', render: (val) => <span className="text-slate-400 text-xs font-mono">{val || '—'}</span> },
-    { key: 'organizationName', label: 'Organization', render: (val) => <span className="text-slate-400 text-xs">{val || '—'}</span> },
+    { key: 'mobile', label: 'Phone', render: (val) => <span className="text-slate-500 text-xs font-mono">{val || '—'}</span> },
+    { key: 'organizationName', label: 'Organization', render: (val) => <span className="text-slate-500 text-xs">{val || '—'}</span> },
     { key: 'volunteerType', label: 'Type', render: (val) => (
       <span className="text-[10px] font-bold px-2 py-0.5 bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded-full">{val || 'General'}</span>
     )},
-    { key: 'district', label: 'District', sortable: true, render: (val) => <span className="text-slate-400 text-xs">{val}</span> },
+    { key: 'district', label: 'District', sortable: true, render: (val) => <span className="text-slate-500 text-xs">{val}</span> },
     { key: 'status', label: 'Status', sortable: true, render: (val) => <StatusBadge status={val} /> },
     { key: 'joinedAt', label: 'Registered', sortable: true, render: (val, row) => (
       <span className="text-slate-600 text-[10px]">{new Date(val || row.created_at || Date.now()).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' })}</span>
@@ -118,19 +118,19 @@ export default function VolunteerManagement() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-white text-xl font-black">Volunteer Management</h1>
+          <h1 className="text-slate-900 text-xl font-black">Volunteer Management</h1>
           <p className="text-slate-500 text-xs mt-0.5">{volunteers.length} total volunteers registered</p>
         </div>
         <button
           onClick={() => { setForm(emptyVolForm); setFormError(''); setShowAddModal(true); }}
-          className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-xs font-bold rounded-xl transition-colors cursor-pointer shadow-lg shadow-red-500/20"
+          className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-slate-900 text-xs font-bold rounded-xl transition-colors cursor-pointer shadow-lg shadow-red-500/20"
         >
           <Plus className="w-4 h-4" /> Add Volunteer
         </button>
       </div>
 
       {/* Table Card */}
-      <div className="bg-[#141929] border border-white/[0.06] rounded-2xl overflow-hidden">
+      <div className="bg-white border border-slate-100 rounded-2xl overflow-hidden">
         {/* Filter Bar */}
         <FilterBar
           search={search} onSearch={setSearch}
@@ -209,10 +209,10 @@ export default function VolunteerManagement() {
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50" onClick={() => setShowViewModal(false)} />
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-lg mx-4">
-              <div className="bg-[#141929] border border-white/10 rounded-2xl p-6 shadow-2xl">
+              <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-md">
                 <div className="flex items-center justify-between mb-5">
                   <h3 className="text-white font-black">Volunteer Details</h3>
-                  <button onClick={() => setShowViewModal(false)} className="w-7 h-7 flex items-center justify-center rounded-lg text-slate-500 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"><X className="w-4 h-4" /></button>
+                  <button onClick={() => setShowViewModal(false)} className="w-7 h-7 flex items-center justify-center rounded-lg text-slate-500 hover:text-white hover:bg-slate-50 transition-colors cursor-pointer"><X className="w-4 h-4" /></button>
                 </div>
                 {/* Avatar row */}
                 <div className="flex items-center gap-4 mb-5">
@@ -236,22 +236,22 @@ export default function VolunteerManagement() {
                     { icon: MapPin, label: 'City', val: selectedVol.city || '—' },
                     { icon: Clock, label: 'Registered', val: new Date(selectedVol.joinedAt || selectedVol.created_at || Date.now()).toLocaleDateString('en-IN') },
                   ].map(({ icon: Icon, label, val }) => (
-                    <div key={label} className="bg-white/5 border border-white/[0.06] rounded-xl p-3">
+                    <div key={label} className="bg-slate-50 border border-slate-100 rounded-xl p-3">
                       <div className="flex items-center gap-1.5 mb-0.5">
                         <Icon className="w-3 h-3 text-slate-500" />
                         <span className="text-slate-500 text-[10px] font-bold uppercase">{label}</span>
                       </div>
-                      <p className="text-slate-300 text-xs font-semibold truncate">{val}</p>
+                      <p className="text-slate-900 text-xs font-semibold truncate">{val}</p>
                     </div>
                   ))}
                 </div>
                 {selectedVol.remarks && (
                   <div className="mt-3 bg-amber-500/5 border border-amber-500/10 rounded-xl p-3">
                     <p className="text-amber-400 text-[10px] font-bold mb-1 flex items-center gap-1"><StickyNote className="w-3 h-3" /> Remarks</p>
-                    <p className="text-slate-400 text-xs">{selectedVol.remarks}</p>
+                    <p className="text-slate-500 text-xs">{selectedVol.remarks}</p>
                   </div>
                 )}
-                <button onClick={() => setShowViewModal(false)} className="w-full mt-4 py-2.5 bg-white/5 border border-white/10 text-slate-300 text-xs font-bold rounded-xl hover:bg-white/8 transition-colors cursor-pointer">Close</button>
+                <button onClick={() => setShowViewModal(false)} className="w-full mt-4 py-2.5 bg-slate-50 border border-slate-100 text-slate-900 text-xs font-bold rounded-xl hover:bg-white/8 transition-colors cursor-pointer">Close</button>
               </div>
             </motion.div>
           </>
@@ -264,10 +264,10 @@ export default function VolunteerManagement() {
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50" onClick={() => { setShowAddModal(false); setShowEditModal(false); }} />
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 30 }} className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-xl mx-4 max-h-[90vh] overflow-y-auto">
-              <div className="bg-[#141929] border border-white/10 rounded-2xl p-6 shadow-2xl">
+              <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-md">
                 <div className="flex items-center justify-between mb-5">
                   <h3 className="text-white font-black">{showAddModal ? 'Add New Volunteer' : 'Edit Volunteer'}</h3>
-                  <button onClick={() => { setShowAddModal(false); setShowEditModal(false); }} className="w-7 h-7 flex items-center justify-center rounded-lg text-slate-500 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"><X className="w-4 h-4" /></button>
+                  <button onClick={() => { setShowAddModal(false); setShowEditModal(false); }} className="w-7 h-7 flex items-center justify-center rounded-lg text-slate-500 hover:text-white hover:bg-slate-50 transition-colors cursor-pointer"><X className="w-4 h-4" /></button>
                 </div>
                 {formError && (
                   <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-xs font-semibold flex items-center gap-2">
@@ -296,7 +296,7 @@ export default function VolunteerManagement() {
                       <div key={key}>
                         <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1">{label}</label>
                         <input type={type} value={form[key]} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))} placeholder={placeholder}
-                          className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-slate-200 text-xs placeholder:text-slate-600 focus:outline-none focus:border-red-500/50 transition-colors" />
+                          className="w-full px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl text-slate-900 text-xs placeholder:text-slate-600 focus:outline-none focus:border-red-500/50 transition-colors" />
                       </div>
                     ))}
                   </div>
@@ -304,26 +304,26 @@ export default function VolunteerManagement() {
                     <div>
                       <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1">Volunteer Type</label>
                       <select value={form.volunteerType} onChange={e => setForm(f => ({ ...f, volunteerType: e.target.value }))}
-                        className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-slate-200 text-xs focus:outline-none focus:border-red-500/50 transition-colors cursor-pointer">
+                        className="w-full px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl text-slate-900 text-xs focus:outline-none focus:border-red-500/50 transition-colors cursor-pointer">
                         {VOLUNTEER_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                       </select>
                     </div>
                     <div>
                       <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1">District</label>
                       <select value={form.district} onChange={e => setForm(f => ({ ...f, district: e.target.value }))}
-                        className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-slate-200 text-xs focus:outline-none focus:border-red-500/50 transition-colors cursor-pointer">
+                        className="w-full px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl text-slate-900 text-xs focus:outline-none focus:border-red-500/50 transition-colors cursor-pointer">
                         {DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
                       </select>
                     </div>
                     <div>
                       <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1">City</label>
                       <input value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))} placeholder="e.g. Kochi"
-                        className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-slate-200 text-xs placeholder:text-slate-600 focus:outline-none focus:border-red-500/50 transition-colors" />
+                        className="w-full px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl text-slate-900 text-xs placeholder:text-slate-600 focus:outline-none focus:border-red-500/50 transition-colors" />
                     </div>
                     <div>
                       <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1">Status</label>
                       <select value={form.status} onChange={e => setForm(f => ({ ...f, status: e.target.value }))}
-                        className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-slate-200 text-xs focus:outline-none focus:border-red-500/50 transition-colors cursor-pointer">
+                        className="w-full px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl text-slate-900 text-xs focus:outline-none focus:border-red-500/50 transition-colors cursor-pointer">
                         <option value="Active">Active</option>
                         <option value="Inactive">Inactive</option>
                         <option value="Suspended">Blocked</option>
@@ -333,21 +333,21 @@ export default function VolunteerManagement() {
                   <div>
                     <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1">Address</label>
                     <input value={form.address} onChange={e => setForm(f => ({ ...f, address: e.target.value }))} placeholder="Full address"
-                      className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-slate-200 text-xs placeholder:text-slate-600 focus:outline-none focus:border-red-500/50 transition-colors" />
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl text-slate-900 text-xs placeholder:text-slate-600 focus:outline-none focus:border-red-500/50 transition-colors" />
                   </div>
                   <div>
                     <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1">Remarks</label>
                     <textarea value={form.remarks} onChange={e => setForm(f => ({ ...f, remarks: e.target.value }))} placeholder="Internal notes..."
                       rows={2}
-                      className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-slate-200 text-xs placeholder:text-slate-600 focus:outline-none focus:border-red-500/50 transition-colors resize-none" />
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl text-slate-900 text-xs placeholder:text-slate-600 focus:outline-none focus:border-red-500/50 transition-colors resize-none" />
                   </div>
                   <div className="flex gap-3 pt-1">
                     <button type="button" onClick={() => { setShowAddModal(false); setShowEditModal(false); }}
-                      className="flex-1 py-2.5 bg-white/5 border border-white/10 text-slate-300 text-xs font-semibold rounded-xl hover:bg-white/8 transition-colors cursor-pointer">
+                      className="flex-1 py-2.5 bg-slate-50 border border-slate-100 text-slate-900 text-xs font-semibold rounded-xl hover:bg-white/8 transition-colors cursor-pointer">
                       Cancel
                     </button>
                     <button type="submit" disabled={loading}
-                      className="flex-1 py-2.5 bg-red-500 hover:bg-red-600 text-white text-xs font-bold rounded-xl transition-colors cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-red-500/20">
+                      className="flex-1 py-2.5 bg-red-500 hover:bg-red-600 text-slate-900 text-xs font-bold rounded-xl transition-colors cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-red-500/20">
                       <Save className="w-3.5 h-3.5" /> {showAddModal ? 'Create Volunteer' : 'Save Changes'}
                     </button>
                   </div>

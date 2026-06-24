@@ -20,9 +20,9 @@ const StatusBadge = ({ status }) => {
     open:     'bg-amber-500/10 text-amber-400 border-amber-500/20',
     replied:  'bg-blue-500/10 text-blue-400 border-blue-500/20',
     resolved: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-    archived: 'bg-slate-500/10 text-slate-400 border-slate-500/20',
+    archived: 'bg-slate-100 text-slate-500 border-slate-500/20',
   };
-  return <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border capitalize ${map[status] || 'bg-slate-500/10 text-slate-400 border-slate-500/20'}`}>{status}</span>;
+  return <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border capitalize ${map[status] || 'bg-slate-100 text-slate-500 border-slate-500/20'}`}>{status}</span>;
 };
 
 const StarRating = ({ rating }) => (
@@ -81,7 +81,7 @@ export default function FeedbackManagement() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-white text-xl font-black">Feedback Management</h1>
+          <h1 className="text-slate-900 text-xl font-black">Feedback Management</h1>
           <p className="text-slate-500 text-xs mt-0.5">{feedback.length} total · {openCount} open</p>
         </div>
       </div>
@@ -93,7 +93,7 @@ export default function FeedbackManagement() {
           { label: 'Resolved', value: resolvedCount, color: 'text-emerald-400 border-emerald-500/20 bg-emerald-500/5' },
           { label: 'Avg Rating', value: `${avgRating} ★`, color: 'text-amber-400 border-amber-500/20 bg-amber-500/5' },
         ].map(({ label, value, color }) => (
-          <div key={label} className={`bg-[#141929] border rounded-2xl p-4 text-center ${color.split(' ').find(c => c.startsWith('border'))}`}>
+          <div key={label} className={`bg-white border rounded-2xl p-4 text-center ${color.split(' ').find(c => c.startsWith('border'))}`}>
             <p className={`text-2xl font-black ${color.split(' ')[0]}`}>{value}</p>
             <p className="text-slate-500 text-xs">{label}</p>
           </div>
@@ -103,7 +103,7 @@ export default function FeedbackManagement() {
       {/* Content Split */}
       <div className="grid lg:grid-cols-2 gap-4">
         {/* Left: Feedback List */}
-        <div className="bg-[#141929] border border-white/[0.06] rounded-2xl overflow-hidden">
+        <div className="bg-white border border-slate-100 rounded-2xl overflow-hidden">
           <FilterBar
             search={search} onSearch={setSearch}
             searchPlaceholder="Search feedback..."
@@ -133,10 +133,10 @@ export default function FeedbackManagement() {
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <p className="text-slate-200 text-xs font-bold truncate">{fb.userName}</p>
+                      <p className="text-slate-900 text-xs font-bold truncate">{fb.userName}</p>
                       <StatusBadge status={fb.status} />
                     </div>
-                    <p className="text-slate-400 text-xs font-semibold truncate">{fb.subject}</p>
+                    <p className="text-slate-500 text-xs font-semibold truncate">{fb.subject}</p>
                     <p className="text-slate-600 text-[10px] truncate mt-0.5">{fb.message}</p>
                   </div>
                   <div className="flex flex-col items-end gap-1 shrink-0">
@@ -150,7 +150,7 @@ export default function FeedbackManagement() {
         </div>
 
         {/* Right: Detail + Reply Panel */}
-        <div className="bg-[#141929] border border-white/[0.06] rounded-2xl flex flex-col">
+        <div className="bg-white border border-slate-100 rounded-2xl flex flex-col">
           {!selected ? (
             <div className="flex-1 flex items-center justify-center text-slate-600 text-sm">
               <div className="text-center">
@@ -160,9 +160,9 @@ export default function FeedbackManagement() {
             </div>
           ) : (
             <div className="flex flex-col h-full">
-              <div className="p-4 border-b border-white/[0.06] flex items-center justify-between">
+              <div className="p-4 border-b border-slate-100 flex items-center justify-between">
                 <div>
-                  <p className="text-white font-bold text-sm">{selected.subject}</p>
+                  <p className="text-slate-900 font-bold text-sm">{selected.subject}</p>
                   <p className="text-slate-500 text-[10px]">{selected.userName} · {selected.phone}</p>
                 </div>
                 <div className="flex items-center gap-1.5">
@@ -173,9 +173,9 @@ export default function FeedbackManagement() {
 
               <div className="flex-1 p-4 space-y-4 overflow-y-auto">
                 {/* Message bubble */}
-                <div className="bg-white/5 border border-white/[0.06] rounded-xl p-3">
-                  <p className="text-slate-400 text-[10px] font-bold mb-1 uppercase">User Message</p>
-                  <p className="text-slate-300 text-xs leading-relaxed">{selected.message}</p>
+                <div className="bg-slate-50 border border-slate-100 rounded-xl p-3">
+                  <p className="text-slate-500 text-[10px] font-bold mb-1 uppercase">User Message</p>
+                  <p className="text-slate-900 text-xs leading-relaxed">{selected.message}</p>
                   <p className="text-slate-600 text-[10px] mt-2">{new Date(selected.createdAt).toLocaleString('en-IN')}</p>
                 </div>
 
@@ -183,7 +183,7 @@ export default function FeedbackManagement() {
                 {selected.reply && (
                   <div className="bg-blue-500/5 border border-blue-500/10 rounded-xl p-3">
                     <p className="text-blue-400 text-[10px] font-bold mb-1 uppercase">Admin Reply</p>
-                    <p className="text-slate-300 text-xs leading-relaxed">{selected.reply}</p>
+                    <p className="text-slate-900 text-xs leading-relaxed">{selected.reply}</p>
                   </div>
                 )}
 
@@ -196,7 +196,7 @@ export default function FeedbackManagement() {
                     </button>
                   )}
                   <button onClick={() => handleArchive(selected._id)}
-                    className="flex items-center gap-1.5 px-3 py-2 bg-white/5 border border-white/10 text-slate-400 text-xs font-semibold rounded-xl hover:bg-white/8 transition-colors cursor-pointer">
+                    className="flex items-center gap-1.5 px-3 py-2 bg-slate-50 border border-slate-100 text-slate-500 text-xs font-semibold rounded-xl hover:bg-white/8 transition-colors cursor-pointer">
                     <Archive className="w-3.5 h-3.5" /> Archive
                   </button>
                 </div>
@@ -210,12 +210,12 @@ export default function FeedbackManagement() {
                       onChange={e => setReply(e.target.value)}
                       placeholder="Type your reply..."
                       rows={3}
-                      className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-slate-200 text-xs placeholder:text-slate-600 focus:outline-none focus:border-blue-500/40 transition-colors resize-none"
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl text-slate-900 text-xs placeholder:text-slate-600 focus:outline-none focus:border-blue-500/40 transition-colors resize-none"
                     />
                     <button
                       onClick={handleReply}
                       disabled={!reply.trim() || sendingReply}
-                      className="mt-2 w-full py-2.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold rounded-xl transition-colors cursor-pointer disabled:opacity-40 flex items-center justify-center gap-2"
+                      className="mt-2 w-full py-2.5 bg-blue-500 hover:bg-blue-600 text-slate-900 text-xs font-bold rounded-xl transition-colors cursor-pointer disabled:opacity-40 flex items-center justify-center gap-2"
                     >
                       <Send className="w-3.5 h-3.5" />
                       {sendingReply ? 'Sending...' : 'Send Reply'}

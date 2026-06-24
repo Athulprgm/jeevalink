@@ -36,8 +36,8 @@ const PERFORMANCE = [
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) return (
-    <div className="bg-[#1a2035] border border-white/10 rounded-xl p-3 shadow-xl text-xs">
-      <p className="text-slate-400 font-bold mb-1">{label}</p>
+    <div className="bg-white border border-slate-100 rounded-xl p-3 shadow-xl text-xs">
+      <p className="text-slate-500 font-bold mb-1">{label}</p>
       {payload.map((p, i) => <p key={i} style={{ color: p.color }} className="font-semibold">{p.name}: {p.value}</p>)}
     </div>
   );
@@ -70,12 +70,12 @@ export default function ReportsAnalytics() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-white text-xl font-black">Reports & Analytics</h1>
+          <h1 className="text-slate-900 text-xl font-black">Reports & Analytics</h1>
           <p className="text-slate-500 text-xs mt-0.5">Platform performance and operational insights</p>
         </div>
         <div className="flex items-center gap-2">
           <select value={period} onChange={e => setPeriod(e.target.value)}
-            className="px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-slate-300 text-xs focus:outline-none cursor-pointer">
+            className="px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl text-slate-900 text-xs focus:outline-none cursor-pointer">
             <option value="1m">Last Month</option>
             <option value="3m">Last 3 Months</option>
             <option value="6m">Last 6 Months</option>
@@ -101,9 +101,9 @@ export default function ReportsAnalytics() {
           { label: 'Success Rate', value: `${successRate}%`, trend: '+4%', color: 'text-amber-400' },
         ].map(({ label, value, trend, color }) => (
           <motion.div key={label} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-            className="bg-[#141929] border border-white/[0.06] rounded-2xl p-4">
+            className="bg-white border border-slate-100 rounded-2xl p-4">
             <p className={`text-2xl font-black ${color}`}>{value}</p>
-            <p className="text-slate-400 text-xs mt-0.5">{label}</p>
+            <p className="text-slate-500 text-xs mt-0.5">{label}</p>
             <p className="text-emerald-400 text-[10px] font-bold mt-1">↑ {trend} vs last period</p>
           </motion.div>
         ))}
@@ -112,10 +112,10 @@ export default function ReportsAnalytics() {
       {/* Charts Row 1 */}
       <div className="grid lg:grid-cols-3 gap-4">
         {/* Monthly Area */}
-        <div className="lg:col-span-2 bg-[#141929] border border-white/[0.06] rounded-2xl p-5">
+        <div className="lg:col-span-2 bg-white border border-slate-100 rounded-2xl p-5">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-white font-bold text-sm">Request Volume Trend</h3>
+              <h3 className="text-slate-900 font-bold text-sm">Request Volume Trend</h3>
               <p className="text-slate-500 text-[10px]">Monthly requests vs completions</p>
             </div>
           </div>
@@ -142,8 +142,8 @@ export default function ReportsAnalytics() {
         </div>
 
         {/* Success Rate Donut */}
-        <div className="bg-[#141929] border border-white/[0.06] rounded-2xl p-5">
-          <h3 className="text-white font-bold text-sm mb-1">Request Success Rate</h3>
+        <div className="bg-white border border-slate-100 rounded-2xl p-5">
+          <h3 className="text-slate-900 font-bold text-sm mb-1">Request Success Rate</h3>
           <p className="text-slate-500 text-[10px] mb-4">Overall fulfillment breakdown</p>
           <div className="flex justify-center mb-4">
             <ResponsiveContainer width={160} height={160}>
@@ -159,8 +159,8 @@ export default function ReportsAnalytics() {
             {PERFORMANCE.map(p => (
               <div key={p.name} className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-sm shrink-0" style={{ backgroundColor: p.color }} />
-                <span className="text-slate-400 text-[10px] flex-1">{p.name}</span>
-                <span className="text-slate-300 text-[10px] font-bold">{p.value}%</span>
+                <span className="text-slate-500 text-[10px] flex-1">{p.name}</span>
+                <span className="text-slate-900 text-[10px] font-bold">{p.value}%</span>
               </div>
             ))}
           </div>
@@ -168,21 +168,21 @@ export default function ReportsAnalytics() {
       </div>
 
       {/* District Report Table */}
-      <div className="bg-[#141929] border border-white/[0.06] rounded-2xl overflow-hidden">
-        <div className="flex items-center justify-between p-4 border-b border-white/[0.06]">
+      <div className="bg-white border border-slate-100 rounded-2xl overflow-hidden">
+        <div className="flex items-center justify-between p-4 border-b border-slate-100">
           <div>
-            <h3 className="text-white font-bold text-sm">District-Wise Report</h3>
+            <h3 className="text-slate-900 font-bold text-sm">District-Wise Report</h3>
             <p className="text-slate-500 text-[10px]">Volunteer distribution and request handling by district</p>
           </div>
           <button onClick={() => exportCSV(DISTRICT_DATA, 'district_report')}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border border-white/10 text-slate-400 text-xs rounded-lg hover:bg-white/8 transition-colors cursor-pointer">
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 border border-slate-100 text-slate-500 text-xs rounded-lg hover:bg-white/8 transition-colors cursor-pointer">
             <Download className="w-3 h-3" /> Export
           </button>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-white/[0.06]">
+              <tr className="border-b border-slate-100">
                 {['District', 'Volunteers', 'Total Requests', 'Completed', 'Success Rate'].map(h => (
                   <th key={h} className="px-4 py-3 text-left text-[10px] font-bold text-slate-500 uppercase tracking-wider">{h}</th>
                 ))}
@@ -191,19 +191,19 @@ export default function ReportsAnalytics() {
             <tbody>
               {DISTRICT_DATA.map((row, i) => (
                 <motion.tr key={row.district} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.05 }}
-                  className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
+                  className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
                       <MapPin className="w-3.5 h-3.5 text-slate-600" />
-                      <span className="text-slate-300 text-xs font-semibold">{row.district}</span>
+                      <span className="text-slate-900 text-xs font-semibold">{row.district}</span>
                     </div>
                   </td>
                   <td className="px-4 py-3"><span className="text-blue-400 font-bold text-xs">{row.volunteers}</span></td>
-                  <td className="px-4 py-3"><span className="text-slate-300 text-xs">{row.requests}</span></td>
+                  <td className="px-4 py-3"><span className="text-slate-900 text-xs">{row.requests}</span></td>
                   <td className="px-4 py-3"><span className="text-emerald-400 text-xs">{row.completed}</span></td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <div className="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden max-w-[80px]">
+                      <div className="flex-1 h-1.5 bg-slate-50 rounded-full overflow-hidden max-w-[80px]">
                         <motion.div initial={{ width: 0 }} animate={{ width: `${row.successRate}%` }} transition={{ duration: 0.8, delay: i * 0.05 }}
                           className="h-full bg-emerald-500 rounded-full" />
                       </div>
@@ -218,8 +218,8 @@ export default function ReportsAnalytics() {
       </div>
 
       {/* Volunteer Growth Chart */}
-      <div className="bg-[#141929] border border-white/[0.06] rounded-2xl p-5">
-        <h3 className="text-white font-bold text-sm mb-1">Volunteer Registration Growth</h3>
+      <div className="bg-white border border-slate-100 rounded-2xl p-5">
+        <h3 className="text-slate-900 font-bold text-sm mb-1">Volunteer Registration Growth</h3>
         <p className="text-slate-500 text-[10px] mb-4">Monthly new volunteer registrations</p>
         <ResponsiveContainer width="100%" height={180}>
           <BarChart data={MONTHLY_TREND} barSize={24}>

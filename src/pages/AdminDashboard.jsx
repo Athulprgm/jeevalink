@@ -45,8 +45,8 @@ const bloodGroupData = [
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-[#1a2035] border border-white/10 rounded-xl p-3 shadow-xl">
-        <p className="text-slate-400 text-[10px] font-bold mb-1">{label}</p>
+      <div className="bg-white border border-slate-100 rounded-xl p-3 shadow-sm">
+        <p className="text-slate-500 text-[10px] font-bold mb-1">{label}</p>
         {payload.map((p, i) => (
           <p key={i} className="text-xs font-semibold" style={{ color: p.color }}>
             {p.name}: {p.value}
@@ -97,25 +97,25 @@ export default function AdminDashboard() {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative bg-gradient-to-r from-red-500/10 via-red-600/5 to-transparent border border-red-500/20 rounded-2xl p-5 overflow-hidden"
+        className="relative bg-white border border-red-100 shadow-sm rounded-2xl p-5 overflow-hidden"
       >
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNlZjQ0NDQiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0djZoNnYtNmgtNnptNiA2djZoNnYtNmgtNnptLTYgMHY2aDZ2LTZoLTZ6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-40" />
         <div className="relative flex items-start justify-between">
           <div>
-            <h1 className="text-white text-xl font-black">Welcome back, {user?.fullName?.split(' ')[0] || 'Admin'} 👋</h1>
-            <p className="text-slate-400 text-xs mt-1">
+            <h1 className="text-slate-900 text-xl font-black">Welcome back, {user?.fullName?.split(' ')[0] || 'Admin'} 👋</h1>
+            <p className="text-slate-500 text-xs mt-1">
               {new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} · JeevaLink Admin Panel v2.0
             </p>
           </div>
-          <span className="px-3 py-1 bg-red-500/20 border border-red-500/30 text-red-400 text-[10px] font-black uppercase tracking-widest rounded-lg">
+          <span className="px-3 py-1 bg-red-50 border border-red-100 text-red-600 text-[10px] font-black uppercase tracking-widest rounded-lg">
             Super Admin
           </span>
         </div>
         {pendingReqs > 0 && (
-          <div className="relative mt-3 flex items-center gap-2 px-3 py-2 bg-red-500/10 border border-red-500/20 rounded-xl w-fit">
-            <AlertTriangle className="w-3.5 h-3.5 text-red-400 animate-pulse" />
-            <span className="text-red-400 text-xs font-bold">{pendingReqs} blood requests pending your attention</span>
-            <Link to="/admin/blood-requests" className="text-red-400 underline text-xs font-bold">Review →</Link>
+          <div className="relative mt-3 flex items-center gap-2 px-3 py-2 bg-red-50 border border-red-100 rounded-xl w-fit">
+            <AlertTriangle className="w-3.5 h-3.5 text-red-600 animate-pulse" />
+            <span className="text-red-600 text-xs font-bold">{pendingReqs} blood requests pending your attention</span>
+            <Link to="/admin/blood-requests" className="text-red-600 underline text-xs font-bold">Review →</Link>
           </div>
         )}
       </motion.div>
@@ -139,10 +139,10 @@ export default function AdminDashboard() {
       {/* Charts Row */}
       <div className="grid lg:grid-cols-3 gap-4">
         {/* Volunteer Growth + Requests */}
-        <div className="lg:col-span-2 bg-[#141929] border border-white/[0.06] rounded-2xl p-5">
+        <div className="lg:col-span-2 bg-white border border-slate-100 shadow-sm rounded-2xl p-5">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-white font-bold text-sm">Monthly Activity</h3>
+              <h3 className="text-slate-900 font-bold text-sm">Monthly Activity</h3>
               <p className="text-slate-500 text-[10px]">Volunteer growth & request trends</p>
             </div>
             <div className="flex items-center gap-3 text-[10px]">
@@ -163,7 +163,7 @@ export default function AdminDashboard() {
                   <stop offset="100%" stopColor="#ef4444" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.04)" />
               <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#475569' }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 10, fill: '#475569' }} axisLine={false} tickLine={false} />
               <Tooltip content={<CustomTooltip />} />
@@ -175,9 +175,9 @@ export default function AdminDashboard() {
         </div>
 
         {/* Blood Group Pie */}
-        <div className="bg-[#141929] border border-white/[0.06] rounded-2xl p-5">
+        <div className="bg-white border border-slate-100 shadow-sm rounded-2xl p-5">
           <div className="mb-4">
-            <h3 className="text-white font-bold text-sm">Blood Distribution</h3>
+            <h3 className="text-slate-900 font-bold text-sm">Blood Distribution</h3>
             <p className="text-slate-500 text-[10px]">Donor blood groups</p>
           </div>
           <div className="flex justify-center mb-3">
@@ -207,19 +207,19 @@ export default function AdminDashboard() {
       {/* District + Recent Activity */}
       <div className="grid lg:grid-cols-2 gap-4">
         {/* District Stats */}
-        <div className="bg-[#141929] border border-white/[0.06] rounded-2xl p-5">
+        <div className="bg-white border border-slate-100 shadow-sm rounded-2xl p-5">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-white font-bold text-sm">District Wise Stats</h3>
+              <h3 className="text-slate-900 font-bold text-sm">District Wise Stats</h3>
               <p className="text-slate-500 text-[10px]">Volunteer & request distribution</p>
             </div>
-            <Link to="/admin/reports" className="text-red-400 text-[10px] font-bold flex items-center gap-1 hover:text-red-300 transition-colors">
+            <Link to="/admin/reports" className="text-red-600 text-[10px] font-bold flex items-center gap-1 hover:text-red-700 transition-colors">
               Full Report <ArrowUpRight className="w-3 h-3" />
             </Link>
           </div>
           <ResponsiveContainer width="100%" height={180}>
             <BarChart data={districtData} barSize={12} barGap={2}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.04)" />
               <XAxis dataKey="district" tick={{ fontSize: 9, fill: '#475569' }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 9, fill: '#475569' }} axisLine={false} tickLine={false} />
               <Tooltip content={<CustomTooltip />} />
@@ -230,13 +230,13 @@ export default function AdminDashboard() {
         </div>
 
         {/* Recent Activity */}
-        <div className="bg-[#141929] border border-white/[0.06] rounded-2xl p-5">
+        <div className="bg-white border border-slate-100 shadow-sm rounded-2xl p-5">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-white font-bold text-sm">Recent Actions</h3>
+              <h3 className="text-slate-900 font-bold text-sm">Recent Actions</h3>
               <p className="text-slate-500 text-[10px]">Admin activity timeline</p>
             </div>
-            <Link to="/admin/activity-logs" className="text-red-400 text-[10px] font-bold flex items-center gap-1 hover:text-red-300 transition-colors">
+            <Link to="/admin/activity-logs" className="text-red-600 text-[10px] font-bold flex items-center gap-1 hover:text-red-700 transition-colors">
               View All <ArrowUpRight className="w-3 h-3" />
             </Link>
           </div>
@@ -251,8 +251,8 @@ export default function AdminDashboard() {
               >
                 <div className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${action.color.replace('text-', 'bg-')}`} />
                 <div className="flex-1 min-w-0">
-                  <p className="text-slate-300 text-xs font-semibold truncate">{action.action}</p>
-                  <p className="text-slate-600 text-[10px] truncate">{action.user}</p>
+                  <p className="text-slate-900 text-xs font-semibold truncate">{action.action}</p>
+                  <p className="text-slate-500 text-[10px] truncate">{action.user}</p>
                 </div>
                 <span className="text-slate-600 text-[10px] shrink-0">{action.time}</span>
               </motion.div>
@@ -264,9 +264,9 @@ export default function AdminDashboard() {
       {/* Quick Action Cards */}
       <div className="grid md:grid-cols-3 gap-4">
         {[
-          { to: '/admin/volunteers', label: 'Manage Volunteers', sub: `${volunteers.length} total registered`, icon: Users, accent: 'text-blue-400 bg-blue-500/10 border-blue-500/20' },
-          { to: '/admin/blood-requests', label: 'Blood Requests', sub: `${pendingReqs} awaiting action`, icon: Droplets, accent: 'text-red-400 bg-red-500/10 border-red-500/20', alert: pendingReqs > 0 },
-          { to: '/admin/support', label: 'Support Center', sub: `${pendingComplaints} open issues`, icon: HeadphonesIcon, accent: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
+          { to: '/admin/volunteers', label: 'Manage Volunteers', sub: `${volunteers.length} total registered`, icon: Users, accent: 'text-red-600 bg-red-50 border-red-100' },
+          { to: '/admin/blood-requests', label: 'Blood Requests', sub: `${pendingReqs} awaiting action`, icon: Droplets, accent: 'text-red-600 bg-red-50 border-red-100', alert: pendingReqs > 0 },
+          { to: '/admin/support', label: 'Support Center', sub: `${pendingComplaints} open issues`, icon: HeadphonesIcon, accent: 'text-red-600 bg-red-50 border-red-100' },
         ].map((card, i) => {
           const Icon = card.icon;
           return (
@@ -274,14 +274,14 @@ export default function AdminDashboard() {
               <motion.div
                 whileHover={{ scale: 1.02, y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                className={`bg-[#141929] border rounded-2xl p-5 cursor-pointer transition-shadow hover:shadow-xl ${card.alert ? 'border-red-500/30 shadow-red-500/5' : 'border-white/[0.06]'}`}
+                className={`bg-white border rounded-2xl p-5 cursor-pointer transition-shadow hover:shadow-md ${card.alert ? 'border-red-200 shadow-sm' : 'border-slate-100 shadow-sm'}`}
               >
                 <div className={`w-10 h-10 border rounded-xl flex items-center justify-center mb-3 ${card.accent}`}>
                   <Icon className="w-5 h-5" />
                 </div>
-                <p className="text-white font-bold text-sm">{card.label}</p>
+                <p className="text-slate-900 font-bold text-sm">{card.label}</p>
                 <p className="text-slate-500 text-[10px] mt-0.5">{card.sub}</p>
-                <div className="flex items-center gap-1 mt-3 text-[10px] font-bold text-slate-500 hover:text-slate-300 transition-colors">
+                <div className="flex items-center gap-1 mt-3 text-[10px] font-bold text-slate-500 hover:text-slate-700 transition-colors">
                   Open Module <ChevronRight className="w-3 h-3" />
                 </div>
               </motion.div>

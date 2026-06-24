@@ -19,7 +19,7 @@ const MOCK_LOGS = [
 
 const TYPE_CONFIG = {
   login:        { icon: LogIn,        color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',  dot: 'bg-emerald-400' },
-  logout:       { icon: LogOut,       color: 'text-slate-400 bg-slate-500/10 border-slate-500/20',        dot: 'bg-slate-400' },
+  logout:       { icon: LogOut,       color: 'text-slate-500 bg-slate-100 border-slate-500/20',        dot: 'bg-slate-400' },
   status_change:{ icon: Shield,       color: 'text-amber-400 bg-amber-500/10 border-amber-500/20',        dot: 'bg-amber-400' },
   resolve:      { icon: CheckCircle2, color: 'text-blue-400 bg-blue-500/10 border-blue-500/20',           dot: 'bg-blue-400' },
   add:          { icon: User,         color: 'text-purple-400 bg-purple-500/10 border-purple-500/20',      dot: 'bg-purple-400' },
@@ -27,7 +27,7 @@ const TYPE_CONFIG = {
   verify:       { icon: CheckCircle2, color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20', dot: 'bg-emerald-400' },
   alert:        { icon: AlertTriangle,color: 'text-red-400 bg-red-500/10 border-red-500/20',             dot: 'bg-red-400' },
   delete:       { icon: Trash2,       color: 'text-red-400 bg-red-500/10 border-red-500/20',             dot: 'bg-red-400' },
-  settings:     { icon: Shield,       color: 'text-slate-400 bg-slate-500/10 border-slate-500/20',       dot: 'bg-slate-400' },
+  settings:     { icon: Shield,       color: 'text-slate-500 bg-slate-100 border-slate-500/20',       dot: 'bg-slate-400' },
 };
 
 export default function ActivityLogs() {
@@ -49,7 +49,7 @@ export default function ActivityLogs() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-white text-xl font-black">Activity Logs</h1>
+          <h1 className="text-slate-900 text-xl font-black">Activity Logs</h1>
           <p className="text-slate-500 text-xs mt-0.5">Complete audit trail of admin actions and system events</p>
         </div>
         <div className="flex items-center gap-2 text-[10px]">
@@ -65,7 +65,7 @@ export default function ActivityLogs() {
           { label: 'Logins', value: logs.filter(l => l.type === 'login').length, color: 'text-emerald-400' },
           { label: 'Critical Actions', value: logs.filter(l => l.type === 'delete' || l.type === 'alert').length, color: 'text-red-400' },
         ].map(({ label, value, color }) => (
-          <div key={label} className="bg-[#141929] border border-white/[0.06] rounded-2xl p-4 text-center">
+          <div key={label} className="bg-white border border-slate-100 rounded-2xl p-4 text-center">
             <p className={`text-xl font-black ${color}`}>{value}</p>
             <p className="text-slate-500 text-[10px]">{label}</p>
           </div>
@@ -73,7 +73,7 @@ export default function ActivityLogs() {
       </div>
 
       {/* Logs */}
-      <div className="bg-[#141929] border border-white/[0.06] rounded-2xl overflow-hidden">
+      <div className="bg-white border border-slate-100 rounded-2xl overflow-hidden">
         <FilterBar
           search={search} onSearch={setSearch}
           searchPlaceholder="Search actions, details..."
@@ -117,9 +117,9 @@ export default function ActivityLogs() {
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 min-w-0 bg-white/[0.02] border border-white/[0.04] rounded-xl p-3 hover:bg-white/[0.04] transition-colors">
+                <div className="flex-1 min-w-0 bg-slate-50 border border-slate-100 rounded-xl p-3 hover:bg-slate-100 transition-colors">
                   <div className="flex items-center justify-between mb-0.5">
-                    <p className="text-slate-200 text-xs font-bold">{log.action}</p>
+                    <p className="text-slate-900 text-xs font-bold">{log.action}</p>
                     <div className="flex items-center gap-1.5 text-slate-600 text-[10px]">
                       <Clock className="w-3 h-3" />
                       {new Date(log.createdAt).toLocaleString('en-IN', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' })}

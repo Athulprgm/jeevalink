@@ -20,14 +20,14 @@ const PRIORITY_MAP = {
   Critical: 'bg-red-500/10 text-red-400 border-red-500/20',
   High:     'bg-orange-500/10 text-orange-400 border-orange-500/20',
   Medium:   'bg-amber-500/10 text-amber-400 border-amber-500/20',
-  Low:      'bg-slate-500/10 text-slate-400 border-slate-500/20',
+  Low:      'bg-slate-100 text-slate-500 border-slate-500/20',
 };
 
 const STATUS_MAP = {
   open:        'bg-amber-500/10 text-amber-400 border-amber-500/20',
   in_progress: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
   resolved:    'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-  closed:      'bg-slate-500/10 text-slate-400 border-slate-500/20',
+  closed:      'bg-slate-100 text-slate-500 border-slate-500/20',
 };
 
 const PriorityBadge = ({ priority }) => (
@@ -87,7 +87,7 @@ export default function SupportCenter() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-white text-xl font-black">Support Center</h1>
+          <h1 className="text-slate-900 text-xl font-black">Support Center</h1>
           <p className="text-slate-500 text-xs mt-0.5">{tickets.length} total tickets · {openCount} open</p>
         </div>
         {criticalCount > 0 && (
@@ -106,7 +106,7 @@ export default function SupportCenter() {
           { label: 'Resolved', value: tickets.filter(t => t.status === 'resolved').length, color: 'text-emerald-400' },
           { label: 'Critical', value: criticalCount, color: 'text-red-400' },
         ].map(({ label, value, color }) => (
-          <div key={label} className="bg-[#141929] border border-white/[0.06] rounded-2xl p-4 text-center">
+          <div key={label} className="bg-white border border-slate-100 rounded-2xl p-4 text-center">
             <p className={`text-xl font-black ${color}`}>{value}</p>
             <p className="text-slate-500 text-[10px]">{label}</p>
           </div>
@@ -116,7 +116,7 @@ export default function SupportCenter() {
       {/* Split View */}
       <div className="grid lg:grid-cols-5 gap-4">
         {/* Ticket List */}
-        <div className="lg:col-span-2 bg-[#141929] border border-white/[0.06] rounded-2xl overflow-hidden">
+        <div className="lg:col-span-2 bg-white border border-slate-100 rounded-2xl overflow-hidden">
           <FilterBar
             search={search} onSearch={setSearch}
             searchPlaceholder="Search tickets..."
@@ -147,7 +147,7 @@ export default function SupportCenter() {
                     <PriorityBadge priority={ticket.priority} />
                   </div>
                 </div>
-                <p className="text-slate-300 text-xs font-semibold truncate">{ticket.issueType}</p>
+                <p className="text-slate-900 text-xs font-semibold truncate">{ticket.issueType}</p>
                 <p className="text-slate-600 text-[10px] truncate mt-0.5">{ticket.userName} · {ticket.phoneNumber}</p>
                 <div className="flex items-center justify-between mt-2">
                   <StatusBadge status={ticket.status} />
@@ -162,7 +162,7 @@ export default function SupportCenter() {
         </div>
 
         {/* Ticket Detail */}
-        <div className="lg:col-span-3 bg-[#141929] border border-white/[0.06] rounded-2xl flex flex-col">
+        <div className="lg:col-span-3 bg-white border border-slate-100 rounded-2xl flex flex-col">
           {!selected ? (
             <div className="flex-1 flex items-center justify-center text-slate-600">
               <div className="text-center">
@@ -173,7 +173,7 @@ export default function SupportCenter() {
           ) : (
             <div className="flex flex-col h-full">
               {/* Header */}
-              <div className="p-4 border-b border-white/[0.06]">
+              <div className="p-4 border-b border-slate-100">
                 <div className="flex items-start justify-between">
                   <div>
                     <div className="flex items-center gap-2 mb-1">
@@ -181,7 +181,7 @@ export default function SupportCenter() {
                       <PriorityBadge priority={selected.priority} />
                       <StatusBadge status={selected.status} />
                     </div>
-                    <p className="text-white font-bold">{selected.issueType}</p>
+                    <p className="text-slate-900 font-bold">{selected.issueType}</p>
                   </div>
                   <div className="flex items-center gap-1.5">
                     {selected.status !== 'resolved' && selected.status !== 'closed' && (
@@ -192,7 +192,7 @@ export default function SupportCenter() {
                     )}
                     {selected.status !== 'closed' && (
                       <button onClick={() => setConfirmClose(selected._id)}
-                        className="px-2.5 py-1.5 bg-slate-500/10 border border-slate-500/20 text-slate-400 text-[10px] font-bold rounded-lg hover:bg-slate-500/20 transition-colors cursor-pointer">
+                        className="px-2.5 py-1.5 bg-slate-100 border border-slate-500/20 text-slate-500 text-[10px] font-bold rounded-lg hover:bg-slate-500/20 transition-colors cursor-pointer">
                         Close
                       </button>
                     )}
@@ -216,16 +216,16 @@ export default function SupportCenter() {
               {/* Body */}
               <div className="flex-1 p-4 space-y-3 overflow-y-auto">
                 {/* Issue description */}
-                <div className="bg-white/5 border border-white/[0.06] rounded-xl p-3">
+                <div className="bg-slate-50 border border-slate-100 rounded-xl p-3">
                   <p className="text-slate-500 text-[10px] font-bold uppercase mb-1">Issue Description</p>
-                  <p className="text-slate-300 text-xs leading-relaxed">{selected.description}</p>
+                  <p className="text-slate-900 text-xs leading-relaxed">{selected.description}</p>
                 </div>
 
                 {/* Admin reply */}
                 {selected.adminReply && (
                   <div className="bg-blue-500/5 border border-blue-500/10 rounded-xl p-3">
                     <p className="text-blue-400 text-[10px] font-bold uppercase mb-1">Admin Response</p>
-                    <p className="text-slate-300 text-xs leading-relaxed">{selected.adminReply}</p>
+                    <p className="text-slate-900 text-xs leading-relaxed">{selected.adminReply}</p>
                   </div>
                 )}
 
@@ -238,11 +238,11 @@ export default function SupportCenter() {
                       onChange={e => setReply(e.target.value)}
                       placeholder="Write your response to the user..."
                       rows={4}
-                      className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-slate-200 text-xs placeholder:text-slate-600 focus:outline-none focus:border-blue-500/40 transition-colors resize-none"
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl text-slate-900 text-xs placeholder:text-slate-600 focus:outline-none focus:border-blue-500/40 transition-colors resize-none"
                     />
                     <div className="flex gap-2 mt-2">
                       <button onClick={handleReply} disabled={!reply.trim() || sending}
-                        className="flex-1 py-2.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold rounded-xl transition-colors cursor-pointer disabled:opacity-40 flex items-center justify-center gap-2">
+                        className="flex-1 py-2.5 bg-blue-500 hover:bg-blue-600 text-slate-900 text-xs font-bold rounded-xl transition-colors cursor-pointer disabled:opacity-40 flex items-center justify-center gap-2">
                         <Send className="w-3.5 h-3.5" /> {sending ? 'Sending...' : 'Send Reply'}
                       </button>
                     </div>
