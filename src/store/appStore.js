@@ -12,6 +12,35 @@ export const useAppStore = create((set, get) => ({
   selectedBloodGroup: 'B+',
   toast: { show: false, message: '', type: 'success' },
 
+  // Admin Panel State
+  adminStats: {
+    pendingRequests: 0,
+    pendingFeedback: 0,
+    openTickets: 0,
+    totalVolunteers: 0,
+    activeVolunteers: 0,
+  },
+
+  fetchAdminStats: async () => {
+    try {
+      const state = get();
+      const pendingRequests = state.requests.filter(r => r.status === 'Pending').length;
+      const totalVolunteers = state.allUsers.filter(u => u.role === 'volunteer').length;
+      const activeVolunteers = state.allUsers.filter(u => u.role === 'volunteer' && u.status === 'Active').length;
+      set({
+        adminStats: {
+          pendingRequests,
+          pendingFeedback: 2, // mock value
+          openTickets: 3,     // mock value
+          totalVolunteers,
+          activeVolunteers,
+        }
+      });
+    } catch (err) {
+      console.error('Failed to compute admin stats', err);
+    }
+  },
+
   // Firebase Emergency Alert System state
   emergencyRequests: [],
   nearbyDonors: [],

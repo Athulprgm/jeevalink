@@ -7,6 +7,7 @@ import Toast from './components/Toast.jsx';
 // Layouts
 import PublicLayout from './layouts/PublicLayout.jsx';
 import DashboardLayout from './layouts/DashboardLayout.jsx';
+import AdminLayout from './layouts/AdminLayout.jsx';
 
 // Pages
 import Splash from './pages/Splash.jsx';
@@ -30,6 +31,16 @@ import Terms from './pages/Terms.jsx';
 import Notifications from './pages/Notifications.jsx';
 import Settings from './pages/Settings.jsx';
 import EmergencyDashboard from './pages/EmergencyDashboard.jsx';
+
+// Admin Module Pages
+import VolunteerManagement from './pages/admin/VolunteerManagement.jsx';
+import AdminBloodRequests from './pages/admin/AdminBloodRequests.jsx';
+import FeedbackManagement from './pages/admin/FeedbackManagement.jsx';
+import SupportCenter from './pages/admin/SupportCenter.jsx';
+import ReportsAnalytics from './pages/admin/ReportsAnalytics.jsx';
+import NotificationCenter from './pages/admin/NotificationCenter.jsx';
+import ActivityLogs from './pages/admin/ActivityLogs.jsx';
+import SystemSettings from './pages/admin/SystemSettings.jsx';
 
 // Protected route — redirects to login if not authenticated
 function ProtectedRoute({ children, roles }) {
@@ -82,6 +93,14 @@ function ProtectedRoute({ children, roles }) {
   return children;
 }
 
+// Admin-only protected route wrapper
+function AdminRoute({ children }) {
+  const { user, token } = useAuthStore();
+  if (!token) return <Navigate to="/login" replace />;
+  if (user?.role !== 'admin') return <Navigate to="/login" replace />;
+  return children;
+}
+
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
   const { token, loadProfile } = useAuthStore();
@@ -119,7 +138,24 @@ export default function App() {
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/complete-profile" element={<CompleteProfile />} />
 
-            {/* Dashboard layout — Sidebar + top bar */}
+            {/* ═══ Admin Panel Routes (Dark theme, AdminLayout) ═══ */}
+            <Route element={
+              <AdminRoute>
+                <AdminLayout />
+              </AdminRoute>
+            }>
+              <Route path="/admin/dashboard" element={<AdminDashboard />} />
+              <Route path="/admin/volunteers" element={<VolunteerManagement />} />
+              <Route path="/admin/blood-requests" element={<AdminBloodRequests />} />
+              <Route path="/admin/feedback" element={<FeedbackManagement />} />
+              <Route path="/admin/support" element={<SupportCenter />} />
+              <Route path="/admin/reports" element={<ReportsAnalytics />} />
+              <Route path="/admin/notifications" element={<NotificationCenter />} />
+              <Route path="/admin/activity-logs" element={<ActivityLogs />} />
+              <Route path="/admin/settings" element={<SystemSettings />} />
+            </Route>
+
+            {/* Dashboard layout — Sidebar + top bar (non-admin users) */}
             <Route element={
               <ProtectedRoute>
                 <DashboardLayout />
@@ -138,11 +174,6 @@ export default function App() {
               <Route path="/volunteer/dashboard" element={
                 <ProtectedRoute roles={['volunteer']}>
                   <VolunteerDashboard />
-                </ProtectedRoute>
-              } />
-              <Route path="/admin/dashboard" element={
-                <ProtectedRoute roles={['admin']}>
-                  <AdminDashboard />
                 </ProtectedRoute>
               } />
               <Route path="/admin/emergency" element={
