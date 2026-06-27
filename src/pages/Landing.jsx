@@ -139,7 +139,7 @@ export default function Landing() {
   return (
     <div className="jl-root">
 
-      {/* HERO — split layout */}
+      {/* HERO */}
       <section className="jl-hero">
         <div className="jl-hero-orb-1" aria-hidden />
         <div className="jl-hero-orb-2" aria-hidden />
@@ -148,125 +148,71 @@ export default function Landing() {
 
         <div className="jl-container jl-hero-inner">
 
-          {/* Left copy */}
-          <div className="jl-hero-left">
-            <motion.div
-              className="jl-hero-tag"
-              initial={{ opacity: 0, y: -16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <span className="jl-pulse-dot" />
-              Every Drop Counts · Live Requests
-            </motion.div>
-
-            <motion.h1
-              className="jl-hero-h1"
-              initial={{ opacity: 0, y: 36 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
-            >
-              Donate Blood.<br />
-              <span className="jl-hero-h1-gradient">Save Lives.</span><br />
-              Be a Hero.
-            </motion.h1>
-
-            <motion.p
-              className="jl-hero-desc"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.26 }}
-            >
-              JeevaLink connects generous hearts with people in urgent need across India.
-              Real-time matching. Verified donors. Life saved.
-            </motion.p>
-
-            <motion.div
-              className="jl-hero-btns"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-            >
-              <Link to="/register" className="jl-btn-red">
-                Become a Donor <ArrowRight className="w-4 h-4" />
-              </Link>
-              <Link to="/requests" className="jl-btn-ghost">
-                Request Blood <ArrowRight className="w-4 h-4" />
-              </Link>
-            </motion.div>
-
-            <motion.div
-              className="jl-hero-stats"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6 }}
-            >
-              {heroStats.map((s) => {
-                const Icon = s.icon;
-                return (
-                  <div key={s.label} className="jl-hero-stat">
-                    <div className="jl-hero-stat-icon">
-                      <Icon className="w-4 h-4" style={{ color: "#EF4444" }} />
-                    </div>
-                    <div>
-                      <strong>{s.value}</strong>
-                      <span>{s.label}</span>
-                    </div>
-                  </div>
-                );
-              })}
-            </motion.div>
-          </div>
-
-          {/* Right visual */}
           <motion.div
-            className="jl-hero-right"
-            initial={{ opacity: 0, x: 60 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.9, delay: 0.3, type: "spring", damping: 18 }}
+            className="jl-hero-tag"
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
           >
-            <div className="jl-hero-ring jl-hero-ring-1" />
-            <div className="jl-hero-ring jl-hero-ring-2" />
-            <div className="jl-hero-ring jl-hero-ring-3" />
+            <span className="jl-pulse-dot" />
+            Every Drop Counts · Live Requests
+          </motion.div>
 
-            <div className="jl-hero-center-icon">
-              <Heart className="w-12 h-12" style={{ color: "#fff" }} />
-            </div>
+          <motion.h1
+            className="jl-hero-h1"
+            initial={{ opacity: 0, y: 36 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+          >
+            Donate Blood.<br />
+            <span className="jl-hero-h1-gradient">Save Lives.</span><br />
+            Be a Hero.
+          </motion.h1>
 
-            {[
-              { type: "O+",  pos: { top: "12%",    left: "8%"  } },
-              { type: "A−",  pos: { top: "22%",    right: "4%" } },
-              { type: "B+",  pos: { bottom: "28%", left: "2%"  } },
-              { type: "AB+", pos: { bottom: "14%", right: "10%" } },
-            ].map(({ type, pos }, idx) => (
-              <motion.div
-                key={type}
-                className="jl-bg-float-chip"
-                style={pos}
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 3 + idx * 0.6, repeat: Infinity, ease: "easeInOut", delay: idx * 0.4 }}
-              >
-                {type}
-              </motion.div>
-            ))}
+          <motion.p
+            className="jl-hero-desc"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.26 }}
+          >
+            JeevaLink connects generous hearts with people in urgent need across India.
+            Real-time matching. Verified donors. Life saved.
+          </motion.p>
 
-            <motion.div
-              className="jl-hero-live-badge"
-              animate={{ y: [0, -8, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-            >
-              <span className="jl-pulse-dot" style={{ width: 8, height: 8 }} />
-              <span>Mumbai needs <strong>O+</strong> · URGENT</span>
-            </motion.div>
+          <motion.div
+            className="jl-hero-btns"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
+            <Link to="/register" className="jl-btn-red">
+              Become a Donor <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link to="/requests" className="jl-btn-ghost">
+              Request Blood <ArrowRight className="w-4 h-4" />
+            </Link>
+          </motion.div>
 
-            <motion.div
-              className="jl-hero-verified-badge"
-              animate={{ y: [0, -8, 0] }}
-              transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 1.2 }}
-            >
-              <CheckCircle2 className="w-4 h-4" style={{ color: "#16a34a" }} />
-              <span>Donor verified</span>
-            </motion.div>
+          <motion.div
+            className="jl-hero-stats"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6 }}
+          >
+            {heroStats.map((s) => {
+              const Icon = s.icon;
+              return (
+                <div key={s.label} className="jl-hero-stat">
+                  <div className="jl-hero-stat-icon">
+                    <Icon className="w-4 h-4" style={{ color: "#EF4444" }} />
+                  </div>
+                  <div>
+                    <strong>{s.value}</strong>
+                    <span>{s.label}</span>
+                  </div>
+                </div>
+              );
+            })}
           </motion.div>
 
         </div>
