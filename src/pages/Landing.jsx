@@ -4,8 +4,8 @@ import "../jl-landing.css";
 import { motion, useInView, useMotionValue, useSpring } from "framer-motion";
 import {
   Heart, Droplets, MapPin, ArrowRight, Shield, Users,
-  Award, CheckCircle2, Phone, Activity, Zap,
-  Handshake, Bell, Search, UserPlus, Building2, Star, Lock,
+  Activity, Zap, Handshake, Bell, Search, UserPlus,
+  Building2, Star, CheckCircle2, Clock, TrendingUp, Globe,
 } from "lucide-react";
 
 /* ── Inline Social Icons ───────────────────────── */
@@ -68,12 +68,20 @@ const fadeIn = {
   }),
 };
 
+const scaleIn = {
+  hidden: { opacity: 0, scale: 0.85 },
+  show: (i = 0) => ({
+    opacity: 1, scale: 1,
+    transition: { type: "spring", damping: 20, stiffness: 90, delay: i * 0.12 },
+  }),
+};
+
 /* ── Data ─────────────────────────────────────── */
 const heroStats = [
-  { icon: Users, value: "12K+", label: "Donors" },
+  { icon: Users, value: "12K+", label: "Active Donors" },
   { icon: Heart, value: "3.5K+", label: "Lives Saved" },
   { icon: MapPin, value: "28+", label: "Cities" },
-  { icon: Handshake, value: "250+", label: "Volunteers" },
+  { icon: Clock, value: "< 5 min", label: "Avg Response" },
 ];
 
 const bloodTypes = ["A+", "A−", "B+", "B−", "AB+", "AB−", "O+", "O−"];
@@ -119,29 +127,33 @@ const features = [
   },
 ];
 
+const ctaVisualCards = [
+  { icon: TrendingUp, label: "Lives Saved", value: "4,521", sub: "and counting", accent: true },
+  { icon: Globe, label: "Cities Active", value: "28+", sub: "across India", accent: false },
+  { icon: Clock, label: "Avg Response", value: "< 5 min", sub: "emergency match", accent: false },
+  { icon: Users, label: "Donors Online", value: "1,200+", sub: "right now", accent: true },
+];
+
 /* ════════════════════════════════════════════════ */
 export default function Landing() {
   return (
     <div className="jl-root">
 
-      {/* ══════════════════════════════════════
-          HERO
-          ══════════════════════════════════════ */}
+      {/* HERO — split layout */}
       <section className="jl-hero">
-        {/* Animated bg orbs */}
         <div className="jl-hero-orb-1" aria-hidden />
         <div className="jl-hero-orb-2" aria-hidden />
         <div className="jl-hero-orb-3" aria-hidden />
-        {/* Grid pattern */}
         <div className="jl-hero-grid" aria-hidden />
 
         <div className="jl-container jl-hero-inner">
-          {/* ── Left ── */}
+
+          {/* Left copy */}
           <div className="jl-hero-left">
             <motion.div
               className="jl-hero-tag"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: -16 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
               <span className="jl-pulse-dot" />
@@ -183,7 +195,6 @@ export default function Landing() {
               </Link>
             </motion.div>
 
-            {/* Hero stats strip */}
             <motion.div
               className="jl-hero-stats"
               initial={{ opacity: 0 }}
@@ -207,85 +218,62 @@ export default function Landing() {
             </motion.div>
           </div>
 
-          {/* ── Right — Visual ── */}
+          {/* Right visual */}
           <motion.div
             className="jl-hero-right"
-            initial={{ opacity: 0, scale: 0.88, x: 48 }}
-            animate={{ opacity: 1, scale: 1, x: 0 }}
-            transition={{ duration: 0.9, delay: 0.18, type: "spring", damping: 20 }}
+            initial={{ opacity: 0, x: 60 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.9, delay: 0.3, type: "spring", damping: 18 }}
           >
-            {/* Concentric rings */}
-            <div className="jl-hero-ring jl-hero-ring-1" aria-hidden />
-            <div className="jl-hero-ring jl-hero-ring-2" aria-hidden />
-            <div className="jl-hero-ring jl-hero-ring-3" aria-hidden />
+            <div className="jl-hero-ring jl-hero-ring-1" />
+            <div className="jl-hero-ring jl-hero-ring-2" />
+            <div className="jl-hero-ring jl-hero-ring-3" />
 
-            {/* Central floating blood drop SVG */}
-            <motion.div
-              className="jl-svg-drop-wrap"
-              animate={{ y: [0, -18, 0] }}
-              transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <svg viewBox="0 0 200 240" fill="none" className="jl-svg-drop" aria-hidden>
-                <defs>
-                  <radialGradient id="dropGrad" cx="38%" cy="28%" r="72%">
-                    <stop offset="0%" stopColor="#F87171" />
-                    <stop offset="45%" stopColor="#DC2626" />
-                    <stop offset="100%" stopColor="#7F1D1D" />
-                  </radialGradient>
-                  <filter id="dropGlow">
-                    <feGaussianBlur stdDeviation="4" result="blur"/>
-                    <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-                  </filter>
-                </defs>
-                {/* Drop shape */}
-                <path
-                  d="M100 10 C100 10 20 100 20 155 C20 200 56 230 100 230 C144 230 180 200 180 155 C180 100 100 10 100 10Z"
-                  fill="url(#dropGrad)"
-                />
-                {/* Specular highlight */}
-                <path
-                  d="M65 80 C70 60 90 50 100 50 C90 65 72 90 68 110 C62 100 60 92 65 80Z"
-                  fill="rgba(255,255,255,0.28)"
-                />
-                {/* Heart inside */}
-                <path
-                  d="M100 170 C100 170 72 148 72 132 C72 122 80 116 90 120 C95 122 100 128 100 128 C100 128 105 122 110 120 C120 116 128 122 128 132 C128 148 100 170 100 170Z"
-                  fill="white"
-                  opacity="0.9"
-                />
-              </svg>
-            </motion.div>
+            <div className="jl-hero-center-icon">
+              <Heart className="w-12 h-12" style={{ color: "#fff" }} />
+            </div>
 
-            {/* ECG heartbeat line */}
-            <svg viewBox="0 0 400 50" fill="none" className="jl-svg-ecg" aria-hidden>
-              <path
-                d="M0 25 L80 25 L100 25 L112 5 L124 45 L136 5 L148 45 L160 25 L200 25 L216 25 L228 2 L244 48 L256 25 L280 25 L400 25"
-                stroke="#EF4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-              />
-            </svg>
-
-            {/* Blood group floating chips */}
-            {["A+", "O+", "B+", "AB+"].map((bg, i) => (
+            {[
+              { type: "O+",  pos: { top: "12%",    left: "8%"  } },
+              { type: "A−",  pos: { top: "22%",    right: "4%" } },
+              { type: "B+",  pos: { bottom: "28%", left: "2%"  } },
+              { type: "AB+", pos: { bottom: "14%", right: "10%" } },
+            ].map(({ type, pos }, idx) => (
               <motion.div
-                key={bg}
+                key={type}
                 className="jl-bg-float-chip"
-                style={{
-                  top: ["10%", "20%", "65%", "72%"][i],
-                  left: ["-2%", "80%", "-4%", "78%"][i],
-                }}
-                animate={{ y: [0, i % 2 === 0 ? -10 : 10, 0] }}
-                transition={{ duration: 3 + i * 0.6, repeat: Infinity, ease: "easeInOut", delay: i * 0.4 }}
+                style={pos}
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 3 + idx * 0.6, repeat: Infinity, ease: "easeInOut", delay: idx * 0.4 }}
               >
-                {bg}
+                {type}
               </motion.div>
             ))}
+
+            <motion.div
+              className="jl-hero-live-badge"
+              animate={{ y: [0, -8, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+            >
+              <span className="jl-pulse-dot" style={{ width: 8, height: 8 }} />
+              <span>Mumbai needs <strong>O+</strong> · URGENT</span>
+            </motion.div>
+
+            <motion.div
+              className="jl-hero-verified-badge"
+              animate={{ y: [0, -8, 0] }}
+              transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 1.2 }}
+            >
+              <CheckCircle2 className="w-4 h-4" style={{ color: "#16a34a" }} />
+              <span>Donor verified</span>
+            </motion.div>
           </motion.div>
+
         </div>
       </section>
 
-      {/* ══════════════════════════════════════
-          EMERGENCY TICKER
-          ══════════════════════════════════════ */}
+
+      {/* EMERGENCY TICKER */}
       <section className="jl-ticker-section">
         <div className="jl-container jl-ticker-inner">
           <div className="jl-ticker-label">
@@ -306,9 +294,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════
-          BLOOD TYPES SHOWCASE
-          ══════════════════════════════════════ */}
+      {/* BLOOD TYPES */}
       <section className="jl-blood-types-section">
         <div className="jl-container">
           <motion.div
@@ -329,7 +315,7 @@ export default function Landing() {
               <motion.div
                 key={type}
                 className="jl-blood-type-card"
-                variants={fadeIn}
+                variants={scaleIn}
                 custom={i}
                 initial="hidden"
                 whileInView="show"
@@ -343,9 +329,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════
-          HOW IT WORKS
-          ══════════════════════════════════════ */}
+      {/* HOW IT WORKS */}
       <section className="jl-section jl-how-section">
         <div className="jl-container">
           <motion.div
@@ -361,7 +345,6 @@ export default function Landing() {
             <p className="jl-section-p">Your kindness can save someone's life in four easy steps.</p>
           </motion.div>
 
-          {/* Steps row */}
           <div className="jl-steps-row">
             {processSteps.map((step, i) => {
               const Icon = step.icon;
@@ -384,7 +367,6 @@ export default function Landing() {
                     <h4 className="jl-process-title">{step.title}</h4>
                     <p className="jl-process-desc">{step.desc}</p>
                   </motion.div>
-                  {/* Arrow connector */}
                   {i < processSteps.length - 1 && (
                     <div className="jl-step-connector" aria-hidden>
                       <ArrowRight className="w-5 h-5" />
@@ -395,7 +377,6 @@ export default function Landing() {
             })}
           </div>
 
-          {/* Safety note */}
           <motion.div
             className="jl-safety-note"
             variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }}
@@ -406,12 +387,9 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════
-          IMPACT — Stats
-          ══════════════════════════════════════ */}
+      {/* IMPACT */}
       <section className="jl-section jl-impact-section">
         <div className="jl-container jl-impact-inner">
-          {/* Left text */}
           <motion.div
             className="jl-impact-left"
             variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }}
@@ -431,7 +409,6 @@ export default function Landing() {
             </Link>
           </motion.div>
 
-          {/* Right stats grid */}
           <div className="jl-impact-stats">
             {impactStats.map((s, i) => {
               const Icon = s.icon;
@@ -459,9 +436,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════
-          FEATURES
-          ══════════════════════════════════════ */}
+      {/* FEATURES */}
       <section className="jl-section jl-features-section">
         <div className="jl-container">
           <motion.div
@@ -504,9 +479,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════
-          CTA — Be The Reason
-          ══════════════════════════════════════ */}
+      {/* CTA — Be The Reason (redesigned) */}
       <section className="jl-cta-section">
         <div className="jl-container jl-cta-inner">
           {/* Left */}
@@ -530,7 +503,6 @@ export default function Landing() {
               <Link to="/requests" className="jl-btn-outline-dark">Request Blood</Link>
             </div>
 
-            {/* Social links */}
             <div className="jl-social-row">
               <span className="jl-social-label">Follow:</span>
               {[
@@ -547,7 +519,7 @@ export default function Landing() {
             </div>
           </motion.div>
 
-          {/* Right — decorative visual */}
+          {/* Right — stat cards */}
           <motion.div
             className="jl-cta-right"
             initial={{ opacity: 0, x: 60 }}
@@ -555,52 +527,39 @@ export default function Landing() {
             viewport={{ once: true }}
             transition={{ duration: 0.8, type: "spring", damping: 20 }}
           >
-            {/* Large decorative circle */}
-            <div className="jl-cta-img-circle" />
+            <div className="jl-cta-cards-grid">
+              {ctaVisualCards.map((card, i) => {
+                const Icon = card.icon;
+                return (
+                  <motion.div
+                    key={card.label}
+                    className={`jl-cta-stat-card${card.accent ? " jl-cta-stat-card--accent" : ""}`}
+                    variants={scaleIn}
+                    custom={i}
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: true }}
+                  >
+                    <div className="jl-cta-stat-card-icon">
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <div className="jl-cta-stat-card-value">{card.value}</div>
+                    <div className="jl-cta-stat-card-label">{card.label}</div>
+                    <div className="jl-cta-stat-card-sub">{card.sub}</div>
+                  </motion.div>
+                );
+              })}
+            </div>
 
-            {/* Animated blood drop SVG */}
             <motion.div
-              className="jl-cta-svg-wrap"
-              animate={{ y: [0, -16, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="jl-cta-quote"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.5, duration: 0.6 }}
             >
-              <svg viewBox="0 0 240 290" fill="none" className="jl-cta-svg-drop" aria-hidden>
-                <defs>
-                  <radialGradient id="ctaDropGrad" cx="38%" cy="28%" r="72%">
-                    <stop offset="0%" stopColor="#F87171" />
-                    <stop offset="55%" stopColor="#DC2626" />
-                    <stop offset="100%" stopColor="#7F1D1D" />
-                  </radialGradient>
-                </defs>
-                <path
-                  d="M120 14 C120 14 24 120 24 186 C24 240 68 276 120 276 C172 276 216 240 216 186 C216 120 120 14 120 14Z"
-                  fill="url(#ctaDropGrad)"
-                />
-                {/* Highlight */}
-                <path
-                  d="M78 96 C84 72 108 60 120 60 C108 78 86 108 82 132 C74 120 72 110 78 96Z"
-                  fill="rgba(255,255,255,0.25)"
-                />
-                {/* Family silhouette inside */}
-                <g opacity="0.88" fill="white">
-                  <circle cx="90" cy="180" r="12" />
-                  <path d="M70 240 C70 216 78 208 90 208 C102 208 110 216 110 240Z" />
-                  <circle cx="120" cy="186" r="9" />
-                  <path d="M105 240 C105 220 111 214 120 214 C129 214 135 220 135 240Z" />
-                  <circle cx="150" cy="180" r="12" />
-                  <path d="M130 240 C130 216 138 208 150 208 C162 208 170 216 170 240Z" />
-                </g>
-              </svg>
-            </motion.div>
-
-            {/* Floating stat badge */}
-            <motion.div
-              className="jl-cta-float-badge"
-              animate={{ y: [0, -8, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-            >
-              <Droplets className="w-4 h-4" style={{ color: "#EF4444" }} />
-              <span>4,521 lives saved so far</span>
+              <div className="jl-cta-quote-mark">"</div>
+              <p>One donation can save up to <strong>three lives</strong>. Be the reason someone sees tomorrow.</p>
             </motion.div>
           </motion.div>
         </div>
