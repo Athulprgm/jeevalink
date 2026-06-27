@@ -82,9 +82,10 @@ export default function Navbar() {
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-white/95 backdrop-blur-xl shadow-[0_4px_24px_rgba(0,0,0,0.08)] border-b border-slate-100'
-          : 'bg-white/90 backdrop-blur-lg border-b border-slate-100/60'
+          ? 'backdrop-blur-xl shadow-[0_2px_20px_rgba(0,0,0,0.08)] border-b border-gray-100'
+          : 'border-b border-gray-100'
       }`}
+      style={{ background: scrolled ? 'rgba(255,255,255,0.97)' : 'rgba(255,255,255,0.95)' }}
     >
       <div className="container-wide flex items-center justify-between h-16">
 
@@ -94,7 +95,6 @@ export default function Navbar() {
             src="/logo.png"
             alt="JeevaLink"
             className="w-12 h-12 object-contain transition-transform duration-300 group-hover:scale-105"
-            style={{ mixBlendMode: 'multiply' }}
           />
           <span className="text-[17px] font-black text-gray-900 tracking-tight leading-none">
             Jeeva<span className="text-primary">Link</span>
@@ -109,8 +109,8 @@ export default function Navbar() {
               to={link.to}
               className={`relative px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${
                 isActive(link.to)
-                  ? 'text-primary'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50/80'
+                  ? 'text-primary bg-red-50'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
               }`}
             >
               {link.label}
@@ -133,7 +133,7 @@ export default function Navbar() {
                 <button
                   type="button"
                   onClick={() => { setNotifOpen(!notifOpen); setProfileOpen(false); }}
-                  className="relative w-9 h-9 flex items-center justify-center rounded-xl text-gray-500 hover:bg-red-50 hover:text-primary transition-colors cursor-pointer"
+                  className="relative w-9 h-9 flex items-center justify-center rounded-xl text-gray-500 hover:bg-gray-100 hover:text-primary transition-colors cursor-pointer"
                 >
                   <Bell className="w-[18px] h-[18px]" />
                   {unread > 0 && (
@@ -148,9 +148,9 @@ export default function Navbar() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute right-0 top-12 w-80 bg-white border border-slate-200/80 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.12)] p-3 z-50"
+                      className="absolute right-0 top-12 w-80 rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.12)] p-3 z-50 border border-gray-100 bg-white"
                     >
-                      <div className="flex items-center justify-between mb-2 pb-2 border-b border-slate-100">
+                      <div className="flex items-center justify-between mb-2 pb-2 border-b border-gray-100">
                         <span className="text-xs font-bold text-gray-800">Recent Alerts</span>
                         <Link to="/notifications" onClick={() => setNotifOpen(false)} className="text-[10px] text-primary hover:underline font-bold">
                           View All
@@ -166,13 +166,13 @@ export default function Navbar() {
                               onClick={() => useAppStore.getState().markNotificationRead(n._id)}
                               className={`p-2.5 rounded-xl border cursor-pointer flex gap-2.5 items-start transition-all ${
                                 n.read 
-                                  ? 'opacity-60 bg-slate-50/50 border-slate-100' 
-                                  : 'bg-red-50/30 hover:bg-red-50/60 border-red-100/50'
+                                  ? 'opacity-50 bg-gray-50 border-gray-100' 
+                                  : 'bg-red-50 hover:bg-red-100/60 border-red-100'
                               }`}
                             >
                               {getMiniIcon(n.type)}
                               <div className="min-w-0 flex-1 text-left">
-                                <p className="text-[11px] font-bold text-gray-800 truncate">{n.title}</p>
+                                <p className="text-[11px] font-bold text-gray-900 truncate">{n.title}</p>
                                 <p className="text-[10px] text-gray-500 line-clamp-2 mt-0.5 leading-relaxed">{n.message}</p>
                               </div>
                             </div>
@@ -189,9 +189,9 @@ export default function Navbar() {
                 <button
                   type="button"
                   onClick={() => { setProfileOpen(!profileOpen); setNotifOpen(false); }}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-red-100 hover:border-red-200 transition-colors bg-red-50/60 cursor-pointer"
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-gray-200 hover:border-red-300 bg-white hover:bg-red-50 transition-all cursor-pointer shadow-sm"
                 >
-                  <div className="w-7 h-7 rounded-lg overflow-hidden flex items-center justify-center shadow-sm border border-slate-200/40">
+                  <div className="w-7 h-7 rounded-lg overflow-hidden flex items-center justify-center shadow-sm border border-gray-100">
                     {user.photo ? (
                       <img src={user.photo} alt="Avatar" className="w-full h-full object-cover" />
                     ) : (
@@ -200,7 +200,7 @@ export default function Navbar() {
                       </div>
                     )}
                   </div>
-                  <span className="hidden md:block text-sm font-semibold text-gray-800 max-w-[100px] truncate">
+                  <span className="hidden md:block text-sm font-semibold text-gray-700 max-w-[100px] truncate">
                     {user.fullName?.split(' ')[0]}
                   </span>
                   <ChevronDown className={`hidden md:block w-3.5 h-3.5 text-gray-400 transition-transform duration-200 ${profileOpen ? 'rotate-180' : ''}`} />
@@ -213,18 +213,18 @@ export default function Navbar() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute right-0 top-12 w-52 bg-white border border-slate-200/80 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.12)] p-1.5 z-50"
+                      className="absolute right-0 top-12 w-52 rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.12)] p-1.5 z-50 border border-gray-100 bg-white"
                     >
-                      <Link to={dashboardLink} onClick={() => setProfileOpen(false)} className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-red-50 hover:text-primary transition-colors">
+                      <Link to={dashboardLink} onClick={() => setProfileOpen(false)} className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors">
                         <User className="w-4 h-4" /> Dashboard
                       </Link>
-                      <Link to="/profile" onClick={() => setProfileOpen(false)} className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-red-50 hover:text-primary transition-colors">
+                      <Link to="/profile" onClick={() => setProfileOpen(false)} className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors">
                         <User className="w-4 h-4" /> Profile
                       </Link>
-                      <Link to="/settings" onClick={() => setProfileOpen(false)} className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-red-50 hover:text-primary transition-colors">
+                      <Link to="/settings" onClick={() => setProfileOpen(false)} className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors">
                         <Settings className="w-4 h-4" /> Settings
                       </Link>
-                      <div className="my-1 h-px bg-slate-100 mx-2" />
+                      <div className="my-1 h-px bg-gray-100 mx-2" />
                       <button type="button" onClick={handleLogout} className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-semibold text-red-600 hover:bg-red-50 transition-colors cursor-pointer">
                         <LogOut className="w-4 h-4" /> Sign Out
                       </button>
@@ -235,10 +235,10 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <Link to="/login" className="px-4 py-2 text-sm font-semibold text-gray-600 hover:text-primary transition-colors rounded-xl hover:bg-red-50">
+              <Link to="/login" className="px-4 py-2 text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors rounded-xl hover:bg-gray-100">
                 Sign In
               </Link>
-              <Link to="/register" className="px-4 py-2 bg-primary hover:bg-primary-dark text-white text-sm font-bold rounded-xl shadow-[0_4px_14px_rgba(220,38,38,0.3)] transition-all">
+              <Link to="/register" className="px-4 py-2 bg-primary hover:bg-red-700 text-white text-sm font-bold rounded-xl shadow-[0_4px_18px_rgba(220,38,38,0.3)] transition-all">
                 Register
               </Link>
             </>
