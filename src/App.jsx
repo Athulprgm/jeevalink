@@ -34,11 +34,9 @@ import EmergencyDashboard from './pages/EmergencyDashboard.jsx';
 
 // Admin Module Pages
 import VolunteerManagement from './pages/admin/VolunteerManagement.jsx';
-import AdminBloodRequests from './pages/admin/AdminBloodRequests.jsx';
 import FeedbackManagement from './pages/admin/FeedbackManagement.jsx';
 import SupportCenter from './pages/admin/SupportCenter.jsx';
 import ReportsAnalytics from './pages/admin/ReportsAnalytics.jsx';
-import NotificationCenter from './pages/admin/NotificationCenter.jsx';
 import ActivityLogs from './pages/admin/ActivityLogs.jsx';
 import SystemSettings from './pages/admin/SystemSettings.jsx';
 import PartnerManagement from './pages/admin/PartnerManagement.jsx';
@@ -147,11 +145,9 @@ export default function App() {
             }>
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/admin/volunteers" element={<VolunteerManagement />} />
-              <Route path="/admin/blood-requests" element={<AdminBloodRequests />} />
               <Route path="/admin/feedback" element={<FeedbackManagement />} />
               <Route path="/admin/support" element={<SupportCenter />} />
               <Route path="/admin/reports" element={<ReportsAnalytics />} />
-              <Route path="/admin/notifications" element={<NotificationCenter />} />
               <Route path="/admin/activity-logs" element={<ActivityLogs />} />
               <Route path="/admin/settings" element={<SystemSettings />} />
               <Route path="/admin/partners" element={<PartnerManagement />} />

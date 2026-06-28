@@ -4,18 +4,7 @@ import { motion } from 'framer-motion';
 import { Activity, Search, Filter, Clock, User, Shield, Trash2, CheckCircle2, AlertTriangle, LogIn, LogOut } from 'lucide-react';
 import FilterBar from '../../components/admin/FilterBar.jsx';
 
-const MOCK_LOGS = [
-  { _id: 'l1', action: 'User Status Updated', details: 'Set status to Suspended for user Arun Kumar (ID: 42)', adminName: 'System Admin', type: 'status_change', createdAt: '2026-06-24T14:30:00Z' },
-  { _id: 'l2', action: 'Admin Login', details: 'Successful login from IP 192.168.1.1 (Chrome/Windows)', adminName: 'System Admin', type: 'login', createdAt: '2026-06-24T13:00:00Z' },
-  { _id: 'l3', action: 'Complaint Resolved', details: 'Complaint TKT-004 resolved - action: Warn user', adminName: 'System Admin', type: 'resolve', createdAt: '2026-06-24T12:15:00Z' },
-  { _id: 'l4', action: 'Volunteer Added', details: 'New volunteer Priya Menon added to Ernakulam district', adminName: 'System Admin', type: 'add', createdAt: '2026-06-23T16:00:00Z' },
-  { _id: 'l5', action: 'Bulk Action', details: 'Deactivated 5 volunteers via bulk action', adminName: 'System Admin', type: 'bulk', createdAt: '2026-06-23T11:00:00Z' },
-  { _id: 'l6', action: 'Blood Request Verified', details: 'Request REQ-021 (O+ for City Hospital) verified', adminName: 'System Admin', type: 'verify', createdAt: '2026-06-22T10:30:00Z' },
-  { _id: 'l7', action: 'Emergency Alert Sent', details: 'Emergency broadcast sent to 1,240 users for O+ requirement', adminName: 'System Admin', type: 'alert', createdAt: '2026-06-22T09:00:00Z' },
-  { _id: 'l8', action: 'User Deleted', details: 'Donor account ID: 108 permanently deleted', adminName: 'System Admin', type: 'delete', createdAt: '2026-06-21T15:00:00Z' },
-  { _id: 'l9', action: 'Settings Updated', details: 'Email notification settings updated', adminName: 'System Admin', type: 'settings', createdAt: '2026-06-21T11:00:00Z' },
-  { _id: 'l10', action: 'Admin Logout', details: 'Session ended (Session duration: 2h 34m)', adminName: 'System Admin', type: 'logout', createdAt: '2026-06-20T18:00:00Z' },
-];
+const MOCK_LOGS = [];
 
 const TYPE_CONFIG = {
   login:        { icon: LogIn,        color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',  dot: 'bg-emerald-400' },
@@ -60,7 +49,7 @@ export default function ActivityLogs() {
       {/* Summary Cards */}
       <div className="grid grid-cols-4 gap-3">
         {[
-          { label: "Today's Actions", value: filtered.filter(l => l.createdAt.startsWith(new Date().toISOString().split('T')[0])).length || 3, color: 'text-blue-400' },
+          { label: "Today's Actions", value: filtered.filter(l => l.createdAt.startsWith(new Date().toISOString().split('T')[0])).length, color: 'text-blue-400' },
           { label: 'Status Changes', value: logs.filter(l => l.type === 'status_change').length, color: 'text-amber-400' },
           { label: 'Logins', value: logs.filter(l => l.type === 'login').length, color: 'text-emerald-400' },
           { label: 'Critical Actions', value: logs.filter(l => l.type === 'delete' || l.type === 'alert').length, color: 'text-red-400' },

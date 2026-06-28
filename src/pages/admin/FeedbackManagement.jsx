@@ -7,13 +7,7 @@ import {
 } from 'lucide-react';
 import FilterBar from '../../components/admin/FilterBar.jsx';
 
-const MOCK_FEEDBACK = [
-  { _id: 'f1', userName: 'Arun Kumar', phone: '9876543210', subject: 'Excellent service!', message: 'The blood donation process was very smooth and the volunteers were helpful.', status: 'open', createdAt: '2026-06-20T10:30:00Z', rating: 5 },
-  { _id: 'f2', userName: 'Priya Menon', phone: '9876543211', subject: 'App is very useful', message: 'Found donors quickly in my district. Please add more features.', status: 'replied', reply: 'Thank you for your feedback! We will consider your suggestions.', createdAt: '2026-06-18T08:00:00Z', rating: 4 },
-  { _id: 'f3', userName: 'Rahul Sharma', phone: '9876543212', subject: 'Some issues with registration', message: 'Had trouble registering. The form kept showing errors.', status: 'open', createdAt: '2026-06-15T14:20:00Z', rating: 2 },
-  { _id: 'f4', userName: 'Anjali Nair', phone: '9876543213', subject: 'Great initiative', message: 'Truly life-saving app. Keep up the good work!', status: 'resolved', reply: 'Thank you for your kind words!', createdAt: '2026-06-12T09:00:00Z', rating: 5 },
-  { _id: 'f5', userName: 'Mohammed Ali', phone: '9876543214', subject: 'Notification not working', message: 'I am not receiving push notifications for blood requests.', status: 'open', createdAt: '2026-06-10T11:00:00Z', rating: 3 },
-];
+const MOCK_FEEDBACK = [];
 
 const StatusBadge = ({ status }) => {
   const map = {
@@ -51,7 +45,7 @@ export default function FeedbackManagement() {
 
   const openCount = feedback.filter(f => f.status === 'open').length;
   const resolvedCount = feedback.filter(f => f.status === 'resolved').length;
-  const avgRating = (feedback.reduce((a, b) => a + (b.rating || 0), 0) / feedback.length).toFixed(1);
+  const avgRating = feedback.length ? (feedback.reduce((a, b) => a + (b.rating || 0), 0) / feedback.length).toFixed(1) : '0.0';
 
   const handleReply = async () => {
     if (!reply.trim()) return;

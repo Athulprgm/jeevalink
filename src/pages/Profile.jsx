@@ -8,11 +8,7 @@ import { QRCodeSVG } from 'qrcode.react';
 
 const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
-const donationHistory = [
-  { hospital: 'Apollo Hospital', date: '2026-03-01', units: 1, points: 200, status: 'Fulfilled' },
-  { hospital: 'KIMS Hospital', date: '2025-11-12', units: 1, points: 150, status: 'Fulfilled' },
-  { hospital: 'Manipal Hospital', date: '2025-07-20', units: 1, points: 100, status: 'Fulfilled' },
-];
+const donationHistory = [];
 
 export default function Profile() {
   const { user, updateProfile, logout } = useAuthStore();

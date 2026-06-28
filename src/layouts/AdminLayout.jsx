@@ -14,12 +14,10 @@ const NAV_ITEMS = [
   { group: 'Core', items: [
     { to: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard', badge: null },
     { to: '/admin/volunteers', icon: Users, label: 'Volunteers', badge: null },
-    { to: '/admin/blood-requests', icon: Droplets, label: 'Blood Requests', badge: 'requests' },
   ]},
   { group: 'Communication', items: [
     { to: '/admin/feedback', icon: MessageSquare, label: 'Feedback', badge: 'feedback' },
     { to: '/admin/support', icon: HeadphonesIcon, label: 'Support Center', badge: 'tickets' },
-    { to: '/admin/notifications', icon: Bell, label: 'Notifications', badge: null },
   ]},
   { group: 'Intelligence', items: [
     { to: '/admin/reports', icon: BarChart3, label: 'Reports & Analytics', badge: null },

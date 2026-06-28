@@ -10,29 +10,11 @@ import {
   LineChart, Line, PieChart, Pie, Cell, AreaChart, Area, Legend
 } from 'recharts';
 
-const DISTRICT_DATA = [
-  { district: 'Ernakulam', volunteers: 28, requests: 42, completed: 38, successRate: 90 },
-  { district: 'Thrissur', volunteers: 21, requests: 35, completed: 30, successRate: 86 },
-  { district: 'Bengaluru Urban', volunteers: 35, requests: 58, completed: 50, successRate: 86 },
-  { district: 'Chennai', volunteers: 19, requests: 29, completed: 25, successRate: 86 },
-  { district: 'Thiruvananthapuram', volunteers: 16, requests: 24, completed: 20, successRate: 83 },
-  { district: 'Kozhikode', volunteers: 12, requests: 18, completed: 15, successRate: 83 },
-];
+const DISTRICT_DATA = [];
 
-const MONTHLY_TREND = [
-  { month: 'Jan', volunteers: 12, requests: 45, completed: 38, newUsers: 25 },
-  { month: 'Feb', volunteers: 18, requests: 62, completed: 55, newUsers: 32 },
-  { month: 'Mar', volunteers: 25, requests: 78, completed: 70, newUsers: 41 },
-  { month: 'Apr', volunteers: 22, requests: 55, completed: 48, newUsers: 28 },
-  { month: 'May', volunteers: 31, requests: 90, completed: 82, newUsers: 55 },
-  { month: 'Jun', volunteers: 38, requests: 110, completed: 98, newUsers: 68 },
-];
+const MONTHLY_TREND = [];
 
-const PERFORMANCE = [
-  { name: 'Success Rate', value: 88.2, color: '#22c55e' },
-  { name: 'Pending Rate', value: 7.4, color: '#f59e0b' },
-  { name: 'Rejected Rate', value: 4.4, color: '#ef4444' },
-];
+const PERFORMANCE = [];
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) return (

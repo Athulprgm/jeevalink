@@ -8,13 +8,7 @@ import {
 import FilterBar from '../../components/admin/FilterBar.jsx';
 import ConfirmModal from '../../components/admin/ConfirmModal.jsx';
 
-const MOCK_TICKETS = [
-  { _id: 't1', ticketId: 'TKT-001', userName: 'Arun Kumar', phoneNumber: '9876543210', issueType: 'Login Issue', description: 'I cannot login to my account even with correct credentials.', priority: 'High', status: 'open', adminReply: '', createdAt: '2026-06-22T10:30:00Z' },
-  { _id: 't2', ticketId: 'TKT-002', userName: 'Priya Menon', phoneNumber: '9876543211', issueType: 'Notification Bug', description: 'Not receiving push notifications for emergency requests.', priority: 'Medium', status: 'in_progress', adminReply: 'We are investigating this issue.', createdAt: '2026-06-21T08:00:00Z' },
-  { _id: 't3', ticketId: 'TKT-003', userName: 'Rahul Sharma', phoneNumber: '9876543212', issueType: 'Account Deletion', description: 'I want to permanently delete my account and all my data.', priority: 'Low', status: 'resolved', adminReply: 'Your account has been scheduled for deletion.', createdAt: '2026-06-18T14:20:00Z' },
-  { _id: 't4', ticketId: 'TKT-004', userName: 'Anjali Nair', phoneNumber: '9876543213', issueType: 'Data Discrepancy', description: 'My donation history is showing incorrect records.', priority: 'Critical', status: 'open', adminReply: '', createdAt: '2026-06-20T09:00:00Z' },
-  { _id: 't5', ticketId: 'TKT-005', userName: 'Mohammed Ali', phoneNumber: '9876543214', issueType: 'Profile Update', description: 'Cannot update my blood group in profile settings.', priority: 'Medium', status: 'closed', adminReply: 'Please contact support@jeevalink.org for manual update.', createdAt: '2026-06-15T11:00:00Z' },
-];
+const MOCK_TICKETS = [];
 
 const PRIORITY_MAP = {
   Critical: 'bg-red-500/10 text-red-400 border-red-500/20',

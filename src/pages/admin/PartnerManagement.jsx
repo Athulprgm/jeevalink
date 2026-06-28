@@ -220,7 +220,6 @@ export default function PartnerManagement() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {partners.map((partner) => {
             const SocialIcon = getSocialIcon(partner.socialMediaType || partner.socialPlatform || 'link');
-            const isDeleting = confirmDeleteId === partner._id;
 
             return (
               <motion.div
@@ -254,35 +253,7 @@ export default function PartnerManagement() {
                   </a>
                 </div>
 
-                {/* Confirm Delete Overlay */}
-                <AnimatePresence>
-                  {isDeleting ? (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="absolute inset-0 bg-red-600 flex flex-col items-center justify-center p-4 z-10 text-center"
-                    >
-                      <AlertTriangle className="w-8 h-8 text-white mb-2 animate-pulse" />
-                      <p className="text-white text-xs font-black mb-4">Delete this partner?</p>
-                      <div className="flex gap-2 w-full px-2">
-                        <button
-                          onClick={() => handleDelete(partner._id)}
-                          disabled={loading}
-                          className="flex-1 py-2 bg-white hover:bg-red-50 text-red-600 text-[10px] font-black rounded-xl shadow-lg transition-colors cursor-pointer"
-                        >
-                          Yes, Delete
-                        </button>
-                        <button
-                          onClick={() => setConfirmDeleteId(null)}
-                          className="flex-1 py-2 bg-red-700 hover:bg-red-800 text-white text-[10px] font-bold rounded-xl transition-colors cursor-pointer"
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    </motion.div>
-                  ) : null}
-                </AnimatePresence>
+                {/* Confirm Delete modal is rendered globally */}
 
                 {/* Edit/Delete controls */}
                 <div className="flex items-center gap-2 mt-auto w-full border-t border-slate-50 pt-4">
@@ -420,6 +391,43 @@ export default function PartnerManagement() {
                   </button>
                 </div>
               </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Modal - Delete Confirmation */}
+      <AnimatePresence>
+        {confirmDeleteId && (
+          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white border border-slate-100 rounded-2xl w-full max-w-sm shadow-2xl overflow-hidden my-8 p-6 text-center relative"
+            >
+              <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <AlertTriangle className="w-8 h-8 text-red-500" />
+              </div>
+              <h3 className="text-slate-900 font-black text-lg mb-2">Delete Partner?</h3>
+              <p className="text-slate-500 text-xs mb-6">
+                Are you sure you want to remove this partner? This action cannot be undone.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setConfirmDeleteId(null)}
+                  className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handleDelete(confirmDeleteId)}
+                  disabled={loading}
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl transition-colors cursor-pointer disabled:opacity-50"
+                >
+                  {loading ? 'Deleting...' : 'Yes, Delete'}
+                </button>
+              </div>
             </motion.div>
           </div>
         )}

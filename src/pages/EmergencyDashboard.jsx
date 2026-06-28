@@ -44,11 +44,7 @@ export default function EmergencyDashboard() {
   // Modals and selection
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
-  const [recentNotifications, setRecentNotifications] = useState([
-    { id: 1, type: 'critical', text: 'Critical SOS! O- Required at General Hospital.', time: '2 mins ago' },
-    { id: 2, type: 'new', text: 'New request generated for A+ in Ernakulam.', time: '10 mins ago' },
-    { id: 3, type: 'failed', text: 'Notification failed to deliver to 2 offline donors.', time: '1 hour ago' }
-  ]);
+  const [recentNotifications, setRecentNotifications] = useState([]);
 
   // Request creation form
   const [form, setForm] = useState({
@@ -115,52 +111,7 @@ export default function EmergencyDashboard() {
     }
   };
 
-  // Simulated Real-Time Request Generator (triggers a new SOS event to show off the system)
-  const triggerSimulation = async () => {
-    const mockNames = ['Rahul Sharma', 'Anjali Menon', 'Faisal Khan', 'Sneha Paul'];
-    const mockHospitals = ['Apollo Hospital', 'Aster Medcity', 'Medical College', 'Lakeshore Hospital'];
-    const mockBloodGroups = ['O-', 'AB-', 'A+', 'B+'];
-    const mockDistricts = ['Ernakulam', 'Thrissur', 'Thiruvananthapuram'];
 
-    const chosenName = mockNames[Math.floor(Math.random() * mockNames.length)];
-    const chosenHospital = mockHospitals[Math.floor(Math.random() * mockHospitals.length)];
-    const chosenBg = mockBloodGroups[Math.floor(Math.random() * mockBloodGroups.length)];
-    const chosenDistrict = mockDistricts[Math.floor(Math.random() * mockDistricts.length)];
-
-    const simPayload = {
-      patient_name: chosenName,
-      blood_group: chosenBg,
-      units_required: Math.floor(Math.random() * 3) + 1,
-      hospital_name: chosenHospital,
-      district: chosenDistrict,
-      contact_number: '98456' + Math.floor(Math.random() * 100000),
-      emergency_message: 'Immediate surgery requirements. Please help!',
-      priority: Math.random() > 0.5 ? 'critical' : 'high',
-      expires_at: new Date(Date.now() + 4 * 3600000).toISOString(),
-      latitude: 9.9816 + (Math.random() - 0.5) * 0.1,
-      longitude: 76.2999 + (Math.random() - 0.5) * 0.1
-    };
-
-    triggerToast(`Simulating Incoming ${simPayload.priority.toUpperCase()} Alert...`, 'info');
-
-    try {
-      const res = await useAppStore.getState().createEmergencyRequest(simPayload);
-      if (res.success) {
-        setRecentNotifications(prev => [
-          {
-            id: Date.now(),
-            type: simPayload.priority,
-            text: `🚨 Simulated ${simPayload.priority.toUpperCase()}: ${simPayload.blood_group} required at ${simPayload.hospital_name}.`,
-            time: 'Just now'
-          },
-          ...prev
-        ]);
-        fetchEmergencyRequests();
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
 
   // View request details
   const handleViewDetails = async (req) => {
@@ -274,13 +225,6 @@ export default function EmergencyDashboard() {
               {user.fullName}
             </span>
           )}
-          {/* Simulation Dispatcher */}
-          <button
-            onClick={triggerSimulation}
-            className="flex items-center gap-1.5 px-3.5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-2xl text-xs transition-all shadow-md shadow-rose-200 dark:shadow-none cursor-pointer hover:scale-105 active:scale-95"
-          >
-            <Activity className="w-3.5 h-3.5" /> Simulate SOS Event
-          </button>
 
           {/* New alert creation */}
           <button
@@ -942,35 +886,7 @@ export default function EmergencyDashboard() {
                   )}
                 </div>
 
-                {/* Mock interaction buttons (Donor Action simulation) */}
-                <div className="pt-2 border-t border-slate-100 dark:border-zinc-800 space-y-2">
-                  <span className="text-[9px] font-black uppercase tracking-wider text-slate-400 dark:text-zinc-500">Donor Simulation Actions</span>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={async () => {
-                        const res = await acceptEmergencyRequest(emergencyDetails.request.id);
-                        if (res.success) {
-                          // refresh details
-                          fetchEmergencyDetails(emergencyDetails.request.id);
-                        }
-                      }}
-                      className="flex-1 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-[10px] cursor-pointer"
-                    >
-                      Simulate Donor Accept
-                    </button>
-                    <button
-                      onClick={async () => {
-                        const res = await rejectEmergencyRequest(emergencyDetails.request.id);
-                        if (res.success) {
-                          fetchEmergencyDetails(emergencyDetails.request.id);
-                        }
-                      }}
-                      className="flex-1 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-[10px] cursor-pointer"
-                    >
-                      Simulate Donor Reject
-                    </button>
-                  </div>
-                </div>
+
 
               </div>
 

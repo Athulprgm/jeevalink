@@ -14,33 +14,11 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell
 } from 'recharts';
 
-const monthlyData = [
-  { month: 'Jan', volunteers: 12, requests: 45, completed: 38 },
-  { month: 'Feb', volunteers: 18, requests: 62, completed: 55 },
-  { month: 'Mar', volunteers: 25, requests: 78, completed: 70 },
-  { month: 'Apr', volunteers: 22, requests: 55, completed: 48 },
-  { month: 'May', volunteers: 31, requests: 90, completed: 82 },
-  { month: 'Jun', volunteers: 38, requests: 110, completed: 98 },
-];
+const monthlyData = [];
 
-const districtData = [
-  { district: 'Ernakulam', volunteers: 28, requests: 42 },
-  { district: 'Thrissur', volunteers: 21, requests: 35 },
-  { district: 'Bengaluru', volunteers: 35, requests: 58 },
-  { district: 'Chennai', volunteers: 19, requests: 29 },
-  { district: 'TVM', volunteers: 16, requests: 24 },
-];
+const districtData = [];
 
-const bloodGroupData = [
-  { name: 'O+', value: 42, color: '#ef4444' },
-  { name: 'A+', value: 35, color: '#f97316' },
-  { name: 'B+', value: 28, color: '#eab308' },
-  { name: 'AB+', value: 18, color: '#22c55e' },
-  { name: 'O-', value: 14, color: '#3b82f6' },
-  { name: 'A-', value: 12, color: '#8b5cf6' },
-  { name: 'B-', value: 8, color: '#ec4899' },
-  { name: 'AB-', value: 5, color: '#06b6d4' },
-];
+const bloodGroupData = [];
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -83,13 +61,7 @@ export default function AdminDashboard() {
   const emergencyReqs = requests.filter(r => r.urgencyLevel === 'Immediate' || r.urgencyLevel === 'Emergency SOS').length;
   const pendingComplaints = complaints.filter(c => c.status === 'Pending').length;
 
-  const recentActions = [
-    { action: 'User status updated', user: 'Arun Kumar', time: '2m ago', type: 'status', color: 'text-amber-400' },
-    { action: 'Blood request approved', user: 'City Hospital', time: '8m ago', type: 'approve', color: 'text-emerald-400' },
-    { action: 'Complaint resolved', user: 'Sreejith Nair', time: '15m ago', type: 'resolve', color: 'text-blue-400' },
-    { action: 'New volunteer added', user: 'Ananya Menon', time: '32m ago', type: 'add', color: 'text-purple-400' },
-    { action: 'Emergency SOS triggered', user: 'Patient: O+ required', time: '1h ago', type: 'sos', color: 'text-red-400' },
-  ];
+  const recentActions = [];
 
   return (
     <div className="space-y-6">
@@ -115,7 +87,6 @@ export default function AdminDashboard() {
           <div className="relative mt-3 flex items-center gap-2 px-3 py-2 bg-red-50 border border-red-100 rounded-xl w-fit">
             <AlertTriangle className="w-3.5 h-3.5 text-red-600 animate-pulse" />
             <span className="text-red-600 text-xs font-bold">{pendingReqs} blood requests pending your attention</span>
-            <Link to="/admin/blood-requests" className="text-red-600 underline text-xs font-bold">Review →</Link>
           </div>
         )}
       </motion.div>
@@ -265,7 +236,6 @@ export default function AdminDashboard() {
       <div className="grid md:grid-cols-3 gap-4">
         {[
           { to: '/admin/volunteers', label: 'Manage Volunteers', sub: `${volunteers.length} total registered`, icon: Users, accent: 'text-red-600 bg-red-50 border-red-100' },
-          { to: '/admin/blood-requests', label: 'Blood Requests', sub: `${pendingReqs} awaiting action`, icon: Droplets, accent: 'text-red-600 bg-red-50 border-red-100', alert: pendingReqs > 0 },
           { to: '/admin/support', label: 'Support Center', sub: `${pendingComplaints} open issues`, icon: HeadphonesIcon, accent: 'text-red-600 bg-red-50 border-red-100' },
         ].map((card, i) => {
           const Icon = card.icon;

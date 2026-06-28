@@ -31,8 +31,8 @@ export const useAppStore = create((set, get) => ({
       set({
         adminStats: {
           pendingRequests,
-          pendingFeedback: 2, // mock value
-          openTickets: 3,     // mock value
+          pendingFeedback: 0,
+          openTickets: 0,
           totalVolunteers,
           activeVolunteers,
         }

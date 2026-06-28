@@ -96,14 +96,7 @@ const heroStats = [
 
 const bloodTypes = ["A+", "A−", "B+", "B−", "AB+", "AB−", "O+", "O−"];
 
-const tickerItems = [
-  { city: "Mumbai", type: "O+", urgency: "URGENT" },
-  { city: "Delhi", type: "A−", urgency: "NEEDED" },
-  { city: "Bangalore", type: "B+", urgency: "URGENT" },
-  { city: "Chennai", type: "AB+", urgency: "NEEDED" },
-  { city: "Hyderabad", type: "O−", urgency: "CRITICAL" },
-  { city: "Pune", type: "A+", urgency: "NEEDED" },
-];
+const tickerItems = [];
 
 const processSteps = [
   { num: "1", icon: UserPlus, title: "Register", desc: "Sign up as a donor and complete your health profile in minutes." },
@@ -137,40 +130,7 @@ const features = [
   },
 ];
 
-const collaborators = [
-  {
-    name: "DYFI Cheemeni East",
-    socialLink: "https://facebook.com",
-    socialPlatform: "facebook",
-    Logo: () => (
-      <img src={dyfiLogoImg} alt="DYFI Cheemeni East Logo" className="w-14 h-14 object-contain" />
-    ),
-  },
-  {
-    name: "DYFI Alapadamba West",
-    socialLink: "https://instagram.com",
-    socialPlatform: "instagram",
-    Logo: () => (
-      <img src={dyfiLogoImg} alt="DYFI Alapadamba West Logo" className="w-14 h-14 object-contain" />
-    ),
-  },
-  {
-    name: "DYFI Kayyur Central",
-    socialLink: "https://facebook.com",
-    socialPlatform: "facebook",
-    Logo: () => (
-      <img src={dyfiLogoImg} alt="DYFI Kayyur Central Logo" className="w-14 h-14 object-contain" />
-    ),
-  },
-  {
-    name: "DYFI Cheruvathur North",
-    socialLink: "https://instagram.com",
-    socialPlatform: "instagram",
-    Logo: () => (
-      <img src={dyfiLogoImg} alt="DYFI Cheruvathur North Logo" className="w-14 h-14 object-contain" />
-    ),
-  },
-];
+const collaborators = [];
 
 const ctaVisualCards = [
   { icon: TrendingUp, label: "Lives Saved", value: "4,521", sub: "and counting", accent: true },
