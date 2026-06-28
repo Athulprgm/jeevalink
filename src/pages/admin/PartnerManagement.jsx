@@ -3,7 +3,7 @@ import { useAppStore } from '../../store/appStore.js';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Handshake, Plus, Edit2, Trash2, Globe, Link as LinkIcon, Save, X, AlertTriangle,
-  CheckCircle2, ChevronRight, Image as ImageIcon
+  Upload, CheckCircle2, ChevronRight, Image as ImageIcon
 } from 'lucide-react';
 
 /* ── Inline Social Icons ───────────────────────── */
@@ -54,7 +54,8 @@ export default function PartnerManagement() {
   const [name, setName] = useState('');
   const [socialLink, setSocialLink] = useState('');
   const [socialPlatform, setSocialPlatform] = useState('facebook');
-  const [logoUrl, setLogoUrl] = useState('');
+  const [logoFile, setLogoFile] = useState(null);
+  const [logoPreview, setLogoPreview] = useState(null);
 
   useEffect(() => {
     fetchPartners();
@@ -65,7 +66,8 @@ export default function PartnerManagement() {
     setName('');
     setSocialLink('');
     setSocialPlatform('facebook');
-    setLogoUrl('');
+    setLogoFile(null);
+    setLogoPreview(null);
     setShowModal(true);
   };
 
@@ -74,32 +76,42 @@ export default function PartnerManagement() {
     setName(partner.name);
     setSocialLink(partner.socialMediaLink || partner.socialLink || '');
     setSocialPlatform(partner.socialMediaType || partner.socialPlatform || 'facebook');
-    setLogoUrl(partner.logo || '');
+    setLogoFile(null);
+    setLogoPreview(getFullLogoUrl(partner.logo));
     setShowModal(true);
+  };
+
+  const handleLogoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setLogoFile(file);
+      setLogoPreview(URL.createObjectURL(file));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!name.trim()) return triggerToast('Name is required', 'error');
     if (!socialLink.trim()) return triggerToast('Social link is required', 'error');
-    if (!logoUrl.trim()) {
-      return triggerToast('Please enter a logo image URL', 'error');
+    if (!logoFile && !editingPartner && !logoPreview) {
+      return triggerToast('Please upload a logo image', 'error');
     }
 
     setLoading(true);
 
-    const payload = {
-      name: name.trim(),
-      logo: logoUrl.trim(),
-      social_media_link: socialLink.trim(),
-      social_media_type: socialPlatform,
-    };
+    const formData = new FormData();
+    formData.append('name', name.trim());
+    formData.append('social_media_link', socialLink.trim());
+    formData.append('social_media_type', socialPlatform);
+    if (logoFile) {
+      formData.append('logo', logoFile);
+    }
 
     let res;
     if (editingPartner) {
-      res = await updatePartner(editingPartner._id, payload);
+      res = await updatePartner(editingPartner._id, formData);
     } else {
-      res = await addPartner(payload);
+      res = await addPartner(formData);
     }
 
     setLoading(false);
@@ -293,24 +305,26 @@ export default function PartnerManagement() {
                   />
                 </div>
 
-                {/* Logo URL */}
+                {/* Logo Image */}
                 <div>
-                  <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1.5">Logo Image URL</label>
-                  <div className="flex gap-3">
-                    <div className="flex-1">
-                      <input
-                        type="url"
-                        required
-                        value={logoUrl}
-                        onChange={(e) => setLogoUrl(e.target.value)}
-                        placeholder="https://example.com/logo.png"
-                        className="w-full px-3 py-2.5 bg-slate-50 border border-slate-100 rounded-xl text-slate-900 text-xs placeholder:text-slate-400 focus:outline-none focus:border-red-500/50 transition-colors"
-                      />
-                      <p className="text-slate-400 text-[10px] mt-1">Paste a direct image URL (PNG, JPG, SVG, WebP)</p>
+                  <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1.5">Logo Image</label>
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="col-span-2 relative">
+                      <label className="flex items-center justify-center gap-2 w-full px-3 py-2.5 bg-red-50 border border-red-200 border-dashed rounded-xl text-red-600 text-xs font-bold cursor-pointer hover:bg-red-100/50 transition-colors">
+                        <Upload className="w-3.5 h-3.5" />
+                        Choose Logo File
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleLogoChange}
+                          className="hidden"
+                        />
+                      </label>
+                      <p className="text-slate-400 text-[10px] mt-1.5 ml-1">Upload a small square image (PNG, JPG)</p>
                     </div>
-                    <div className="w-12 h-12 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-center overflow-hidden p-1 shrink-0">
-                      {logoUrl ? (
-                        <img src={logoUrl} alt="Preview" className="w-full h-full object-contain"
+                    <div className="w-full h-12 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-center overflow-hidden p-1 shrink-0">
+                      {logoPreview ? (
+                        <img src={logoPreview} alt="Preview" className="w-full h-full object-contain"
                           onError={(e) => { e.target.style.display = 'none'; }}
                         />
                       ) : (
