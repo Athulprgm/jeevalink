@@ -120,6 +120,14 @@ export default function PartnerManagement() {
     }
   };
 
+  const getFullLogoUrl = (path) => {
+    if (!path) return '';
+    if (path.startsWith('http') || path.startsWith('data:')) return path;
+    const baseApi = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/v1';
+    const domain = baseApi.replace('/api/v1', '');
+    return `${domain}${path}`;
+  };
+
   const getSocialIcon = (platform) => {
     const item = SOCIAL_PLATFORMS.find(p => p.value === platform.toLowerCase());
     return item ? item.icon : Globe;
