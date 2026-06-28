@@ -7,6 +7,7 @@ export const useAppStore = create((set, get) => ({
   notifications: [],
   allUsers: [],
   complaints: [],
+  partners: [],
   activeView: 'Splash',
   searchRadius: 15,
   selectedBloodGroup: 'B+',
@@ -615,6 +616,75 @@ export const useAppStore = create((set, get) => ({
     } catch (err) {
       console.error('Failed to save FCM token', err);
       return { success: false };
+    }
+  },
+
+  fetchPartners: async () => {
+    try {
+      const res = await api.get('/partners');
+      if (res.data.success) {
+        set({ partners: res.data.data.partners || [] });
+      }
+    } catch (err) {
+      console.error('Failed to fetch partners', err);
+    }
+  },
+
+  addPartner: async (formData) => {
+    try {
+      const res = await api.post('/admin/partners', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      if (res.data.success) {
+        const newPartner = res.data.data.partner;
+        set((state) => ({ partners: [newPartner, ...state.partners] }));
+        get().triggerToast('Partner added successfully!', 'success');
+        return { success: true, partner: newPartner };
+      }
+      return { success: false };
+    } catch (err) {
+      const errMsg = err.response?.data?.message || 'Failed to add partner.';
+      get().triggerToast(errMsg, 'error');
+      return { success: false, error: errMsg };
+    }
+  },
+
+  updatePartner: async (id, formData) => {
+    try {
+      const res = await api.post(`/admin/partners/${id}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      if (res.data.success) {
+        const updated = res.data.data.partner;
+        set((state) => ({
+          partners: state.partners.map(p => p._id === id ? updated : p)
+        }));
+        get().triggerToast('Partner updated successfully!', 'success');
+        return { success: true, partner: updated };
+      }
+      return { success: false };
+    } catch (err) {
+      const errMsg = err.response?.data?.message || 'Failed to update partner.';
+      get().triggerToast(errMsg, 'error');
+      return { success: false, error: errMsg };
+    }
+  },
+
+  deletePartner: async (id) => {
+    try {
+      const res = await api.delete(`/admin/partners/${id}`);
+      if (res.data.success) {
+        set((state) => ({
+          partners: state.partners.filter(p => p._id !== id)
+        }));
+        get().triggerToast('Partner deleted successfully!', 'success');
+        return { success: true };
+      }
+      return { success: false };
+    } catch (err) {
+      const errMsg = err.response?.data?.message || 'Failed to delete partner.';
+      get().triggerToast(errMsg, 'error');
+      return { success: false, error: errMsg };
     }
   },
 }));

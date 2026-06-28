@@ -6,7 +6,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard, Users, Droplets, MessageSquare, HeadphonesIcon,
   BarChart3, Bell, Activity, Settings, LogOut, ChevronLeft,
-  ChevronRight, Shield, Menu, X, Zap, FileText, BookOpen, AlertTriangle
+  ChevronRight, Shield, Menu, X, Zap, FileText, BookOpen, AlertTriangle,
+  Handshake
 } from 'lucide-react';
 
 const NAV_ITEMS = [
@@ -25,6 +26,7 @@ const NAV_ITEMS = [
     { to: '/admin/activity-logs', icon: Activity, label: 'Activity Logs', badge: null },
   ]},
   { group: 'System', items: [
+    { to: '/admin/partners', icon: Handshake, label: 'Partners Management', badge: null },
     { to: '/admin/settings', icon: Settings, label: 'System Settings', badge: null },
   ]},
 ];

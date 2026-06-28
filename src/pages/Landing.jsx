@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import "../jl-landing.css";
+import { useAppStore } from "../store/appStore.js";
 import dyfiLogoImg from "../assets/images (1) (2).png";
 import { motion, useInView, useMotionValue, useSpring } from "framer-motion";
 import {
@@ -180,6 +181,32 @@ const ctaVisualCards = [
 
 /* ════════════════════════════════════════════════ */
 export default function Landing() {
+  const { partners, fetchPartners } = useAppStore();
+
+  useEffect(() => {
+    fetchPartners();
+  }, []);
+
+  const getSocialIconComponent = (platform) => {
+    const type = (platform || '').toLowerCase();
+    if (type === 'facebook') return SocialIcons.Facebook;
+    if (type === 'instagram') return SocialIcons.Instagram;
+    if (type === 'youtube') return SocialIcons.Youtube;
+    if (type === 'linkedin') return SocialIcons.Linkedin;
+    if (type === 'x' || type === 'twitter') return SocialIcons.Twitter;
+    return (props) => <Globe className="w-4 h-4" {...props} />;
+  };
+
+  const getLogoSrc = (logoPath) => {
+    if (!logoPath) return '';
+    if (logoPath.startsWith('http') || logoPath.startsWith('data:')) return logoPath;
+    const baseApi = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/v1';
+    const domain = baseApi.replace('/api/v1', '');
+    return `${domain}${logoPath}`;
+  };
+
+  const displayPartners = partners && partners.length > 0 ? partners : collaborators;
+
   return (
     <div className="jl-root">
 
@@ -491,12 +518,15 @@ export default function Landing() {
           </motion.div>
 
           <div className="jl-partners-grid">
-            {collaborators.map((c, i) => {
-              const Logo = c.Logo;
-              const SocialIcon = c.socialPlatform === "facebook" ? SocialIcons.Facebook : SocialIcons.Instagram;
+            {displayPartners.map((c, i) => {
+              const hasCustomLogoComponent = typeof c.Logo === 'function';
+              const socialLink = c.socialMediaLink || c.socialLink || '#';
+              const socialPlatform = c.socialMediaType || c.socialPlatform || 'link';
+              const SocialIcon = getSocialIconComponent(socialPlatform);
+
               return (
                 <motion.div
-                  key={c.name}
+                  key={c._id || c.name || i}
                   className="jl-partner-card"
                   variants={slideIn}
                   custom={i}
@@ -505,10 +535,22 @@ export default function Landing() {
                   viewport={{ once: true }}
                 >
                   <div className="jl-partner-logo-container">
-                    <Logo />
+                    {hasCustomLogoComponent ? (
+                      <c.Logo />
+                    ) : (
+                      <img
+                        src={getLogoSrc(c.logo)}
+                        alt={c.name}
+                        className="w-14 h-14 object-contain"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHJ4PSIxNSIgZmlsbD0iI0YzRjRGNiIvPjx0ZXh0IHg9IjMwIiB5PSIzNSIgZmlsbD0iIzlDQTNBRiIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkxPR088L3RleHQ+PC9zdmc+';
+                        }}
+                      />
+                    )}
                   </div>
                   <h3 className="jl-partner-name">{c.name}</h3>
-                  <a href={c.socialLink} target="_blank" rel="noopener noreferrer" className="jl-partner-social-link" aria-label={`${c.name} ${c.socialPlatform}`}>
+                  <a href={socialLink} target="_blank" rel="noopener noreferrer" className="jl-partner-social-link" aria-label={`${c.name} ${socialPlatform}`}>
                     <SocialIcon />
                   </a>
                 </motion.div>

@@ -41,6 +41,7 @@ import ReportsAnalytics from './pages/admin/ReportsAnalytics.jsx';
 import NotificationCenter from './pages/admin/NotificationCenter.jsx';
 import ActivityLogs from './pages/admin/ActivityLogs.jsx';
 import SystemSettings from './pages/admin/SystemSettings.jsx';
+import PartnerManagement from './pages/admin/PartnerManagement.jsx';
 
 // Protected route — redirects to login if not authenticated
 function ProtectedRoute({ children, roles }) {
@@ -153,6 +154,7 @@ export default function App() {
               <Route path="/admin/notifications" element={<NotificationCenter />} />
               <Route path="/admin/activity-logs" element={<ActivityLogs />} />
               <Route path="/admin/settings" element={<SystemSettings />} />
+              <Route path="/admin/partners" element={<PartnerManagement />} />
             </Route>
 
             {/* Dashboard layout — Sidebar + top bar (non-admin users) */}
