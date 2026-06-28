@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import "../jl-landing.css";
+import dyfiLogoImg from "../assets/images (1) (2).png";
 import { motion, useInView, useMotionValue, useSpring } from "framer-motion";
 import {
   Heart, Droplets, MapPin, ArrowRight, Shield, Users,
@@ -76,6 +77,14 @@ const scaleIn = {
   }),
 };
 
+const slideIn = {
+  hidden: { opacity: 0, x: 80 },
+  show: (i = 0) => ({
+    opacity: 1, x: 0,
+    transition: { type: "spring", damping: 20, stiffness: 80, delay: i * 0.08 },
+  }),
+};
+
 /* ── Data ─────────────────────────────────────── */
 const heroStats = [
   { icon: Users, value: "12K+", label: "Active Donors" },
@@ -124,6 +133,41 @@ const features = [
     icon: MapPin,
     title: "Location-Aware",
     desc: "Find the nearest blood donors using precise GPS-based proximity search across cities.",
+  },
+];
+
+const collaborators = [
+  {
+    name: "DYFI Cheemeni East",
+    socialLink: "https://facebook.com",
+    socialPlatform: "facebook",
+    Logo: () => (
+      <img src={dyfiLogoImg} alt="DYFI Cheemeni East Logo" className="w-14 h-14 object-contain" />
+    ),
+  },
+  {
+    name: "DYFI Alapadamba West",
+    socialLink: "https://instagram.com",
+    socialPlatform: "instagram",
+    Logo: () => (
+      <img src={dyfiLogoImg} alt="DYFI Alapadamba West Logo" className="w-14 h-14 object-contain" />
+    ),
+  },
+  {
+    name: "DYFI Kayyur Central",
+    socialLink: "https://facebook.com",
+    socialPlatform: "facebook",
+    Logo: () => (
+      <img src={dyfiLogoImg} alt="DYFI Kayyur Central Logo" className="w-14 h-14 object-contain" />
+    ),
+  },
+  {
+    name: "DYFI Cheruvathur North",
+    socialLink: "https://instagram.com",
+    socialPlatform: "instagram",
+    Logo: () => (
+      <img src={dyfiLogoImg} alt="DYFI Cheruvathur North Logo" className="w-14 h-14 object-contain" />
+    ),
   },
 ];
 
@@ -418,6 +462,55 @@ export default function Landing() {
                   </div>
                   <h3 className="jl-feature-title">{f.title}</h3>
                   <p className="jl-feature-desc">{f.desc}</p>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* TRUSTED PARTNERS & COLLABORATORS */}
+      <section className="jl-section jl-partners-section">
+        <div className="jl-container">
+          <motion.div
+            className="jl-section-head"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+          >
+            <span className="jl-section-tag">
+              <Handshake className="w-3 h-3" /> Trusted Partners
+            </span>
+            <h2 className="jl-section-h2">
+              Our <span className="jl-red">Collaborators</span>
+            </h2>
+            <p className="jl-section-p">
+              We team up with prominent youth, student, and health organizations to expand voluntary blood donation registries and coordinate rapid emergency responses.
+            </p>
+          </motion.div>
+
+          <div className="jl-partners-grid">
+            {collaborators.map((c, i) => {
+              const Logo = c.Logo;
+              const SocialIcon = c.socialPlatform === "facebook" ? SocialIcons.Facebook : SocialIcons.Instagram;
+              return (
+                <motion.div
+                  key={c.name}
+                  className="jl-partner-card"
+                  variants={slideIn}
+                  custom={i}
+                  initial="hidden"
+                  whileInView="show"
+                  viewport={{ once: true }}
+                >
+                  <div className="jl-partner-logo-container">
+                    <Logo />
+                  </div>
+                  <h3 className="jl-partner-name">{c.name}</h3>
+                  <a href={c.socialLink} target="_blank" rel="noopener noreferrer" className="jl-partner-social-link" aria-label={`${c.name} ${c.socialPlatform}`}>
+                    <SocialIcon />
+                  </a>
                 </motion.div>
               );
             })}
