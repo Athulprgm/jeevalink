@@ -1390,7 +1390,7 @@
 .jl-partner-logo-container {
   width: 64px;
   height: 64px;
-  border-radius: 16px;
+  border-radius: 50%;
   background: var(--gray-50);
   border: none;
   display: flex;

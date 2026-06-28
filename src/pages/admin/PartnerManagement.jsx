@@ -229,12 +229,12 @@ export default function PartnerManagement() {
                 className="bg-white border border-slate-100 rounded-2xl p-5 flex flex-col items-center text-center relative overflow-hidden transition-all shadow-sm group hover:border-slate-200"
               >
                 {/* Logo wrapper */}
-                <div className="w-16 h-16 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center p-2 mb-4 overflow-hidden relative">
+                <div className="w-16 h-16 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center p-1.5 mb-4 overflow-hidden relative shadow-sm">
                   {partner.logo ? (
                     <img
                       src={getFullLogoUrl(partner.logo)}
                       alt={partner.name}
-                      className="w-full h-full object-contain"
+                      className="w-full h-full object-cover rounded-full"
                       onError={(e) => {
                         e.target.onerror = null;
                         e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHJ4PSIxNSIgZmlsbD0iI0YzRjRGNiIvPjx0ZXh0IHg9IjMwIiB5PSIzNSIgZmlsbD0iIzlDQTNBRiIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkxPR088L3RleHQ+PC9zdmc+';
