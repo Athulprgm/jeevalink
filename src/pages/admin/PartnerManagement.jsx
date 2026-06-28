@@ -261,21 +261,21 @@ export default function PartnerManagement() {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      className="absolute inset-0 bg-slate-900/90 backdrop-blur-sm flex flex-col items-center justify-center p-4 z-10 text-center"
+                      className="absolute inset-0 bg-red-600 flex flex-col items-center justify-center p-4 z-10 text-center"
                     >
-                      <AlertTriangle className="w-6 h-6 text-red-500 mb-2 animate-bounce" />
-                      <p className="text-white text-xs font-bold mb-3">Delete this partner card?</p>
-                      <div className="flex gap-2">
+                      <AlertTriangle className="w-8 h-8 text-white mb-2 animate-pulse" />
+                      <p className="text-white text-xs font-black mb-4">Delete this partner?</p>
+                      <div className="flex gap-2 w-full px-2">
                         <button
                           onClick={() => handleDelete(partner._id)}
                           disabled={loading}
-                          className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-[10px] font-black rounded-lg transition-colors cursor-pointer"
+                          className="flex-1 py-2 bg-white hover:bg-red-50 text-red-600 text-[10px] font-black rounded-xl shadow-lg transition-colors cursor-pointer"
                         >
                           Yes, Delete
                         </button>
                         <button
                           onClick={() => setConfirmDeleteId(null)}
-                          className="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white text-[10px] font-bold rounded-lg transition-colors cursor-pointer"
+                          className="flex-1 py-2 bg-red-700 hover:bg-red-800 text-white text-[10px] font-bold rounded-xl transition-colors cursor-pointer"
                         >
                           Cancel
                         </button>
