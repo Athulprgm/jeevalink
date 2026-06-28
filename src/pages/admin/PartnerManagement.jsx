@@ -310,16 +310,17 @@ export default function PartnerManagement() {
                   <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1.5">Logo Image</label>
                   <div className="grid grid-cols-3 gap-3">
                     <div className="col-span-2 relative">
-                      <label className="flex items-center justify-center gap-2 w-full px-3 py-2.5 bg-red-50 border border-red-200 border-dashed rounded-xl text-red-600 text-xs font-bold cursor-pointer hover:bg-red-100/50 transition-colors">
+                      <label htmlFor="logo-upload" className="flex items-center justify-center gap-2 w-full px-3 py-2.5 bg-red-50 border border-red-200 border-dashed rounded-xl text-red-600 text-xs font-bold cursor-pointer hover:bg-red-100/50 transition-colors">
                         <Upload className="w-3.5 h-3.5" />
                         Choose Logo File
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleLogoChange}
-                          className="hidden"
-                        />
                       </label>
+                      <input
+                        id="logo-upload"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleLogoChange}
+                        className="hidden"
+                      />
                       <p className="text-slate-400 text-[10px] mt-1.5 ml-1">Upload a small square image (PNG, JPG)</p>
                     </div>
                     <div className="w-full h-12 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-center overflow-hidden p-1 shrink-0">
