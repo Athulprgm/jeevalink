@@ -630,11 +630,9 @@ export const useAppStore = create((set, get) => ({
     }
   },
 
-  addPartner: async (formData) => {
+  addPartner: async (payload) => {
     try {
-      const res = await api.post('/admin/partners', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      const res = await api.post('/admin/partners', payload);
       if (res.data.success) {
         const newPartner = res.data.data.partner;
         set((state) => ({ partners: [newPartner, ...state.partners] }));
@@ -649,11 +647,9 @@ export const useAppStore = create((set, get) => ({
     }
   },
 
-  updatePartner: async (id, formData) => {
+  updatePartner: async (id, payload) => {
     try {
-      const res = await api.post(`/admin/partners/${id}`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      const res = await api.post(`/admin/partners/${id}`, payload);
       if (res.data.success) {
         const updated = res.data.data.partner;
         set((state) => ({
