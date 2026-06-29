@@ -3,7 +3,7 @@ import { useAppStore } from '../../store/appStore.js';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Handshake, Plus, Edit2, Trash2, Globe, Link as LinkIcon, Save, X, AlertTriangle,
-  Upload, CheckCircle2, ChevronRight, Image as ImageIcon
+  Upload, CheckCircle2, ChevronRight, Image as ImageIcon, Loader2
 } from 'lucide-react';
 
 /* ── Inline Social Icons ───────────────────────── */
@@ -46,6 +46,7 @@ const SOCIAL_PLATFORMS = [
 export default function PartnerManagement() {
   const { partners, fetchPartners, addPartner, updatePartner, deletePartner, triggerToast } = useAppStore();
   const [loading, setLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingPartner, setEditingPartner] = useState(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
@@ -58,7 +59,12 @@ export default function PartnerManagement() {
   const [logoPreview, setLogoPreview] = useState(null);
 
   useEffect(() => {
-    fetchPartners();
+    const initFetch = async () => {
+      setIsFetching(true);
+      await fetchPartners();
+      setIsFetching(false);
+    };
+    initFetch();
   }, []);
 
   const openAddModal = () => {
@@ -200,7 +206,12 @@ export default function PartnerManagement() {
       </div>
 
       {/* Partners Cards Grid */}
-      {partners.length === 0 ? (
+      {isFetching ? (
+        <div className="bg-white border border-slate-100 rounded-2xl p-12 flex flex-col items-center justify-center min-h-[300px]">
+          <Loader2 className="w-8 h-8 text-red-500 animate-spin mb-4" />
+          <p className="text-slate-500 text-sm font-medium">Loading partners data...</p>
+        </div>
+      ) : partners.length === 0 ? (
         <div className="bg-white border border-slate-100 rounded-2xl p-12 text-center max-w-xl mx-auto space-y-4">
           <div className="w-14 h-14 bg-red-50 border border-red-100 rounded-2xl flex items-center justify-center mx-auto text-red-500">
             <Handshake className="w-7 h-7" />

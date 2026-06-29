@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Users, Plus, Eye, Edit2, Trash2, UserCheck, UserX, Lock, Download,
   CheckCircle2, XCircle, Clock, ChevronDown, X, Save, Phone, Mail,
-  MapPin, Building2, Hash, StickyNote
+  MapPin, Building2, Hash, StickyNote, Loader2
 } from 'lucide-react';
 import AdminTable from '../../components/admin/AdminTable.jsx';
 import FilterBar from '../../components/admin/FilterBar.jsx';
@@ -54,8 +54,16 @@ export default function VolunteerManagement() {
   const [form, setForm] = useState(emptyVolForm);
   const [formError, setFormError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
 
-  useEffect(() => { fetchUsers(); }, []);
+  useEffect(() => {
+    const initFetch = async () => {
+      setIsFetching(true);
+      await fetchUsers();
+      setIsFetching(false);
+    };
+    initFetch();
+  }, []);
 
   const volunteers = allUsers.filter(u => u.role === 'volunteer' || u.role === 'Volunteer');
 

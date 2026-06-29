@@ -104,8 +104,21 @@ export const useAuthStore = create((set, get) => ({
       useAppStore.getState().addUser(user);
       return { success: true };
     } catch (err) {
-      console.error("Registration validation errors:", JSON.stringify(err.response?.data?.errors, null, 2));
-      const errMsg = err.response?.data?.message || 'Registration failed.';
+      if (!err.response || err.message === 'Network Error' || err.code === 'ERR_NETWORK') {
+        const errMsg = 'Network error: Please check your internet connection or try again later.';
+        console.error(errMsg, err);
+        set({ loading: false, error: errMsg });
+        return { success: false, error: errMsg };
+      }
+      
+      const validationErrors = err.response?.data?.errors;
+      if (validationErrors) {
+        console.error("Registration validation errors:", JSON.stringify(validationErrors, null, 2));
+      } else {
+        console.error("Registration error:", err.message || 'Unknown error');
+      }
+
+      const errMsg = err.response?.data?.message || 'Registration failed. Please try again.';
       set({ loading: false, error: errMsg });
       return { success: false, error: errMsg };
     }

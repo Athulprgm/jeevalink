@@ -3,7 +3,7 @@ import { useAuthStore } from '../store/authStore.js';
 import { useAppStore } from '../store/appStore.js';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { User, Edit3, History, QrCode, LogOut, Calendar, Award, Scale, Phone } from 'lucide-react';
+import { User, Edit3, History, QrCode, LogOut, Calendar, Award, Scale, Phone, Loader2 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 
 const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
@@ -15,6 +15,8 @@ export default function Profile() {
   const { triggerToast } = useAppStore();
   const navigate = useNavigate();
   const [tab, setTab] = useState('edit');
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const { register, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
@@ -34,7 +36,9 @@ export default function Profile() {
   });
 
   const onSubmit = async (data) => {
+    setIsSaving(true);
     const res = await updateProfile(data);
+    setIsSaving(false);
     if (res.success) triggerToast('Profile updated successfully!', 'success');
   };
 
@@ -47,10 +51,13 @@ export default function Profile() {
       return;
     }
 
+    setIsUploadingPhoto(true);
+
     const reader = new FileReader();
     reader.onload = async () => {
       const base64Data = reader.result;
       const res = await updateProfile({ profilePicture: base64Data });
+      setIsUploadingPhoto(false);
       if (res.success) {
         triggerToast('Profile photo updated successfully!', 'success');
       } else {
@@ -58,6 +65,7 @@ export default function Profile() {
       }
     };
     reader.onerror = () => {
+      setIsUploadingPhoto(false);
       triggerToast('Error reading file.', 'error');
     };
     reader.readAsDataURL(file);
@@ -205,11 +213,11 @@ export default function Profile() {
           <h1 className="text-2xl font-black text-gray-900">
             {user?.role === 'donor' ? 'Donor Profile' : user?.role === 'hospital' ? 'Hospital Profile' : user?.role === 'volunteer' ? 'Volunteer Profile' : 'Admin Profile'}
           </h1>
-          <p className="text-sm text-gray-550 mt-1">Manage your info and account details</p>
+          <p className="text-sm text-gray-500 mt-1">Manage your info and account details</p>
         </div>
         <button
           onClick={handleLogout}
-          className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-red-650 border border-red-100 rounded-xl hover:bg-red-50 transition-colors cursor-pointer"
+          className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-red-600 border border-red-100 rounded-xl hover:bg-red-50 transition-colors cursor-pointer"
         >
           <LogOut className="w-4 h-4" /> Sign Out
         </button>
@@ -218,14 +226,19 @@ export default function Profile() {
       {/* Profile overview card */}
       <div className="card p-5 flex items-center gap-4">
         <div className="relative group w-16 h-16 rounded-2xl overflow-hidden shrink-0 shadow-lg shadow-red-200 border border-slate-100 bg-slate-50 flex items-center justify-center">
+          {isUploadingPhoto && (
+            <div className="absolute inset-0 bg-slate-100/80 flex items-center justify-center z-10 backdrop-blur-[1px]">
+              <Loader2 className="w-6 h-6 text-primary animate-spin" />
+            </div>
+          )}
           {user?.profilePicture ? (
-            <img src={user.profilePicture} alt="Avatar" className="w-full h-full object-cover" />
+            <img src={user.profilePicture} alt="Avatar" className={`w-full h-full object-cover ${isUploadingPhoto ? 'opacity-50' : ''}`} />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-primary to-red-700 flex items-center justify-center text-white font-black text-2xl">
+            <div className={`w-full h-full bg-gradient-to-br from-primary to-red-700 flex items-center justify-center text-white font-black text-2xl ${isUploadingPhoto ? 'opacity-50' : ''}`}>
               {user?.fullName?.[0]}
             </div>
           )}
-          <label htmlFor="avatar-file-top" className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 flex items-center justify-center cursor-pointer transition-opacity text-white text-[10px] font-black uppercase">
+          <label htmlFor="avatar-file-top" className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 flex items-center justify-center cursor-pointer transition-opacity text-white text-[10px] font-black uppercase z-20">
             Edit
           </label>
           <input
@@ -234,16 +247,17 @@ export default function Profile() {
             accept="image/*"
             onChange={handlePhotoUpload}
             className="hidden"
+            disabled={isUploadingPhoto}
           />
         </div>
         <div className="min-w-0 flex-1 text-left">
           <h3 className="text-lg font-black text-gray-900">{user?.fullName}</h3>
-          <p className="text-sm text-gray-550">{user?.city ? `${user.city}, ${user.district}` : user?.district}</p>
+          <p className="text-sm text-gray-500">{user?.city ? `${user.city}, ${user.district}` : user?.district}</p>
           <div className="flex items-center gap-3 mt-2 flex-wrap">
             {user?.role === 'donor' ? (
               <>
                 <span className="text-xs font-black text-primary bg-red-50 px-2.5 py-1 rounded-xl border border-red-100">{user?.bloodGroup}</span>
-                <span className="text-xs text-gray-550 font-semibold">{user?.totalDonations} donations</span>
+                <span className="text-xs text-gray-500 font-semibold">{user?.totalDonations} donations</span>
                 <span className="text-xs text-amber-600 font-semibold flex items-center gap-1"><Award className="w-3 h-3" />{user?.rewardPoints} pts</span>
                 <span className={`text-xs font-black px-2.5 py-1 rounded-xl border ${
                   user?.eligibilityStatus === 'Eligible'
@@ -259,7 +273,7 @@ export default function Profile() {
               <span className={`text-xs font-bold px-2.5 py-1 rounded-xl border uppercase ${
                 user?.role === 'hospital' ? 'text-emerald-600 bg-emerald-50 border-emerald-100' :
                 user?.role === 'volunteer' ? 'text-purple-700 bg-purple-50 border-purple-100' :
-                'text-blue-600 bg-blue-50 border-blue-100'
+                'text-gray-600 bg-slate-50 border-slate-200'
               }`}>
                 {user?.role} Portal
               </span>
@@ -294,14 +308,19 @@ export default function Profile() {
             {/* Explicit Photo Upload Option in Edit Profile */}
             <div className="flex flex-col sm:flex-row items-center gap-4 p-4 bg-slate-50 border border-slate-200/50 rounded-2xl mb-4">
               <div className="relative group w-16 h-16 rounded-2xl overflow-hidden shadow-md border border-white shrink-0 flex items-center justify-center bg-slate-200">
+                {isUploadingPhoto && (
+                  <div className="absolute inset-0 bg-slate-100/80 flex items-center justify-center z-10 backdrop-blur-[1px]">
+                    <Loader2 className="w-6 h-6 text-primary animate-spin" />
+                  </div>
+                )}
                 {user?.profilePicture ? (
-                  <img src={user.profilePicture} alt="Avatar" className="w-full h-full object-cover" />
+                  <img src={user.profilePicture} alt="Avatar" className={`w-full h-full object-cover ${isUploadingPhoto ? 'opacity-50' : ''}`} />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-primary to-red-750 flex items-center justify-center text-white font-black text-2xl">
+                  <div className={`w-full h-full bg-gradient-to-br from-primary to-red-700 flex items-center justify-center text-white font-black text-2xl ${isUploadingPhoto ? 'opacity-50' : ''}`}>
                     {user?.fullName?.[0]}
                   </div>
                 )}
-                <label htmlFor="avatar-file-form" className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 flex items-center justify-center cursor-pointer transition-opacity text-white text-[9px] font-bold uppercase">
+                <label htmlFor="avatar-file-form" className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 flex items-center justify-center cursor-pointer transition-opacity text-white text-[9px] font-bold uppercase z-20">
                   Change
                 </label>
                 <input
@@ -310,13 +329,14 @@ export default function Profile() {
                   accept="image/*"
                   onChange={handlePhotoUpload}
                   className="hidden"
+                  disabled={isUploadingPhoto}
                 />
               </div>
               <div className="min-w-0 flex-1 text-center sm:text-left space-y-1">
                 <h4 className="text-xs font-bold text-gray-800">Profile Picture</h4>
                 <p className="text-[10px] text-gray-400">Click to upload a square JPEG or PNG image (max 1MB). It will display across your dashboard and donor cards.</p>
-                <label htmlFor="avatar-file-form-btn" className="inline-block px-3 py-1.5 bg-white border border-slate-200 text-gray-700 hover:bg-slate-50 rounded-xl text-[10px] font-bold cursor-pointer transition-colors shadow-sm mt-1">
-                  Choose Image File
+                <label htmlFor="avatar-file-form-btn" className={`inline-block px-3 py-1.5 bg-white border border-slate-200 text-gray-700 hover:bg-slate-50 rounded-xl text-[10px] font-bold cursor-pointer transition-colors shadow-sm mt-1 ${isUploadingPhoto ? 'opacity-50 pointer-events-none' : ''}`}>
+                  {isUploadingPhoto ? 'Uploading...' : 'Choose Image File'}
                 </label>
                 <input
                   type="file"
@@ -324,6 +344,7 @@ export default function Profile() {
                   accept="image/*"
                   onChange={handlePhotoUpload}
                   className="hidden"
+                  disabled={isUploadingPhoto}
                 />
               </div>
             </div>
@@ -419,8 +440,9 @@ export default function Profile() {
               )}
             </div>
             <button type="submit"
-              className="w-full py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-2xl shadow-xl shadow-red-200 transition-all text-sm mt-2 cursor-pointer">
-              Save Changes
+              disabled={isSaving}
+              className="w-full py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-2xl shadow-xl shadow-red-200 transition-all text-sm mt-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+              {isSaving ? <><Loader2 className="w-4 h-4 animate-spin" /> Saving...</> : 'Save Changes'}
             </button>
           </form>
         </div>
@@ -440,15 +462,15 @@ export default function Profile() {
             <p className="text-gray-400 text-xs mt-1">{user?.city}, {user?.district}</p>
             <div className="grid grid-cols-3 gap-3 mt-6 pt-5 border-t border-gray-800 text-left">
               <div>
-                <p className="text-[9px] text-gray-550 font-bold uppercase">Group</p>
+                <p className="text-[9px] text-gray-500 font-bold uppercase">Group</p>
                 <p className="text-xl font-black text-primary mt-0.5">{user?.bloodGroup}</p>
               </div>
               <div>
-                <p className="text-[9px] text-gray-550 font-bold uppercase">Donations</p>
+                <p className="text-[9px] text-gray-500 font-bold uppercase">Donations</p>
                 <p className="text-xl font-black mt-0.5">{user?.totalDonations}</p>
               </div>
               <div>
-                <p className="text-[9px] text-gray-550 font-bold uppercase">Status</p>
+                <p className="text-[9px] text-gray-500 font-bold uppercase">Status</p>
                 <p className={`text-sm font-bold mt-1 ${user?.availableForDonation ? 'text-green-400' : 'text-amber-400'}`}>
                   {user?.availableForDonation ? '● Available' : '○ Busy'}
                 </p>
@@ -457,7 +479,7 @@ export default function Profile() {
           </div>
           <button
             onClick={handleDownload}
-            className="w-full max-w-sm py-3 bg-red-650 hover:bg-red-700 text-white font-bold rounded-2xl shadow-xl shadow-red-200 transition-all text-sm cursor-pointer"
+            className="w-full max-w-sm py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-2xl shadow-xl shadow-red-200 transition-all text-sm cursor-pointer"
           >
             Download Passport PNG
           </button>

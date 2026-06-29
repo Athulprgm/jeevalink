@@ -1,22 +1,62 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore.js';
 import { useAppStore } from '../store/appStore.js';
 import {
   Heart, Droplet, MapPin, Siren, Bell, Award, ArrowRight,
-  Activity, CheckCircle2
+  Activity, CheckCircle2, Calendar, Scale, X, Loader2
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import RequestCard from '../components/RequestCard.jsx';
 
 export default function DonorDashboard() {
-  const { user, setAvailability } = useAuthStore();
+  const { user, setAvailability, updateProfile } = useAuthStore();
   const { requests, notifications, fetchRequests, fetchNotifications, triggerToast } = useAppStore();
+
+  const [showPopup, setShowPopup] = useState(false);
+  const [weight, setWeight] = useState('');
+  const [lastDonated, setLastDonated] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     fetchRequests();
     fetchNotifications();
-  }, []);
+    
+    // Show popup if weight is missing and user hasn't dismissed it
+    if (user && !user.weight && !localStorage.getItem('hide_health_info_popup')) {
+      const timer = setTimeout(() => setShowPopup(true), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [user]);
+
+  const handleSaveHealthInfo = async (e) => {
+    e.preventDefault();
+    setIsSaving(true);
+    const payload = {};
+    if (weight) payload.weight = Number(weight);
+    if (lastDonated) {
+      payload.lastDonated = lastDonated;
+      payload.last_donated_date = lastDonated;
+    }
+    
+    if (Object.keys(payload).length > 0) {
+      const res = await updateProfile(payload);
+      if (res.success) {
+        triggerToast('Health info updated successfully!', 'success');
+      } else {
+        triggerToast('Failed to update health info. You can update it in your Profile later.', 'warning');
+      }
+    }
+    
+    localStorage.setItem('hide_health_info_popup', 'true');
+    setShowPopup(false);
+    setIsSaving(false);
+  };
+
+  const handleSkip = () => {
+    localStorage.setItem('hide_health_info_popup', 'true');
+    setShowPopup(false);
+  };
 
   const unread = notifications.filter((n) => !n.read).length;
   const pending = requests.filter((r) => r.status === 'Pending');
@@ -332,6 +372,78 @@ export default function DonorDashboard() {
           )}
         </div>
       </div>
+
+      {/* Health Info Popup */}
+      <AnimatePresence>
+        {showPopup && (
+          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="bg-white border border-slate-100 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden relative my-8"
+            >
+              <button
+                onClick={handleSkip}
+                className="absolute top-4 right-4 w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-900 hover:bg-slate-50 transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+              
+              <div className="p-6 text-center border-b border-slate-100">
+                <div className="w-14 h-14 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-primary">
+                  <Heart className="w-7 h-7" />
+                </div>
+                <h3 className="text-xl font-black text-slate-900 mb-1.5">Complete Your Profile</h3>
+                <p className="text-sm text-slate-500">Provide these details to get accurate donation eligibility dates.</p>
+              </div>
+
+              <form onSubmit={handleSaveHealthInfo} className="p-6 space-y-4 bg-slate-50">
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1.5 flex items-center gap-1">
+                    <Scale className="w-3.5 h-3.5" /> Weight (kg)
+                  </label>
+                  <input
+                    type="number"
+                    value={weight}
+                    onChange={(e) => setWeight(e.target.value)}
+                    placeholder="e.g. 65"
+                    className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:border-red-500/50 transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1.5 flex items-center gap-1">
+                    <Calendar className="w-3.5 h-3.5" /> Last Donated Date
+                  </label>
+                  <input
+                    type="date"
+                    value={lastDonated}
+                    onChange={(e) => setLastDonated(e.target.value)}
+                    className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:border-red-500/50 transition-colors cursor-pointer"
+                  />
+                </div>
+                
+                <div className="flex gap-3 pt-4">
+                  <button
+                    type="button"
+                    onClick={handleSkip}
+                    className="flex-1 py-3 bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 text-sm font-bold rounded-xl transition-colors cursor-pointer"
+                  >
+                    Skip for now
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSaving}
+                    className="flex-1 flex items-center justify-center gap-2 py-3 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-xl transition-colors cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-red-200"
+                  >
+                    {isSaving ? <><Loader2 className="w-4 h-4 animate-spin" /> Saving...</> : 'Submit Details'}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
