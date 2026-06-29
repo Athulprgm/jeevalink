@@ -128,16 +128,14 @@ export const useAuthStore = create((set, get) => ({
     set({ loading: true });
     try {
       const payload = {
-        fullName: volunteerData.fullName,
+        full_name: volunteerData.fullName,
         email: volunteerData.email,
         mobile: volunteerData.mobile,
-        password: volunteerData.password,
-        role: 'volunteer',
         district: volunteerData.district,
-        city: volunteerData.city || 'Kochi',
-        bloodGroup: 'N/A'
+        city: volunteerData.city || 'Kochi'
       };
-      const res = await api.post('/auth/register', payload);
+      // Uses the admin route which sends the welcome email with credentials
+      const res = await api.post('/admin/volunteers', payload);
       const { user } = res.data.data;
       
       // Sync list in appStore
