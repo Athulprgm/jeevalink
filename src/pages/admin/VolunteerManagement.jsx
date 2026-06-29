@@ -41,7 +41,7 @@ const emptyVolForm = {
 };
 
 export default function VolunteerManagement() {
-  const { allUsers, fetchUsers, updateUserStatus, triggerToast } = useAppStore();
+  const { allUsers, fetchUsers, updateUserStatus, addVolunteer, triggerToast } = useAppStore();
   const [search, setSearch] = useState('');
   const [filters, setFilters] = useState({ status: 'all', district: 'all', type: 'all' });
   const [dateFrom, setDateFrom] = useState('');
@@ -270,96 +270,127 @@ export default function VolunteerManagement() {
       <AnimatePresence>
         {(showAddModal || showEditModal) && (
           <>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50" onClick={() => { setShowAddModal(false); setShowEditModal(false); }} />
-            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 30 }} className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-xl mx-4 max-h-[90vh] overflow-y-auto">
-              <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-md">
-                <div className="flex items-center justify-between mb-5">
-                  <h3 className="text-white font-black">{showAddModal ? 'Add New Volunteer' : 'Edit Volunteer'}</h3>
-                  <button onClick={() => { setShowAddModal(false); setShowEditModal(false); }} className="w-7 h-7 flex items-center justify-center rounded-lg text-slate-500 hover:text-white hover:bg-slate-50 transition-colors cursor-pointer"><X className="w-4 h-4" /></button>
-                </div>
-                {formError && (
-                  <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-xs font-semibold flex items-center gap-2">
-                    <XCircle className="w-4 h-4 shrink-0" /> {formError}
-                  </div>
-                )}
-                <form onSubmit={async (e) => {
-                  e.preventDefault();
-                  if (!form.fullName || !form.email || !form.mobile) { setFormError('Name, email, and phone are required.'); return; }
-                  setLoading(true);
-                  // In real app, call API. Here we just show success toast.
-                  await new Promise(r => setTimeout(r, 600));
-                  triggerToast(showAddModal ? 'Volunteer added successfully!' : 'Volunteer updated!', 'success');
-                  setShowAddModal(false); setShowEditModal(false);
-                  setLoading(false);
-                }} className="space-y-3">
-                  <div className="grid grid-cols-2 gap-3">
-                    {[
-                      { key: 'fullName', label: 'Full Name', type: 'text', placeholder: 'e.g. Sreejith Nair' },
-                      { key: 'email', label: 'Email', type: 'email', placeholder: 'volunteer@example.com' },
-                      { key: 'mobile', label: 'Phone Number', type: 'tel', placeholder: '9876543210' },
-                      { key: 'secondaryPhone', label: 'Secondary Phone', type: 'tel', placeholder: 'Optional' },
-                      { key: 'organizationName', label: 'Organization Name', type: 'text', placeholder: 'e.g. Red Cross' },
-                      { key: 'pinCode', label: 'PIN Code', type: 'text', placeholder: '682001' },
-                    ].map(({ key, label, type, placeholder }) => (
-                      <div key={key}>
-                        <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1">{label}</label>
-                        <input type={type} value={form[key]} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))} placeholder={placeholder}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl text-slate-900 text-xs placeholder:text-slate-600 focus:outline-none focus:border-red-500/50 transition-colors" />
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50" onClick={() => { setShowAddModal(false); setShowEditModal(false); }} />
+            <motion.div initial={{ opacity: 0, scale: 0.95, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 10 }} transition={{ type: 'spring', damping: 25, stiffness: 300 }} className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-xl mx-4 max-h-[90vh] overflow-y-auto">
+              <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-red-100">
+                <div className="bg-gradient-to-r from-red-600 to-red-500 p-6 relative overflow-hidden">
+                  {/* Decorative Background Pattern */}
+                  <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,white_1px,transparent_1px)] bg-[length:16px_16px]"></div>
+                  <div className="relative z-10 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-white/20 rounded-xl backdrop-blur-md flex items-center justify-center text-white border border-white/30 shadow-inner">
+                        {showAddModal ? <Plus className="w-5 h-5" /> : <Edit2 className="w-5 h-5" />}
                       </div>
-                    ))}
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1">Volunteer Type</label>
-                      <select value={form.volunteerType} onChange={e => setForm(f => ({ ...f, volunteerType: e.target.value }))}
-                        className="w-full px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl text-slate-900 text-xs focus:outline-none focus:border-red-500/50 transition-colors cursor-pointer">
-                        {VOLUNTEER_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
-                      </select>
+                      <div>
+                        <h3 className="text-white text-lg font-black tracking-tight">{showAddModal ? 'Add New Volunteer' : 'Edit Volunteer Details'}</h3>
+                        <p className="text-red-100 text-[10px] font-medium">{showAddModal ? 'Automatically generates password & sends invite email' : 'Update volunteer information in the system'}</p>
+                      </div>
                     </div>
-                    <div>
-                      <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1">District</label>
-                      <select value={form.district} onChange={e => setForm(f => ({ ...f, district: e.target.value }))}
-                        className="w-full px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl text-slate-900 text-xs focus:outline-none focus:border-red-500/50 transition-colors cursor-pointer">
-                        {DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
-                      </select>
+                    <button onClick={() => { setShowAddModal(false); setShowEditModal(false); }} className="w-8 h-8 flex items-center justify-center rounded-xl text-white/70 hover:text-white hover:bg-white/20 transition-all cursor-pointer border border-transparent hover:border-white/30 backdrop-blur-sm"><X className="w-4 h-4" /></button>
+                  </div>
+                </div>
+                
+                <div className="p-6">
+                  {formError && (
+                    <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-5 p-3.5 bg-red-50 border border-red-200 rounded-xl text-red-600 text-xs font-semibold flex items-center gap-2.5 shadow-sm">
+                      <XCircle className="w-4 h-4 shrink-0 text-red-500" /> {formError}
+                    </motion.div>
+                  )}
+                  <form onSubmit={async (e) => {
+                    e.preventDefault();
+                    if (!form.fullName || !form.email || !form.mobile) { setFormError('Name, email, and phone are required.'); return; }
+                    setLoading(true);
+                    
+                    if (showAddModal) {
+                      const res = await addVolunteer(form);
+                      if (res.success) {
+                        setShowAddModal(false);
+                        setForm(emptyVolForm);
+                      }
+                    } else {
+                      await new Promise(r => setTimeout(r, 600));
+                      triggerToast('Volunteer updated!', 'success');
+                      setShowEditModal(false);
+                    }
+                    
+                    setLoading(false);
+                  }} className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      {[
+                        { key: 'fullName', label: 'Full Name', type: 'text', placeholder: 'e.g. Sreejith Nair' },
+                        { key: 'email', label: 'Email Address', type: 'email', placeholder: 'volunteer@example.com' },
+                        { key: 'mobile', label: 'Phone Number', type: 'tel', placeholder: '9876543210' },
+                        { key: 'secondaryPhone', label: 'Secondary Phone', type: 'tel', placeholder: 'Optional' },
+                        { key: 'organizationName', label: 'Organization', type: 'text', placeholder: 'e.g. Red Cross' },
+                        { key: 'pinCode', label: 'PIN Code', type: 'text', placeholder: '682001' },
+                      ].map(({ key, label, type, placeholder }) => (
+                        <div key={key} className="relative group">
+                          <label className="block text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-1.5 transition-colors group-focus-within:text-red-500">{label}</label>
+                          <input type={type} value={form[key]} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))} placeholder={placeholder}
+                            className="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-slate-800 text-xs font-medium placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all shadow-sm" />
+                        </div>
+                      ))}
                     </div>
-                    <div>
-                      <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1">City</label>
-                      <input value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))} placeholder="e.g. Kochi"
-                        className="w-full px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl text-slate-900 text-xs placeholder:text-slate-600 focus:outline-none focus:border-red-500/50 transition-colors" />
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="relative group">
+                        <label className="block text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-1.5 transition-colors group-focus-within:text-red-500">Volunteer Type</label>
+                        <select value={form.volunteerType} onChange={e => setForm(f => ({ ...f, volunteerType: e.target.value }))}
+                          className="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-slate-800 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all cursor-pointer shadow-sm appearance-none">
+                          {VOLUNTEER_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                        </select>
+                        <div className="absolute right-3 top-[28px] pointer-events-none text-slate-400 group-focus-within:text-red-500"><ChevronDown className="w-4 h-4" /></div>
+                      </div>
+                      <div className="relative group">
+                        <label className="block text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-1.5 transition-colors group-focus-within:text-red-500">District</label>
+                        <select value={form.district} onChange={e => setForm(f => ({ ...f, district: e.target.value }))}
+                          className="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-slate-800 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all cursor-pointer shadow-sm appearance-none">
+                          {DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
+                        </select>
+                        <div className="absolute right-3 top-[28px] pointer-events-none text-slate-400 group-focus-within:text-red-500"><ChevronDown className="w-4 h-4" /></div>
+                      </div>
+                      <div className="relative group">
+                        <label className="block text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-1.5 transition-colors group-focus-within:text-red-500">City</label>
+                        <input value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))} placeholder="e.g. Kochi"
+                          className="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-slate-800 text-xs font-medium placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all shadow-sm" />
+                      </div>
+                      <div className="relative group">
+                        <label className="block text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-1.5 transition-colors group-focus-within:text-red-500">Status</label>
+                        <select value={form.status} onChange={e => setForm(f => ({ ...f, status: e.target.value }))}
+                          className="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-slate-800 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all cursor-pointer shadow-sm appearance-none">
+                          <option value="Active">🟢 Active</option>
+                          <option value="Inactive">⚪ Inactive</option>
+                          <option value="Suspended">🔴 Suspended</option>
+                        </select>
+                        <div className="absolute right-3 top-[28px] pointer-events-none text-slate-400 group-focus-within:text-red-500"><ChevronDown className="w-4 h-4" /></div>
+                      </div>
                     </div>
-                    <div>
-                      <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1">Status</label>
-                      <select value={form.status} onChange={e => setForm(f => ({ ...f, status: e.target.value }))}
-                        className="w-full px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl text-slate-900 text-xs focus:outline-none focus:border-red-500/50 transition-colors cursor-pointer">
-                        <option value="Active">Active</option>
-                        <option value="Inactive">Inactive</option>
-                        <option value="Suspended">Blocked</option>
-                      </select>
+                    
+                    <div className="relative group">
+                      <label className="block text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-1.5 transition-colors group-focus-within:text-red-500">Full Address</label>
+                      <input value={form.address} onChange={e => setForm(f => ({ ...f, address: e.target.value }))} placeholder="Enter complete residential or office address"
+                        className="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-slate-800 text-xs font-medium placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all shadow-sm" />
                     </div>
-                  </div>
-                  <div>
-                    <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1">Address</label>
-                    <input value={form.address} onChange={e => setForm(f => ({ ...f, address: e.target.value }))} placeholder="Full address"
-                      className="w-full px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl text-slate-900 text-xs placeholder:text-slate-600 focus:outline-none focus:border-red-500/50 transition-colors" />
-                  </div>
-                  <div>
-                    <label className="block text-slate-500 text-[10px] font-bold uppercase mb-1">Remarks</label>
-                    <textarea value={form.remarks} onChange={e => setForm(f => ({ ...f, remarks: e.target.value }))} placeholder="Internal notes..."
-                      rows={2}
-                      className="w-full px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl text-slate-900 text-xs placeholder:text-slate-600 focus:outline-none focus:border-red-500/50 transition-colors resize-none" />
-                  </div>
-                  <div className="flex gap-3 pt-1">
-                    <button type="button" onClick={() => { setShowAddModal(false); setShowEditModal(false); }}
-                      className="flex-1 py-2.5 bg-slate-50 border border-slate-100 text-slate-900 text-xs font-semibold rounded-xl hover:bg-white/8 transition-colors cursor-pointer">
-                      Cancel
-                    </button>
-                    <button type="submit" disabled={loading}
-                      className="flex-1 py-2.5 bg-red-500 hover:bg-red-600 text-slate-900 text-xs font-bold rounded-xl transition-colors cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-red-500/20">
-                      <Save className="w-3.5 h-3.5" /> {showAddModal ? 'Create Volunteer' : 'Save Changes'}
-                    </button>
-                  </div>
-                </form>
+                    <div className="relative group">
+                      <label className="block text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-1.5 transition-colors group-focus-within:text-red-500">Remarks / Internal Notes</label>
+                      <textarea value={form.remarks} onChange={e => setForm(f => ({ ...f, remarks: e.target.value }))} placeholder="Any specific skills, availability notes, etc."
+                        rows={2}
+                        className="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-slate-800 text-xs font-medium placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all resize-none shadow-sm" />
+                    </div>
+                    
+                    <div className="flex gap-3 pt-3 mt-4 border-t border-slate-100">
+                      <button type="button" onClick={() => { setShowAddModal(false); setShowEditModal(false); }}
+                        className="flex-1 py-3 bg-white border border-slate-200 text-slate-600 text-xs font-bold rounded-xl hover:bg-slate-50 hover:text-slate-900 transition-all cursor-pointer shadow-sm">
+                        Cancel
+                      </button>
+                      <button type="submit" disabled={loading}
+                        className="flex-1 py-3 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white text-xs font-bold rounded-xl transition-all cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-red-500/30 hover:shadow-red-500/40 border border-red-500/50">
+                        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} 
+                        {showAddModal ? 'Create Volunteer' : 'Save Changes'}
+                      </button>
+                    </div>
+                  </form>
+                </div>
               </div>
             </motion.div>
           </>
