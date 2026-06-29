@@ -449,6 +449,48 @@ export const useAppStore = create((set, get) => ({
     }
   },
 
+  deleteUser: async (userId) => {
+    try {
+      const res = await api.delete(`/admin/users/${userId}`);
+      if (res.data.success) {
+        set((state) => ({
+          allUsers: state.allUsers.filter((u) => String(u._id) !== String(userId))
+        }));
+        get().triggerToast('User deleted successfully.', 'success');
+        return { success: true };
+      }
+      return { success: false };
+    } catch (err) {
+      get().triggerToast('Failed to delete user.', 'error');
+      return { success: false };
+    }
+  },
+
+
+  addVolunteer: async (volunteerData) => {
+    try {
+      const payload = {
+        full_name: volunteerData.fullName,
+        email: volunteerData.email,
+        mobile: volunteerData.mobile,
+        city: volunteerData.city || 'Kochi',
+        district: volunteerData.district || 'Ernakulam'
+      };
+      const res = await api.post('/admin/volunteers', payload);
+      if (res.data.success) {
+        const newUser = res.data.data.user;
+        set((state) => ({ allUsers: [newUser, ...state.allUsers] }));
+        get().triggerToast('Volunteer added successfully!', 'success');
+        return { success: true, user: newUser };
+      }
+      return { success: false };
+    } catch (err) {
+      const errMsg = err.response?.data?.message || 'Failed to add volunteer.';
+      get().triggerToast(errMsg, 'error');
+      return { success: false, error: errMsg };
+    }
+  },
+
   addUser: (user) => {
     set((state) => {
       // Avoid duplication in allUsers

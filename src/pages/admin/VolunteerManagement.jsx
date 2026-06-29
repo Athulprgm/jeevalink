@@ -41,7 +41,7 @@ const emptyVolForm = {
 };
 
 export default function VolunteerManagement() {
-  const { allUsers, fetchUsers, updateUserStatus, addVolunteer, triggerToast } = useAppStore();
+  const { allUsers, fetchUsers, updateUserStatus, addVolunteer, deleteUser, triggerToast } = useAppStore();
   const [search, setSearch] = useState('');
   const [filters, setFilters] = useState({ status: 'all', district: 'all', type: 'all' });
   const [dateFrom, setDateFrom] = useState('');
@@ -93,6 +93,13 @@ export default function VolunteerManagement() {
   const handleStatusAction = async (vol, newStatus) => {
     setLoading(true);
     await updateUserStatus(vol._id, newStatus);
+    setLoading(false);
+    setConfirmModal({ open: false, action: null, vol: null });
+  };
+
+  const handleDeleteAction = async (vol) => {
+    setLoading(true);
+    await deleteUser(vol._id);
     setLoading(false);
     setConfirmModal({ open: false, action: null, vol: null });
   };
@@ -205,6 +212,13 @@ export default function VolunteerManagement() {
                 title="Block"
               >
                 <Lock className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={() => setConfirmModal({ open: true, action: 'delete', vol: row })}
+                className="w-7 h-7 flex items-center justify-center rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-600/10 transition-colors cursor-pointer"
+                title="Delete"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
               </button>
             </div>
           )}
@@ -403,13 +417,18 @@ export default function VolunteerManagement() {
         onClose={() => setConfirmModal({ open: false, action: null, vol: null })}
         loading={loading}
         onConfirm={() => {
-          const statusMap = { activate: 'Active', deactivate: 'Inactive', block: 'Suspended' };
-          handleStatusAction(confirmModal.vol, statusMap[confirmModal.action]);
+          if (confirmModal.action === 'delete') {
+            handleDeleteAction(confirmModal.vol);
+          } else {
+            const statusMap = { activate: 'Active', deactivate: 'Inactive', block: 'Suspended' };
+            handleStatusAction(confirmModal.vol, statusMap[confirmModal.action]);
+          }
         }}
-        title={confirmModal.action === 'block' ? 'Block Volunteer' : confirmModal.action === 'activate' ? 'Activate Volunteer' : 'Deactivate Volunteer'}
-        message={`Are you sure you want to ${confirmModal.action} ${confirmModal.vol?.fullName}? This will ${confirmModal.action === 'activate' ? 'restore their access' : confirmModal.action === 'block' ? 'revoke all access immediately' : 'suspend their operational access'}.`}
-        confirmLabel={confirmModal.action === 'block' ? 'Block User' : confirmModal.action === 'activate' ? 'Activate' : 'Deactivate'}
-        variant={confirmModal.action === 'block' ? 'danger' : confirmModal.action === 'activate' ? 'info' : 'warning'}
+        title={confirmModal.action === 'delete' ? 'Delete Volunteer' : confirmModal.action === 'block' ? 'Block Volunteer' : confirmModal.action === 'activate' ? 'Activate Volunteer' : 'Deactivate Volunteer'}
+        message={confirmModal.action === 'delete' ? `Are you sure you want to permanently delete ${confirmModal.vol?.fullName}? This action cannot be undone.` : `Are you sure you want to ${confirmModal.action} ${confirmModal.vol?.fullName}? This will ${confirmModal.action === 'activate' ? 'restore their access' : confirmModal.action === 'block' ? 'revoke all access immediately' : 'suspend their operational access'}.`}
+        confirmLabel={confirmModal.action === 'delete' ? 'Delete Permanently' : confirmModal.action === 'block' ? 'Block User' : confirmModal.action === 'activate' ? 'Activate' : 'Deactivate'}
+        variant={confirmModal.action === 'delete' || confirmModal.action === 'block' ? 'danger' : confirmModal.action === 'activate' ? 'info' : 'warning'}
+
       />
     </div>
   );
