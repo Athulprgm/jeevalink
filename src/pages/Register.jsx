@@ -9,6 +9,7 @@ import { useAppStore } from "../store/appStore.js";
 import { ArrowLeft, ArrowRight, UserPlus, Droplets } from "lucide-react";
 import confetti from "canvas-confetti";
 import api from "../store/api.js";
+import CameraCapture from "../components/CameraCapture.jsx";
 
 const step1DonorSchema = z.object({
   fullName: z.string().min(2, "Minimum 2 characters"),
@@ -50,6 +51,9 @@ const step2DonorSchema = z.object({
   idProofBack: z
     .any()
     .refine((files) => files?.length === 1, "ID Back image is required"),
+  profilePicture: z
+    .any()
+    .refine((file) => !!file, "Profile selfie is required"),
 });
 
 const step2HospitalSchema = z.object({
@@ -94,6 +98,7 @@ export default function Register() {
     handleSubmit: handleS2,
     formState: { errors: e2 },
     setValue: setV2,
+    watch: watch2,
   } = useForm({
     resolver: zodResolver(
       role === "donor" ? step2DonorSchema : step2HospitalSchema,
@@ -346,6 +351,19 @@ export default function Register() {
               >
                 {role === "donor" ? (
                   <>
+                    <div className="mb-4 flex flex-col items-center">
+                      <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5 text-center w-full">
+                        Profile Photo (Selfie Capture)
+                      </label>
+                      <CameraCapture
+                        value={watch2("profilePicture")}
+                        onCapture={(file) => setV2("profilePicture", file, { shouldValidate: true })}
+                      />
+                      <input type="hidden" {...reg2("profilePicture")} />
+                      {e2.profilePicture && (
+                        <span className={`${errCls} text-center`}>{e2.profilePicture.message}</span>
+                      )}
+                    </div>
                     <div>
                       <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5">
                         Blood Group

@@ -4,6 +4,7 @@ import { useAuthStore } from '../store/authStore.js';
 import { useAppStore } from '../store/appStore.js';
 import { LogOut, User, Bell, ChevronDown, Settings, Droplets, Siren, Award, CheckCircle2, MapPin } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getStorageUrl } from '../store/api.js';
 
 const publicLinks = [
   { label: 'Home', to: '/' },
@@ -192,8 +193,8 @@ export default function Navbar() {
                   className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-gray-200 hover:border-red-300 bg-white hover:bg-red-50 transition-all cursor-pointer shadow-sm"
                 >
                   <div className="w-7 h-7 rounded-lg overflow-hidden flex items-center justify-center shadow-sm border border-gray-100">
-                    {user.photo ? (
-                      <img src={user.photo} alt="Avatar" className="w-full h-full object-cover" />
+                    {user.profilePicture || user.photo ? (
+                      <img src={getStorageUrl(user.profilePicture || user.photo)} alt="Avatar" className="w-full h-full object-cover animate-fade-in" />
                     ) : (
                       <div className="w-full h-full bg-gradient-to-br from-primary to-red-800 flex items-center justify-center text-white font-black text-xs">
                         {user.fullName?.[0]}

@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { User, Edit3, History, QrCode, LogOut, Calendar, Award, Scale, Phone, Loader2 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
+import { getStorageUrl } from '../store/api.js';
 
 const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
@@ -232,7 +233,7 @@ export default function Profile() {
             </div>
           )}
           {user?.profilePicture ? (
-            <img src={user.profilePicture} alt="Avatar" className={`w-full h-full object-cover ${isUploadingPhoto ? 'opacity-50' : ''}`} />
+            <img src={getStorageUrl(user.profilePicture)} alt="Avatar" className={`w-full h-full object-cover ${isUploadingPhoto ? 'opacity-50' : ''}`} />
           ) : (
             <div className={`w-full h-full bg-gradient-to-br from-primary to-red-700 flex items-center justify-center text-white font-black text-2xl ${isUploadingPhoto ? 'opacity-50' : ''}`}>
               {user?.fullName?.[0]}
@@ -314,7 +315,7 @@ export default function Profile() {
                   </div>
                 )}
                 {user?.profilePicture ? (
-                  <img src={user.profilePicture} alt="Avatar" className={`w-full h-full object-cover ${isUploadingPhoto ? 'opacity-50' : ''}`} />
+                  <img src={getStorageUrl(user.profilePicture)} alt="Avatar" className={`w-full h-full object-cover ${isUploadingPhoto ? 'opacity-50' : ''}`} />
                 ) : (
                   <div className={`w-full h-full bg-gradient-to-br from-primary to-red-700 flex items-center justify-center text-white font-black text-2xl ${isUploadingPhoto ? 'opacity-50' : ''}`}>
                     {user?.fullName?.[0]}

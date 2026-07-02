@@ -3,6 +3,7 @@ import { Phone, MapPin, Flag, AlertTriangle } from 'lucide-react';
 import { useAppStore } from '../store/appStore.js';
 import { useAuthStore } from '../store/authStore.js';
 import Modal from './Modal.jsx';
+import { getStorageUrl } from '../store/api.js';
 
 const bloodColors = {
   'A+': 'bg-red-100 text-red-700',
@@ -43,8 +44,8 @@ export default function DonorCard({ donor }) {
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           <div className="w-11 h-11 rounded-2xl overflow-hidden flex items-center justify-center shadow-md shadow-red-200 shrink-0 border border-slate-100/50 bg-slate-50">
-            {donor.photo ? (
-              <img src={donor.photo} alt="Avatar" className="w-full h-full object-cover" />
+            {donor.profilePicture || donor.photo ? (
+              <img src={getStorageUrl(donor.profilePicture || donor.photo)} alt="Avatar" className="w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-primary to-red-700 flex items-center justify-center text-white font-black text-base">
                 {donor.fullName?.[0]}

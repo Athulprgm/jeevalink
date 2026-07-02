@@ -93,6 +93,7 @@ export const useAuthStore = create((set, get) => ({
       if (userData.idProofFront) formData.append('id_proof_front', userData.idProofFront);
       if (userData.idProofBack) formData.append('id_proof_back', userData.idProofBack);
       if (userData.sex) formData.append('sex', userData.sex);
+      if (userData.profilePicture) formData.append('profile_picture', userData.profilePicture);
 
       const res = await api.post('/auth/register', formData);
       const { token, user } = res.data.data;

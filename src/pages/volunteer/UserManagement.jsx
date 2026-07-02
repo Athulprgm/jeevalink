@@ -6,6 +6,8 @@ import {
 } from 'lucide-react';
 import AdminTable from '../../components/admin/AdminTable.jsx';
 import FilterBar from '../../components/admin/FilterBar.jsx';
+import CameraCapture from '../../components/CameraCapture.jsx';
+import { getStorageUrl } from '../../store/api.js';
 
 const STATUS_OPTIONS = ['active', 'inactive', 'suspended', 'pending_approval'];
 const ROLES = ['donor', 'patient', 'hospital'];
@@ -104,6 +106,10 @@ export default function UserManagement() {
 
   const handleAddSubmit = async (e) => {
     e.preventDefault();
+    if (!form.profile_picture) {
+      triggerToast('Profile photo is required. Please capture a selfie.', 'warning');
+      return;
+    }
     setLoading(true);
 
     const fd = new FormData();
@@ -121,9 +127,16 @@ export default function UserManagement() {
 
   const columns = [
     { key: 'fullName', label: 'Name', sortable: true, render: (val, row) => (
-      <div>
-        <p className="text-slate-900 text-xs font-semibold">{val}</p>
-        <p className="text-slate-600 text-[10px]">{row.email}</p>
+      <div className="flex items-center gap-3">
+        <img 
+          src={getStorageUrl(row.profilePicture) || `https://api.dicebear.com/7.x/initials/svg?seed=${val}`} 
+          alt={val} 
+          className="w-8 h-8 rounded-full object-cover border border-slate-100" 
+        />
+        <div>
+          <p className="text-slate-900 text-xs font-semibold">{val}</p>
+          <p className="text-slate-600 text-[10px]">{row.email}</p>
+        </div>
       </div>
     )},
     { key: 'mobile', label: 'Phone', render: (val) => <span className="text-slate-500 text-xs font-mono">{val || '—'}</span> },
@@ -209,7 +222,15 @@ export default function UserManagement() {
               <h3 className="text-lg font-black text-gray-900 mb-6 flex items-center gap-2"><Users className="w-5 h-5 text-primary" /> User Details</h3>
               <div className="space-y-4">
                 <div className="flex items-center gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                  <div className="w-12 h-12 bg-primary text-white rounded-xl flex items-center justify-center font-black text-xl">{selectedUser.fullName?.[0]}</div>
+                  {selectedUser.profilePicture ? (
+                    <img 
+                      src={getStorageUrl(selectedUser.profilePicture)} 
+                      alt={selectedUser.fullName} 
+                      className="w-12 h-12 rounded-xl object-cover border border-slate-200 animate-fade-in" 
+                    />
+                  ) : (
+                    <div className="w-12 h-12 bg-primary text-white rounded-xl flex items-center justify-center font-black text-xl">{selectedUser.fullName?.[0]}</div>
+                  )}
                   <div>
                     <p className="font-bold text-gray-900">{selectedUser.fullName}</p>
                     <p className="text-xs text-gray-500 capitalize">{selectedUser.role} • {selectedUser.status}</p>
@@ -351,6 +372,15 @@ export default function UserManagement() {
 
               <form onSubmit={handleAddSubmit} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
+                  <div className="col-span-2 flex flex-col items-center pb-2 border-b border-slate-100">
+                    <label className="block text-[10px] font-bold text-gray-500 uppercase mb-1.5 text-center w-full">
+                      Profile Picture (Selfie)
+                    </label>
+                    <CameraCapture
+                      value={form.profile_picture}
+                      onCapture={(file) => setForm({ ...form, profile_picture: file })}
+                    />
+                  </div>
                   <div>
                     <label className="block text-[10px] font-bold text-gray-500 uppercase mb-1">Blood Group</label>
                     <select value={form.blood_group} onChange={e => setForm({...form, blood_group: e.target.value})} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">

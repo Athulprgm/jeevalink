@@ -113,4 +113,14 @@ api.interceptors.response.use(
   }
 );
 
+export function getStorageUrl(path) {
+  if (!path) return null;
+  if (path.startsWith('http') || path.startsWith('data:')) {
+    return path;
+  }
+  const apiBase = api.defaults.baseURL || import.meta.env.VITE_API_URL || 'https://mindful-exploration-production-8f55.up.railway.app/api/v1';
+  const rootUrl = apiBase.replace(/\/api\/v1\/?$/, '').replace(/\/v1\/?$/, '');
+  return `${rootUrl}/storage/${path}`;
+}
+
 export default api;
