@@ -105,7 +105,13 @@ export default function UserManagement() {
   const handleAddSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const res = await volunteerAddUser(form);
+
+    const fd = new FormData();
+    Object.keys(form).forEach(key => {
+      fd.append(key, form[key]);
+    });
+
+    const res = await volunteerAddUser(fd);
     if (res.success) {
       setShowAddModal(false);
       setForm({});
@@ -351,7 +357,20 @@ export default function UserManagement() {
                       {['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', 'N/A'].map(bg => <option key={bg} value={bg}>{bg}</option>)}
                     </select>
                   </div>
-                  <div className="col-span-2 sm:col-span-1">
+                  <div>
+                    <label className="block text-[10px] font-bold text-gray-500 uppercase mb-1">Sex / Gender</label>
+                    <select value={form.sex || ''} onChange={e => setForm({...form, sex: e.target.value})} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" required>
+                      <option value="">Select</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                      <option value="transgender">Transgender</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-gray-500 uppercase mb-1">Date of Birth</label>
+                    <input type="date" value={form.dob || ''} onChange={e => setForm({...form, dob: e.target.value})} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" required />
+                  </div>
+                  <div>
                     <label className="block text-[10px] font-bold text-gray-500 uppercase mb-1">Full Name</label>
                     <input type="text" value={form.full_name || ''} onChange={e => setForm({...form, full_name: e.target.value})} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" required />
                   </div>
@@ -363,6 +382,14 @@ export default function UserManagement() {
                     <label className="block text-[10px] font-bold text-gray-500 uppercase mb-1">Email</label>
                     <input type="email" value={form.email || ''} onChange={e => setForm({...form, email: e.target.value})} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" required />
                   </div>
+                  <div className="col-span-2">
+                    <label className="block text-[10px] font-bold text-gray-500 uppercase mb-1">Full Address</label>
+                    <input type="text" value={form.full_address || ''} onChange={e => setForm({...form, full_address: e.target.value})} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="House No, Street Name" required />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-gray-500 uppercase mb-1">PIN Code</label>
+                    <input type="text" value={form.pincode || ''} onChange={e => setForm({...form, pincode: e.target.value})} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" maxLength={6} required />
+                  </div>
                   <div>
                     <label className="block text-[10px] font-bold text-gray-500 uppercase mb-1">City</label>
                     <input type="text" value={form.city || ''} onChange={e => setForm({...form, city: e.target.value})} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" required />
@@ -371,10 +398,18 @@ export default function UserManagement() {
                     <label className="block text-[10px] font-bold text-gray-500 uppercase mb-1">District</label>
                     <input type="text" value={form.district || ''} onChange={e => setForm({...form, district: e.target.value})} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" required />
                   </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-gray-500 uppercase mb-1">ID Proof Front</label>
+                    <input type="file" accept="image/jpeg,image/png,image/webp" onChange={e => setForm({...form, id_proof_front: e.target.files[0]})} className="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-white hover:file:bg-red-700" required />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-gray-500 uppercase mb-1">ID Proof Back</label>
+                    <input type="file" accept="image/jpeg,image/png,image/webp" onChange={e => setForm({...form, id_proof_back: e.target.files[0]})} className="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-white hover:file:bg-red-700" required />
+                  </div>
                 </div>
 
                 <button type="submit" disabled={loading} className="w-full mt-4 py-3 bg-gray-900 hover:bg-black text-white font-bold rounded-xl shadow-lg shadow-gray-200 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70">
-                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />} Create User
+                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />} Create User
                 </button>
               </form>
             </motion.div>
