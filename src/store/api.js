@@ -69,8 +69,15 @@ export function toSnake(obj) {
   return obj;
 }
 
+const isLocalhost = typeof window !== 'undefined' && 
+  (window.location.hostname === 'localhost' || 
+   window.location.hostname === '127.0.0.1' || 
+   window.location.hostname === '::1');
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'https://mindful-exploration-production-8f55.up.railway.app/api/v1',
+  baseURL: isLocalhost 
+    ? (import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1')
+    : 'https://mindful-exploration-production-8f55.up.railway.app/api/v1',
   timeout: 30000,
   headers: {
     'Accept': 'application/json',
