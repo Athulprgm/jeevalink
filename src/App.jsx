@@ -32,6 +32,9 @@ import Notifications from './pages/Notifications.jsx';
 import Settings from './pages/Settings.jsx';
 import EmergencyDashboard from './pages/EmergencyDashboard.jsx';
 
+// Volunteer Module Pages
+import VolunteerUserManagement from './pages/volunteer/UserManagement.jsx';
+
 // Admin Module Pages
 import VolunteerManagement from './pages/admin/VolunteerManagement.jsx';
 import FeedbackManagement from './pages/admin/FeedbackManagement.jsx';
@@ -172,6 +175,11 @@ export default function App() {
               <Route path="/volunteer/dashboard" element={
                 <ProtectedRoute roles={['volunteer']}>
                   <VolunteerDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/volunteer/users" element={
+                <ProtectedRoute roles={['volunteer']}>
+                  <VolunteerUserManagement />
                 </ProtectedRoute>
               } />
               <Route path="/admin/emergency" element={

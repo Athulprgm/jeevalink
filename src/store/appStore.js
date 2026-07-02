@@ -725,4 +725,71 @@ export const useAppStore = create((set, get) => ({
       return { success: false, error: errMsg };
     }
   },
+
+  volunteerSendOtp: async (userId) => {
+    try {
+      const res = await api.post(`/volunteer/users/${userId}/send-otp`);
+      if (res.data.success) {
+        get().triggerToast('OTP sent to user email successfully.', 'success');
+        return { success: true };
+      }
+      return { success: false };
+    } catch (err) {
+      const errMsg = err.response?.data?.message || 'Failed to send OTP.';
+      get().triggerToast(errMsg, 'error');
+      return { success: false, error: errMsg };
+    }
+  },
+
+  volunteerVerifyOtp: async (userId, otp) => {
+    try {
+      const res = await api.post(`/volunteer/users/${userId}/verify-otp`, { otp });
+      if (res.data.success) {
+        get().triggerToast('OTP verified successfully.', 'success');
+        return { success: true };
+      }
+      return { success: false };
+    } catch (err) {
+      const errMsg = err.response?.data?.message || 'Invalid or expired OTP.';
+      get().triggerToast(errMsg, 'error');
+      return { success: false, error: errMsg };
+    }
+  },
+
+  volunteerUpdateUser: async (userId, data) => {
+    try {
+      const res = await api.patch(`/volunteer/users/${userId}`, data);
+      if (res.data.success) {
+        const updatedUser = res.data.data.user;
+        set((state) => ({
+          allUsers: state.allUsers.map((u) => String(u._id) === String(userId) ? { ...u, ...updatedUser } : u)
+        }));
+        get().triggerToast('User details updated successfully!', 'success');
+        return { success: true };
+      }
+      return { success: false };
+    } catch (err) {
+      const errMsg = err.response?.data?.message || 'Failed to update user.';
+      get().triggerToast(errMsg, 'error');
+      return { success: false, error: errMsg };
+    }
+  },
+
+  volunteerAddUser: async (data) => {
+    try {
+      const res = await api.post('/volunteer/users', data);
+      if (res.data.success) {
+        set((state) => ({
+          allUsers: [...state.allUsers, res.data.data.user]
+        }));
+        get().triggerToast(res.data.message || 'User added successfully!', 'success');
+        return { success: true };
+      }
+      return { success: false };
+    } catch (err) {
+      const errMsg = err.response?.data?.message || 'Failed to add user.';
+      get().triggerToast(errMsg, 'error');
+      return { success: false, error: errMsg };
+    }
+  },
 }));

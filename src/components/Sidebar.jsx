@@ -18,6 +18,7 @@ const donorLinks = [
 
 const volunteerLinks = [
   { to: '/volunteer/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/volunteer/users', label: 'Manage Users', icon: Users },
   { to: '/requests', label: 'All Requests', icon: ClipboardList },
   { to: '/donor/search', label: 'Find Donors', icon: Users },
   { to: '/profile', label: 'Profile', icon: User },

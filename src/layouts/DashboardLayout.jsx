@@ -36,8 +36,8 @@ export default function DashboardLayout() {
   ];
   const volNav = [
     { to: '/volunteer/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+    { to: '/volunteer/users', icon: Users, label: 'Users' },
     { to: '/requests', icon: ClipboardList, label: 'Requests' },
-    { to: '/donor/search', icon: Users, label: 'Donors' },
     { to: '/profile', icon: User, label: 'Profile' },
   ];
   const adminNav = [
