@@ -346,19 +346,12 @@ export default function UserManagement() {
               <form onSubmit={handleAddSubmit} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase mb-1">Role</label>
-                    <select value={form.role} onChange={e => setForm({...form, role: e.target.value})} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">
-                      <option value="donor">Donor</option>
-                      <option value="patient">Patient</option>
-                    </select>
-                  </div>
-                  <div>
                     <label className="block text-[10px] font-bold text-gray-500 uppercase mb-1">Blood Group</label>
                     <select value={form.blood_group} onChange={e => setForm({...form, blood_group: e.target.value})} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">
                       {['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', 'N/A'].map(bg => <option key={bg} value={bg}>{bg}</option>)}
                     </select>
                   </div>
-                  <div className="col-span-2">
+                  <div className="col-span-2 sm:col-span-1">
                     <label className="block text-[10px] font-bold text-gray-500 uppercase mb-1">Full Name</label>
                     <input type="text" value={form.full_name || ''} onChange={e => setForm({...form, full_name: e.target.value})} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" required />
                   </div>
