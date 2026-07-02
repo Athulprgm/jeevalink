@@ -252,15 +252,17 @@ export default function UserManagement() {
       <AnimatePresence>
         {showEditModal && selectedUser && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }} className="bg-white rounded-3xl p-6 w-full max-w-lg shadow-2xl relative">
+            <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }} className="bg-white rounded-3xl p-6 w-full max-w-lg max-h-[92vh] flex flex-col shadow-2xl relative">
               <button onClick={() => setShowEditModal(false)} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 text-slate-500 hover:bg-slate-100 transition-colors"><X className="w-4 h-4" /></button>
               
-              <div className="mb-6">
+              <div className="mb-4 shrink-0 pr-6">
                 <h3 className="text-xl font-black text-gray-900 flex items-center gap-2">
                   <ShieldCheck className="w-6 h-6 text-primary" /> Secure Profile Edit
                 </h3>
                 <p className="text-xs text-gray-500 mt-1">Editing {selectedUser.fullName}'s profile</p>
               </div>
+
+              <div className="overflow-y-auto pr-2 flex-1 scrollbar-thin">
 
               {!otpVerified ? (
                 <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 text-center">
@@ -351,6 +353,7 @@ export default function UserManagement() {
                   </button>
                 </form>
               )}
+              </div>
             </motion.div>
           </motion.div>
         )}
@@ -360,17 +363,17 @@ export default function UserManagement() {
       <AnimatePresence>
         {showAddModal && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }} className="bg-white rounded-3xl p-6 w-full max-w-lg shadow-2xl relative">
+            <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }} className="bg-white rounded-3xl p-6 w-full max-w-lg max-h-[92vh] flex flex-col shadow-2xl relative">
               <button onClick={() => setShowAddModal(false)} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 text-slate-500 hover:bg-slate-100 transition-colors cursor-pointer"><X className="w-4 h-4" /></button>
               
-              <div className="mb-6">
+              <div className="mb-4 shrink-0 pr-6">
                 <h3 className="text-xl font-black text-gray-900 flex items-center gap-2">
                   <Plus className="w-6 h-6 text-primary" /> Add New User
                 </h3>
-                <p className="text-xs text-gray-500 mt-1">A password will be generated and emailed to the user.</p>
+                <p className="text-xs text-gray-550 mt-1">A password will be generated and emailed to the user.</p>
               </div>
 
-              <form onSubmit={handleAddSubmit} className="space-y-4">
+              <form onSubmit={handleAddSubmit} className="space-y-4 overflow-y-auto pr-2 flex-1 scrollbar-thin">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="col-span-2 flex flex-col items-center pb-2 border-b border-slate-100">
                     <label className="block text-[10px] font-bold text-gray-500 uppercase mb-1.5 text-center w-full">
