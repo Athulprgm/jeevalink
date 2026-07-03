@@ -479,12 +479,14 @@ export const useAppStore = create((set, get) => ({
       const res = await api.post('/admin/volunteers', payload);
       if (res.data.success) {
         const newUser = res.data.data.user;
+        const emailSent = res.data.data.emailSent;
+        const generatedPassword = res.data.data.generatedPassword;
         set((state) => ({ allUsers: [newUser, ...state.allUsers] }));
         // Show warning if email failed to send, otherwise success
         const msg = res.data.message || 'Volunteer added successfully!';
         const emailFailed = msg.toLowerCase().includes('failed to send');
         get().triggerToast(msg, emailFailed ? 'warning' : 'success');
-        return { success: true, user: newUser };
+        return { success: true, user: newUser, emailSent, generatedPassword };
       }
       return { success: false };
     } catch (err) {
@@ -782,6 +784,8 @@ export const useAppStore = create((set, get) => ({
     try {
       const res = await api.post('/volunteer/users', data);
       if (res.data.success) {
+        const emailSent = res.data.data.emailSent;
+        const generatedPassword = res.data.data.generatedPassword;
         set((state) => ({
           allUsers: [...state.allUsers, res.data.data.user]
         }));
@@ -789,7 +793,7 @@ export const useAppStore = create((set, get) => ({
         const msg = res.data.message || 'User added successfully!';
         const emailFailed = msg.toLowerCase().includes('failed to send');
         get().triggerToast(msg, emailFailed ? 'warning' : 'success');
-        return { success: true };
+        return { success: true, emailSent, generatedPassword, user: res.data.data.user };
       }
       return { success: false };
     } catch (err) {
