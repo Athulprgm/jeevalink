@@ -78,14 +78,28 @@ const getBaseURL = () => {
   if (envApiUrl) {
     return envApiUrl;
   }
+  // Warn if running in production without VITE_API_URL set
+  if (import.meta.env.PROD) {
+    console.error(
+      '[Jeevalink API] ⚠️ VITE_API_URL is not set! ' +
+      'Set it in Vercel → Project Settings → Environment Variables. ' +
+      'Falling back to localhost which will NOT work in production.'
+    );
+  }
   return 'http://localhost:8000/api/v1';
 };
 
+const BASE_URL = getBaseURL();
+
+// Log the resolved API URL on startup (visible in browser DevTools console)
+console.info(`[Jeevalink API] 🔗 Base URL: ${BASE_URL} (mode: ${import.meta.env.MODE})`);
+
 const api = axios.create({
-  baseURL: getBaseURL(),
+  baseURL: BASE_URL,
   timeout: 30000,
   headers: {
     'Accept': 'application/json',
+    'Content-Type': 'application/json',
   },
 });
 
