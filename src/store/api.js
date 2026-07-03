@@ -71,26 +71,13 @@ export function toSnake(obj) {
 
 // Dynamically resolve the API base URL.
 // Priority:
-// 1. Environment variable VITE_API_URL (used if it points to a non-localhost URL, or if we are running on localhost)
-// 2. Hardcoded fallback live server URL (used when running on a live hostname but local environment variables are baked in)
+// 1. Environment variable VITE_API_URL (always used when set)
+// 2. Fallback to localhost for local development
 const getBaseURL = () => {
   const envApiUrl = import.meta.env.VITE_API_URL;
-  const isLocalhost = typeof window !== 'undefined' && 
-    (window.location.hostname === 'localhost' || 
-     window.location.hostname === '127.0.0.1' || 
-     window.location.hostname === '::1');
-
   if (envApiUrl) {
-    const isEnvLocalhost = envApiUrl.includes('localhost') || envApiUrl.includes('127.0.0.1');
-    if (isLocalhost || !isEnvLocalhost) {
-      return envApiUrl;
-    }
+    return envApiUrl;
   }
-
-  if (typeof window !== 'undefined' && !isLocalhost) {
-    return 'https://mindful-exploration-production-8f55.up.railway.app/api/v1';
-  }
-
   return 'http://localhost:8000/api/v1';
 };
 
