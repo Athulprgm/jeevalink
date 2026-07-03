@@ -480,7 +480,10 @@ export const useAppStore = create((set, get) => ({
       if (res.data.success) {
         const newUser = res.data.data.user;
         set((state) => ({ allUsers: [newUser, ...state.allUsers] }));
-        get().triggerToast('Volunteer added successfully!', 'success');
+        // Show warning if email failed to send, otherwise success
+        const msg = res.data.message || 'Volunteer added successfully!';
+        const emailFailed = msg.toLowerCase().includes('failed to send');
+        get().triggerToast(msg, emailFailed ? 'warning' : 'success');
         return { success: true, user: newUser };
       }
       return { success: false };
@@ -782,7 +785,10 @@ export const useAppStore = create((set, get) => ({
         set((state) => ({
           allUsers: [...state.allUsers, res.data.data.user]
         }));
-        get().triggerToast(res.data.message || 'User added successfully!', 'success');
+        // Show warning if email failed to send, otherwise success
+        const msg = res.data.message || 'User added successfully!';
+        const emailFailed = msg.toLowerCase().includes('failed to send');
+        get().triggerToast(msg, emailFailed ? 'warning' : 'success');
         return { success: true };
       }
       return { success: false };
