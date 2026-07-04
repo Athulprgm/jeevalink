@@ -478,18 +478,22 @@ export const useAppStore = create((set, get) => ({
       };
       const res = await api.post('/admin/volunteers', payload);
       if (res.data.success) {
-        const newUser = res.data.data.user;
-        // Backend returns snake_case keys: email_sent, generated_password
-        const emailSent = res.data.data.email_sent;
-        const generatedPassword = res.data.data.generated_password;
-        set((state) => ({ allUsers: [newUser, ...state.allUsers] }));
+        const newUser = res.data.data?.user;
+        // api.js response interceptor auto-converts snake_case → camelCase
+        // so backend's email_sent → emailSent, generated_password → generatedPassword
+        const emailSent = res.data.data?.emailSent;
+        const generatedPassword = res.data.data?.generatedPassword;
+        if (newUser) {
+          set((state) => ({ allUsers: [newUser, ...state.allUsers] }));
+        }
         // Show warning if email failed to send, otherwise success
         const msg = res.data.message || 'Volunteer added successfully!';
-        const emailFailed = !emailSent;
-        get().triggerToast(msg, emailFailed ? 'warning' : 'success');
+        get().triggerToast(msg, emailSent ? 'success' : 'warning');
         return { success: true, user: newUser, emailSent, generatedPassword };
       }
-      return { success: false };
+      const failMsg = res.data?.message || 'Failed to add volunteer.';
+      get().triggerToast(failMsg, 'error');
+      return { success: false, error: failMsg };
     } catch (err) {
       const errMsg = err.response?.data?.message || 'Failed to add volunteer.';
       get().triggerToast(errMsg, 'error');
