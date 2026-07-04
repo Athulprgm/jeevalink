@@ -479,12 +479,13 @@ export const useAppStore = create((set, get) => ({
       const res = await api.post('/admin/volunteers', payload);
       if (res.data.success) {
         const newUser = res.data.data.user;
-        const emailSent = res.data.data.emailSent;
-        const generatedPassword = res.data.data.generatedPassword;
+        // Backend returns snake_case keys: email_sent, generated_password
+        const emailSent = res.data.data.email_sent;
+        const generatedPassword = res.data.data.generated_password;
         set((state) => ({ allUsers: [newUser, ...state.allUsers] }));
         // Show warning if email failed to send, otherwise success
         const msg = res.data.message || 'Volunteer added successfully!';
-        const emailFailed = msg.toLowerCase().includes('failed to send');
+        const emailFailed = !emailSent;
         get().triggerToast(msg, emailFailed ? 'warning' : 'success');
         return { success: true, user: newUser, emailSent, generatedPassword };
       }

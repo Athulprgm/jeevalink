@@ -315,16 +315,21 @@ export default function VolunteerManagement() {
                     e.preventDefault();
                     if (!form.fullName || !form.email || !form.mobile) { setFormError('Name, email, and phone are required.'); return; }
                     setLoading(true);
+                    setFormError('');
                     
                     if (showAddModal) {
                       const res = await addVolunteer(form);
                       if (res.success) {
                         setShowAddModal(false);
                         setForm(emptyVolForm);
+                        setFormError('');
                         // Show credentials popup if email was NOT sent
                         if (res.generatedPassword) {
                           setCredentialsModal({ open: true, email: form.email, password: res.generatedPassword });
                         }
+                      } else {
+                        // Show error inside the form so user knows what went wrong
+                        setFormError(res.error || 'Failed to add volunteer. Please try again.');
                       }
                     } else {
                       await new Promise(r => setTimeout(r, 600));
