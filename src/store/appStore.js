@@ -488,6 +488,7 @@ export const useAppStore = create((set, get) => ({
         }
         // Show warning if email failed to send, otherwise success
         const msg = res.data.message || 'Volunteer added successfully!';
+        
         get().triggerToast(msg, emailSent ? 'success' : 'warning');
         return { success: true, user: newUser, emailSent, generatedPassword };
       }

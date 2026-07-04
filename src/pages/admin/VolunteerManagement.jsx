@@ -55,7 +55,7 @@ export default function VolunteerManagement() {
   const [formError, setFormError] = useState('');
   const [loading, setLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
-  const [credentialsModal, setCredentialsModal] = useState({ open: false, email: '', password: '' });
+  const [credentialsModal, setCredentialsModal] = useState({ open: false, email: '', password: '', emailSent: false });
 
   useEffect(() => {
     const initFetch = async () => {
@@ -323,10 +323,8 @@ export default function VolunteerManagement() {
                         setShowAddModal(false);
                         setForm(emptyVolForm);
                         setFormError('');
-                        // Show credentials popup if email was NOT sent
-                        if (res.generatedPassword) {
-                          setCredentialsModal({ open: true, email: form.email, password: res.generatedPassword });
-                        }
+                        // Always show credentials popup so admin has a record of the password
+                        setCredentialsModal({ open: true, email: form.email, password: res.generatedPassword, emailSent: res.emailSent });
                       } else {
                         // Show error inside the form so user knows what went wrong
                         setFormError(res.error || 'Failed to add volunteer. Please try again.');
@@ -447,11 +445,21 @@ export default function VolunteerManagement() {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
             <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }} className="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl relative">
               <div className="text-center mb-5">
-                <div className="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-amber-100">
-                  <Lock className="w-7 h-7 text-amber-500" />
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-3 border ${credentialsModal.emailSent ? 'bg-emerald-50 border-emerald-100' : 'bg-amber-50 border-amber-100'}`}>
+                  {credentialsModal.emailSent
+                    ? <Mail className="w-7 h-7 text-emerald-500" />
+                    : <Lock className="w-7 h-7 text-amber-500" />}
                 </div>
-                <h3 className="text-lg font-black text-gray-900">Login Credentials</h3>
-                <p className="text-xs text-gray-500 mt-1">Email could not be sent. Please share these credentials manually.</p>
+                <h3 className="text-lg font-black text-gray-900">Volunteer Login Credentials</h3>
+                {credentialsModal.emailSent ? (
+                  <div className="mt-2 flex items-center justify-center gap-1.5">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold rounded-full">
+                      <CheckCircle2 className="w-3 h-3" /> Sent to volunteer's email
+                    </span>
+                  </div>
+                ) : (
+                  <p className="text-xs text-amber-600 font-semibold mt-2 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">⚠️ Email delivery failed. Share these credentials manually with the volunteer.</p>
+                )}
               </div>
               <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3 mb-5">
                 <div>
@@ -463,6 +471,9 @@ export default function VolunteerManagement() {
                   <p className="text-sm font-bold text-red-600 font-mono bg-white px-3 py-2 rounded-lg border border-red-100 tracking-wider">{credentialsModal.password}</p>
                 </div>
               </div>
+              {credentialsModal.emailSent && (
+                <p className="text-[11px] text-gray-400 text-center mb-4">Keep this as your admin backup record. The volunteer received the credentials via email.</p>
+              )}
               <div className="flex gap-3">
                 <button
                   onClick={() => {
@@ -475,7 +486,7 @@ export default function VolunteerManagement() {
                   📋 Copy All
                 </button>
                 <button
-                  onClick={() => setCredentialsModal({ open: false, email: '', password: '' })}
+                  onClick={() => setCredentialsModal({ open: false, email: '', password: '', emailSent: false })}
                   className="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-gray-700 font-bold rounded-xl text-sm transition-all cursor-pointer"
                 >
                   Done
